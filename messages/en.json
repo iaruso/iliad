@@ -1,6 +1,39 @@
 {
-    "HomePage": {
-      "title": "Hello world!",
-      "about": "Go to the about page"
+  "locale": {
+    "en": "English",
+    "pt": "Portuguese"
+  },
+  "localeISO": {
+    "en": "EN",
+    "pt": "PT"
+  },
+  "navbar": {
+    "search": {
+      "placeholder": "Find by location, name, id ..."
+    },
+    "viewToggle": {
+      "globe": "Globe",
+      "map": "Map"
+    },
+    "addData": {
+      "placeholder": "Add"
+    }
+  },
+  "content": {
+    "info": {
+      "title": "Info"
+    },
+    "timeline": {
+      "title": "Timeline"
+    },
+    "globe": {
+      "title": "Globe"
+    },
+    "particles": {
+      "title": "Particles"
+    },
+    "area": {
+      "title": "Area"
     }
   }
+}

@@ -1,0 +1,39 @@
+{
+  "locale": {
+    "en": "Inglês",
+    "pt": "Português"
+  },
+  "localeISO": {
+    "en": "EN",
+    "pt": "PT"
+  },
+  "navbar": {
+    "search": {
+      "placeholder": "Encontrar por localização, nome, id ..."
+    },
+    "viewToggle": {
+      "globe": "Globo",
+      "map": "Mapa"
+    },
+    "addData": {
+      "placeholder": "Adicionar"
+    }
+  },
+  "content": {
+    "info": {
+      "title": "Informação"
+    },
+    "timeline": {
+      "title": "Linha do tempo"
+    },
+    "globe": {
+      "title": "Globo"
+    },
+    "particles": {
+      "title": "Partículas"
+    },
+    "area": {
+      "title": "Área"
+    }
+  }
+}
