@@ -1,14 +1,17 @@
-'use client'
-import Image from "next/image";
-import Navbar from "@/components/navbar/navbar";
+'use client';
+import Globe from "@/components/globe/globe";
+import React, { useContext } from 'react';
+import { AppContext } from '@/components/client';
 
 export default function Home() {
+  const { data, selectedState } = useContext(AppContext);
+
+  if (!data) return <div>Loading...</div>;
+
   return (
-    <>
-      <main className="h-full w-full">
-        
-      </main>
-      <Navbar />
-    </>
+    <div className="home-container">
+      <Globe data={data} selectedState={selectedState} />
+    </div>
   );
 }
+

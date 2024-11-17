@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import { Kumbh_Sans } from 'next/font/google'
+import ClientApplication from '@/components/client';
 import "./globals.css";
 
 
@@ -29,8 +30,10 @@ export default async function RootLayout({
       <head />
       <body className={kumbh.className}>
         <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
+          <NextIntlClientProvider messages={messages}>
+            <ClientApplication>
+              {children}
+            </ClientApplication>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

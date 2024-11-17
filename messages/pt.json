@@ -27,7 +27,8 @@
       "title": "Linha do tempo"
     },
     "globe": {
-      "title": "Globo"
+      "title": "Globo",
+      "info": "GUI a ser adicionado"
     },
     "particles": {
       "title": "Partículas"

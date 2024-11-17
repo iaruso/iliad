@@ -1,9 +1,9 @@
 'use client'
 import React from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { setUserLocale } from '@/services/locale';
 import { Locale } from '@/i18n/config';
 import { routing } from '@/i18n/routing';
+import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -15,10 +15,12 @@ import { GlobeIcon } from '@radix-ui/react-icons';
 const LanguageSwitcher: React.FC = () => {
 	const t = useTranslations();
 	const locale = useLocale();
+	const router = useRouter();
 
 	function changeLocale(value: string) {   
 		const newLocale = value as Locale;
-		setUserLocale(newLocale);
+		document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+		router.refresh();
 	}
 
 	return (

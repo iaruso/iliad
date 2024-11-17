@@ -10,13 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-primary text-primary-foreground hover:bg-primary/80",
         outline:
-          "border border-input bg-background hover:bg-accent/50 hover:text-accent-foreground",
+          "border border-input bg-background hover:bg-accent/80 hover:text-accent-foreground",
         icon:
-          "border bg-accent text-accent-foreground hover:bg-accent/50",
+          "border bg-accent text-accent-foreground hover:bg-accent/80",
         icon_outline:
-          "border border-input bg-background hover:bg-accent/50 hover:text-accent-foreground",
+          "border border-input bg-background hover:bg-accent/80 hover:text-accent-foreground",
         link: 
           "text-primary underline-offset-4 hover:underline",
       },

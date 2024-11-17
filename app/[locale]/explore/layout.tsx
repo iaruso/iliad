@@ -1,10 +1,7 @@
-import { ThemeProvider } from 'next-themes';
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
-import localFont from "next/font/local";
-
-export default async function ExploreLayout({ }: Readonly<{}>) {
+export default async function ExploreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>aaa</div>
+    <div>
+      {children}
+    </div>
   );
 }

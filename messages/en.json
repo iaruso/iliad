@@ -27,7 +27,8 @@
       "title": "Timeline"
     },
     "globe": {
-      "title": "Globe"
+      "title": "Globe",
+      "info": "GUI to be added"
     },
     "particles": {
       "title": "Particles"
