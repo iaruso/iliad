@@ -1,40 +1,30 @@
 {
-  "locale": {
-    "en": "English",
-    "pt": "Portuguese"
-  },
-  "localeISO": {
-    "en": "EN",
-    "pt": "PT"
-  },
   "navbar": {
-    "search": {
-      "placeholder": "Find by location, name, id ..."
-    },
-    "viewToggle": {
-      "globe": "Globe",
-      "map": "Map"
-    },
-    "addData": {
-      "placeholder": "Add"
-    }
-  },
-  "content": {
-    "info": {
-      "title": "Info"
-    },
-    "timeline": {
-      "title": "Timeline"
-    },
-    "globe": {
-      "title": "Globe",
-      "info": "GUI to be added"
-    },
-    "particles": {
-      "title": "Particles"
-    },
-    "area": {
-      "title": "Area"
+    "app": "Oil Spill Monitor",
+    "options": {
+      "theme": {
+        "tooltip": "Change theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "locale": {
+        "tooltip": "Change language",
+        "en": "English",
+        "pt": "Portuguese",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German",
+        "it": "Italian",
+        "ru": "Russian",
+        "zh": "Chinese",
+        "ja": "Japanese",
+        "ko": "Korean",
+        "ar": "Arabic"
+      },
+      "info": {
+        "tooltip": "Check out source code"
+      }
     }
   }
 }

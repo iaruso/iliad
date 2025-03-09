@@ -1,17 +1,24 @@
-'use client';
-import Globe from "@/components/globe/globe";
-import React, { useContext } from 'react';
-import { AppContext } from '@/components/client';
-
-export default function Home() {
-  const { data, selectedState } = useContext(AppContext);
-
-  if (!data) return <div>Loading...</div>;
-
+import Container from '@/components/container';
+import Globe from '@/components/globe/globe';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
+import { AppProvider } from '@/components/context';
+import { getGlobeData } from '@/lib/data';
+ 
+export default async function HomePage() {
+  const globeData = await getGlobeData();
   return (
-    <div className="home-container">
-      <Globe data={data} selectedState={selectedState} />
-    </div>
+    <AppProvider>
+      <ResizablePanelGroup direction='horizontal'>
+        <Globe initialData={globeData} />
+        <ResizableHandle/>
+        <ResizablePanel maxSize={32} minSize={16} defaultSize={24}>
+          <Container />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </AppProvider>
   );
 }
-

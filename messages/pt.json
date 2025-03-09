@@ -1,40 +1,30 @@
 {
-  "locale": {
-    "en": "Inglês",
-    "pt": "Português"
-  },
-  "localeISO": {
-    "en": "EN",
-    "pt": "PT"
-  },
   "navbar": {
-    "search": {
-      "placeholder": "Encontrar por localização, nome, id ..."
-    },
-    "viewToggle": {
-      "globe": "Globo",
-      "map": "Mapa"
-    },
-    "addData": {
-      "placeholder": "Adicionar"
-    }
-  },
-  "content": {
-    "info": {
-      "title": "Informação"
-    },
-    "timeline": {
-      "title": "Linha do tempo"
-    },
-    "globe": {
-      "title": "Globo",
-      "info": "GUI a ser adicionado"
-    },
-    "particles": {
-      "title": "Partículas"
-    },
-    "area": {
-      "title": "Área"
+    "app": "MDO",
+    "options": {
+      "theme": {
+        "tooltip": "Mudar o tema",
+        "light": "Claro",
+        "dark": "Escuro",
+        "system": "Sistema"
+      },
+      "locale": {
+        "tooltip": "Mudar idioma",
+        "en": "Inglês",
+        "pt": "Português",
+        "es": "Espanhol",
+        "fr": "Francês",
+        "de": "Alemão",
+        "it": "Italiano",
+        "ru": "Russo",
+        "zh": "Chinês",
+        "ja": "Japonês",
+        "ko": "Coreano",
+        "ar": "Árabe"
+      },
+      "info": {
+        "tooltip": "Ver o código fonte"
+      }
     }
   }
 }
