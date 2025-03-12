@@ -98,7 +98,7 @@ useEffect(() => {
   return (
     <ResizablePanel id="content-panel" className='flex-1 overflow-hidden' defaultSize={76}>
       {!isGlobeReady && (
-        <div className="absolute inset-0 flex items-center justify-center backdrop-blur-sm z-10">
+        <div className="absolute inset-0 flex items-center justify-center backdrop-blur-xs z-10">
           <div className="flex flex-col items-center">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
             <p className="mt-4 text-foreground">Loading Globe...</p>
@@ -111,7 +111,7 @@ useEffect(() => {
         rendererConfig={{
           antialias: false,
           alpha: true,
-          powerPreference: "high-performance",
+          powerPreference: "default",
         }}
         width={dimensions.width}
         height={dimensions.height}

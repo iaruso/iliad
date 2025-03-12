@@ -32,7 +32,7 @@ const LocaleToggle: FC<LocaleToggleProps> = ({ locale }) => {
     <DropdownTooltip
       button={
         <Button variant='secondary' size='icon' className='shadow-none h-6 w-6'>
-          <Globe className='!h-4 !w-4'/>
+          <Globe className='h-4! w-4!'/>
         </Button>
       }
       tooltip={t('tooltip')}
