@@ -3,10 +3,16 @@ import { readFile } from "fs/promises"
 import { join } from "path"
 
 interface GlobePoint {
-  lat: number
-  lng: number
-  weight: number
+  properties: {
+    latitude: number
+    longitude: number
+    name: string
+    weight: number
+    [key: string]: any;
+  }
+  [key: string]: any;
 }
+  
 
 interface PolygonData {
   type: string
@@ -29,8 +35,11 @@ export async function getGlobeData(): Promise<GlobePoint[]> {
   }
 
   return parsedPolygon.coordinates.map(([lng, lat]: [number, number]) => ({
-    lat,
-    lng,
-    weight: 0.5 + Math.random() * 0.5, // Peso variável
+    properties: {
+      name: "OilShape",
+      latitude: lat,
+      longitude: lng,
+      weight: 1 + Math.random() * 4, // Variable weight between 5 and 50
+    }
   }))
 }
