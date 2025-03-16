@@ -10,12 +10,7 @@ import { Globe } from 'lucide-react'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import DropdownTooltip from '@/components/ui/dropdown-tooltip'
 
-interface LocaleToggleProps {
-  locale: Locale;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const LocaleToggle: FC<LocaleToggleProps> = ({ locale }) => {
+const LocaleToggle: FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

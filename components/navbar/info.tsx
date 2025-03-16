@@ -17,7 +17,7 @@ const InfoButton: FC = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant='secondary' size='icon' className='h-6 w-6' asChild>
-            <Link href='https://github.com/iaruso/globus' target='_blank' className='h-6! w-6! flex'>
+            <Link href='https://github.com/iaruso/iliad' target='_blank' className='h-6! w-6! flex'>
               <Info className='h-4! w-4!'/>
             </Link>
           </Button>

@@ -11,19 +11,63 @@
       "locale": {
         "tooltip": "Mudar idioma",
         "en": "Inglês",
-        "pt": "Português",
-        "es": "Espanhol",
-        "fr": "Francês",
-        "de": "Alemão",
-        "it": "Italiano",
-        "ru": "Russo",
-        "zh": "Chinês",
-        "ja": "Japonês",
-        "ko": "Coreano",
-        "ar": "Árabe"
+        "pt": "Português"
       },
       "info": {
         "tooltip": "Ver o código fonte"
+      }
+    }
+  },
+  "globe": {
+    "controls": {
+      "zoomIn": {
+        "tooltip": "Aproximar"
+      },
+      "zoomOut": {
+        "tooltip": "Afastar"
+      },
+      "rotate": {
+        "tooltip": "Rodar a visão"
+      },
+      "maximize": {
+        "tooltip": "Maximizar a tela"
+      },
+      "minimize": {
+        "tooltip": "Minimizar a tela"
+      },
+      "location": {
+        "tooltip": "Localização atual"
+      },
+      "print": {
+        "tooltip": "Imprimir a tela"
+      },
+      "reset": {
+        "tooltip": "Reiniciar a visão"
+      }
+    },
+    "timeline": {
+      "skipBack": {
+        "tooltip": "Voltar"
+      },
+      "play": {
+        "tooltip": "Reproduzir"
+      },
+      "pause": {
+        "tooltip": "Pausar"
+      },
+      "skipForward": {
+        "tooltip": "Avançar"
+      },
+      "speed": {
+        "tooltip": "Velocidade de reprodução",
+        "options": {
+          "0_5": "0.5x",
+          "1": "1x",
+          "2": "2x"
+        }
+      },
+      "calendar": {
+        "tooltip": "Selecionar data"
       }
     }
   }

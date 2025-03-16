@@ -11,19 +11,63 @@
       "locale": {
         "tooltip": "Change language",
         "en": "English",
-        "pt": "Portuguese",
-        "es": "Spanish",
-        "fr": "French",
-        "de": "German",
-        "it": "Italian",
-        "ru": "Russian",
-        "zh": "Chinese",
-        "ja": "Japanese",
-        "ko": "Korean",
-        "ar": "Arabic"
+        "pt": "Portuguese"
       },
       "info": {
         "tooltip": "Check out source code"
+      }
+    }
+  },
+  "globe": {
+    "controls": {
+      "zoomIn": {
+        "tooltip": "Zoom in"
+      },
+      "zoomOut": {
+        "tooltip": "Zoom out"
+      },
+      "rotate": {
+        "tooltip": "Rotate view"
+      },
+      "maximize": {
+        "tooltip": "Maximize screen"
+      },
+      "minimize": {
+        "tooltip": "Minimize screen"
+      },
+      "location": {
+        "tooltip": "Current location"
+      },
+      "print": {
+        "tooltip": "Printscreen"
+      },
+      "reset": {
+        "tooltip": "Reset view"
+      }
+    },
+    "timeline": {
+      "skipBack": {
+        "tooltip": "Back"
+      },
+      "play": {
+        "tooltip": "Play"
+      },
+      "pause": {
+        "tooltip": "Pause"
+      },
+      "skipForward": {
+        "tooltip": "Forward"
+      },
+      "speed": {
+        "tooltip": "Playback speed",
+        "options": {
+          "0_5": "0.5x",
+          "1": "1x",
+          "2": "2x"
+        }
+      },
+      "calendar": {
+        "tooltip": "Select date"
       }
     }
   }

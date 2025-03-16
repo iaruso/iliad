@@ -93,7 +93,7 @@ function calculateClusterCenter(cluster: GlobePoint[]): GlobePoint {
       latitude: latSum / totalWeight,
       longitude: lonSum / totalWeight,
       name: "Cluster Center",
-      weight: totalWeight / cluster.length * 4e-4 // Ajusta o peso para a visualização
+      weight: totalWeight / cluster.length * 4e-7 // Ajusta o peso para a visualização
     }
   };
 }
@@ -113,8 +113,6 @@ function haversineDistance(a: { latitude: number; longitude: number }, b: { lati
 
   return R * c; // Distância em km
 }
-
-
 
 // Sun position calculation
 // Solar position calculation

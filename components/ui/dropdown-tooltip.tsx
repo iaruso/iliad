@@ -1,6 +1,7 @@
 'use client'
 
 import React, { ReactNode, FC } from 'react'
+import ButtonTooltip from '@/components/ui/button-tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,18 +23,7 @@ interface DropdownTooltipProps {
 const DropdownTooltip: FC<DropdownTooltipProps> = ({ button, tooltip, content }) => {
   return (
     <DropdownMenu>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              {button}
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{tooltip}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <ButtonTooltip button={button} tooltip={tooltip} isDropdown/>
       <DropdownMenuContent side='top' align='end' onCloseAutoFocus={(e) => e.preventDefault()}>
         {content}
       </DropdownMenuContent>
