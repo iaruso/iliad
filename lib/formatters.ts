@@ -93,7 +93,7 @@ function calculateClusterCenter(cluster: GlobePoint[]): GlobePoint {
       latitude: latSum / totalWeight,
       longitude: lonSum / totalWeight,
       name: "Cluster Center",
-      weight: totalWeight / cluster.length * 4e-7 // Ajusta o peso para a visualização
+      weight: totalWeight / cluster.length * 4e-2 // Ajusta o peso para a visualização
     }
   };
 }
@@ -112,69 +112,4 @@ function haversineDistance(a: { latitude: number; longitude: number }, b: { lati
   const c = 2 * Math.atan2(Math.sqrt(aCalc), Math.sqrt(1 - aCalc));
 
   return R * c; // Distância em km
-}
-
-// Sun position calculation
-// Solar position calculation
-export const sunPositionAt = (dt: Date) => {
-  const day = new Date(dt).setUTCHours(0, 0, 0, 0)
-  const t = century(dt)
-  const longitude = ((day - dt.getTime()) / 864e5) * 360 - 180
-  return [longitude - equationOfTime(t) / 4, declination(t)]
-}
-
-// Solar calculation functions
-function century(date: Date): number {
-  return (date.getTime() / 86400000.0 + 2440587.5 - 2451545.0) / 36525.0
-}
-
-function declination(t: number): number {
-  return 23.45 * Math.sin(2 * Math.PI * (t * 36525.0 + 0.375))
-}
-
-function equationOfTime(t: number): number {
-  const epsilon = obliquityCorrection(t)
-  const l0 = geomMeanLongSun(t)
-  const e = eccentricityEarthOrbit(t)
-  const m = geomMeanAnomalySun(t)
-
-  let y = Math.tan(deg2rad(epsilon) / 2.0)
-  y *= y
-
-  const sin2l0 = Math.sin(2.0 * deg2rad(l0))
-  const sinm = Math.sin(deg2rad(m))
-  const cos2l0 = Math.cos(2.0 * deg2rad(l0))
-  const sin4l0 = Math.sin(4.0 * deg2rad(l0))
-  const sin2m = Math.sin(2.0 * deg2rad(m))
-
-  const Etime = y * sin2l0 - 2.0 * e * sinm + 4.0 * e * y * sinm * cos2l0 - 0.5 * y * y * sin4l0 - 1.25 * e * e * sin2m
-  return rad2deg(Etime) * 4.0
-}
-
-function obliquityCorrection(t: number): number {
-  const e0 = 23.439 - 0.00000036 * t
-  return e0
-}
-
-function geomMeanLongSun(t: number): number {
-  let L0 = 280.46646 + t * (36000.76983 + t * 0.0003032)
-  while (L0 > 360.0) L0 -= 360.0
-  while (L0 < 0.0) L0 += 360.0
-  return L0
-}
-
-function eccentricityEarthOrbit(t: number): number {
-  return 0.016708634 - t * (0.000042037 + 0.0000001267 * t)
-}
-
-function geomMeanAnomalySun(t: number): number {
-  return 357.52911 + t * (35999.05029 - 0.0001537 * t)
-}
-
-function deg2rad(angleDeg: number): number {
-  return (Math.PI * angleDeg) / 180.0
-}
-
-function rad2deg(angleRad: number): number {
-  return (180.0 * angleRad) / Math.PI
 }

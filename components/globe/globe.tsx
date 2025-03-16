@@ -6,11 +6,11 @@ import { useInterval } from 'usehooks-ts'
 import { getPanelElement } from 'react-resizable-panels'
 import { ResizablePanel } from '@/components/ui/resizable'
 import { TextureLoader, ShaderMaterial, type Material, Vector2 } from 'three'
-//import * as d3 from 'd3'
 import { GlobeMethods } from 'react-globe.gl'
 import { GlobePoint } from '@/types/globe'
 import { dayNightShader } from '@/lib/shaders'
-import { formatGlobeData, sunPositionAt } from '@/lib/formatters'
+import { formatGlobeData } from '@/lib/formatters'
+import { sunPositionAt } from '@/lib/solar'
 import { getColor } from '@/lib/colors'
 import { DateRange } from "react-aria-components";
 import { Loader2 } from 'lucide-react'
@@ -26,7 +26,7 @@ const Globe = dynamic(() => import('react-globe.gl'), {
   )
 })
 
-const VELOCITY = 1
+const VELOCITY = 60
 
 const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: GlobePoint[], supportsWebGPU: string | null }) => {
   const highPerformance = supportsWebGPU === 'true' ? true : false;
@@ -41,7 +41,7 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
   })
   const [dt, setDt] = useState(new Date())
   const [isPlaying, setIsPlaying] = useState(false)
-  const [moment, setMoment] = useState<'start' | 'end'>('start')
+  const [, setMoment] = useState<'start' | 'end'>('start')
   const [timelineSpeed, setTimelineSpeed] = useState<number>(1)
   const [dateRange, setDateRange] = useState<DateRange | null>(null)
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null)
@@ -82,17 +82,19 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
 
   const memoizedGData = useMemo(() => {
     if (highPerformance) {
-      return formatGlobeData(initialData, 'low');
-    } else {
       return formatGlobeData(initialData, 'high');
+    } else {
+      return formatGlobeData(initialData, 'low');
     }
   }, [initialData, highPerformance])
+
+  console.log(memoizedGData)
 
   useEffect(() => {
     const textureLoader = new TextureLoader()
     textureLoader.setCrossOrigin('anonymous')
-    const dayTexture = '/day-earth.webp'
-    const nightTexture = '/night-earth.webp'
+    const dayTexture = '/earth-day.webp'
+    const nightTexture = '/earth-night.webp'
     Promise.all([textureLoader.loadAsync(dayTexture), textureLoader.loadAsync(nightTexture)])
       .then(([dayTexture, nightTexture]) => {
         dayTexture.needsUpdate = true
@@ -116,12 +118,13 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
   }, [])
 
   useInterval(() => {
-    setDt((prevDt) => {
-      const newDt = new Date(prevDt)
-      newDt.setMinutes(newDt.getMinutes() + VELOCITY)
-      return newDt
-    })
-  }, 10000)
+    isPlaying &&
+      setDt((prevDt) => {
+        const newDt = new Date(prevDt)
+        newDt.setMinutes(newDt.getMinutes() + VELOCITY)
+        return newDt
+      })
+  }, 1000)
 
   useEffect(() => {
     if (globeMaterial?.uniforms) {
@@ -171,6 +174,7 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
           height={dimensions.height}
           backgroundColor='rgba(0,0,0,0)'
           globeMaterial={globeMaterial as Material | undefined}
+          bumpImageUrl={'/earth-bump.webp'}
           showAtmosphere={false}
           onZoom={handleGlobeRotation}
           backgroundImageUrl={resolvedTheme === 'dark' ? '/sky.webp' : null}
@@ -179,7 +183,8 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
             heatmapPointLat: (d) => (d as GlobePoint).properties.latitude,
             heatmapPointLng: (d) => (d as GlobePoint).properties.longitude,
             heatmapPointWeight: (d) => (d as GlobePoint).properties.weight,
-            heatmapBandwidth: 0.5,
+            heatmapBandwidth: 0.6,
+            heatmapColorSaturation: 2.8,
             heatmapTopAltitude: 0.01,
             heatmapBaseAltitude: 0.005,
             heatmapColorFn: () => getColor,
@@ -190,7 +195,7 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
             labelText: (d) => (d as GlobePoint).properties.name,
             labelSize: (d) => Math.sqrt((d as GlobePoint).properties.weight) * 4e-10,
             labelDotRadius: (d) => Math.sqrt((d as GlobePoint).properties.weight),
-            labelColor: () => 'rgba(255, 0, 0, 1)',
+            labelColor: () => 'rgba(255, 0, 0, 0.05)',
             onLabelHover: (label) => console.log(label),
           })}
         />

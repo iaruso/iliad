@@ -48,7 +48,7 @@ export const dayNightShader = {
       float intensity = dot(normalize(vNormal), normalize(rotatedSunDirection));
       vec4 dayColor = texture2D(dayTexture, vUv);
       vec4 nightColor = texture2D(nightTexture, vUv);
-      float blendFactor = smoothstep(-0.1, 0.1, intensity);
+      float blendFactor = smoothstep(-0.1, 0.2, intensity);
       gl_FragColor = mix(nightColor, dayColor, blendFactor);
     }
   `,
