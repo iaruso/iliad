@@ -118,12 +118,13 @@ const GlobeComponent = ({ initialData = [], supportsWebGPU }: { initialData?: Gl
   }, [])
 
   useInterval(() => {
-    isPlaying &&
+    if (isPlaying) {
       setDt((prevDt) => {
         const newDt = new Date(prevDt)
         newDt.setMinutes(newDt.getMinutes() + VELOCITY)
         return newDt
       })
+    }
   }, 1000)
 
   useEffect(() => {

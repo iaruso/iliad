@@ -7,7 +7,7 @@ import {
   Minus,
   Rotate3D,
   Maximize,
-  Shrink,
+  //Shrink,
   Locate,
   Camera,
   RotateCcw
