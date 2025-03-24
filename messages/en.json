@@ -26,9 +26,6 @@
       "zoomOut": {
         "tooltip": "Zoom out"
       },
-      "rotate": {
-        "tooltip": "Rotate view"
-      },
       "maximize": {
         "tooltip": "Maximize screen"
       },
@@ -41,9 +38,31 @@
       "print": {
         "tooltip": "Printscreen"
       },
-      "reset": {
-        "tooltip": "Reset view"
-      }
+      "layers": {
+        "tooltip": "Layers",
+        "data": {
+          "title": "Data representation",
+          "options": {
+            "heatmaps": "Heatmaps",
+            "points": "Points"
+          }
+        },
+        "textures": {
+          "title": "Textures quality",
+          "options": {
+            "low": "Low",
+            "high": "High"
+          }
+        },
+        "time": {
+          "title": "Day night cycle",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
+        }
+      },
+      "manualExit": "Press ESC to exit fullscreen"
     },
     "timeline": {
       "skipBack": {

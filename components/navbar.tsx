@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
     <nav className='border-t h-12 flex items-center py-2 px-3 justify-between'>
       <h1 className='font-[550] select-none'>{t('app')}</h1>
       <div className='flex items-center gap-1.5'>
-        <Badge variant='version'>v.0.2.0</Badge>
+        <Badge variant='version' className='tabular-nums'>v0.21</Badge>
         <ThemeToggle/>
         <LocaleToggle/>
         <Info/>

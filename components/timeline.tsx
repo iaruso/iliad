@@ -4,10 +4,10 @@ import ButtonTooltip from '@/components/ui/button-tooltip';
 import DropdownTooltip from '@/components/ui/dropdown-tooltip';
 import PopoverTooltip from '@/components/ui/popover-tooltip';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { RangeCalendar } from "@/components/ui/calendar-rac";
+import { RangeCalendar } from '@/components/ui/calendar-rac';
 import { Button } from '@/components/ui/button';
 import { SkipBack, Play, Pause, SkipForward, Calendar } from 'lucide-react';
-import { DateRange } from "react-aria-components";
+import { DateRange } from 'react-aria-components';
 
 interface TimelineProps {
   date: Date;
@@ -77,7 +77,7 @@ const Timeline: FC<TimelineProps> = ({
             variant={'outline'}
             className='!h-8 !w-8 cursor-pointer p-0 text-xs'
           >
-            {t(`speed.options.${String(timelineSpeed).replace(".", "_")}`)}
+            {t(`speed.options.${String(timelineSpeed).replace('.', '_')}`)}
           </Button>
         }
         tooltip={t('speed.tooltip')}
@@ -87,7 +87,7 @@ const Timeline: FC<TimelineProps> = ({
               key={speed}
               onClick={() => setTimelineSpeed(speed)}
             >
-              {t(`speed.options.${String(speed).replace(".", "_")}`)}
+              {t(`speed.options.${String(speed).replace('.', '_')}`)}
             </DropdownMenuItem>
           ))
         }
@@ -104,7 +104,7 @@ const Timeline: FC<TimelineProps> = ({
         }
         tooltip={t('calendar.tooltip')}
         content={
-          <RangeCalendar className="rounded-md border p-2 bg-background" value={dateRange} onChange={setDateRange} />
+          <RangeCalendar className='rounded-md border p-2 bg-background' value={dateRange} onChange={setDateRange} />
         }
       />
       <div className='flex flex-1 rounded-md border !h-8'>

@@ -1,110 +1,20 @@
 import { FC } from 'react';
 import { useTranslations } from 'next-intl';
-import ButtonTooltip from '@/components/ui/button-tooltip';
-import { Button } from '@/components/ui/button';
-import { 
-  Plus,
-  Minus,
-  Rotate3D,
-  Maximize,
-  //Shrink,
-  Locate,
-  Camera,
-  RotateCcw
-} from 'lucide-react';
+import ZoomButtons from '@/components/controls/zoom-buttons';
+import FullscreenToggle from '@/components/controls/fullscreen-toggle';
+import LocationButton from '@/components/controls/location-button';
+import PrintScreenButton from '@/components/controls/printscreen-button';
+import TexturesDropdown from '@/components/controls/textures-dropdown';
 
 const Controls: FC = () => {
   const t = useTranslations('globe.controls');
   return (
-    <div className='relative top-2 right-10 flex flex-col justify-start items-center gap-2 !w-8'>
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Plus className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('zoomIn.tooltip')}
-      />
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Minus className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('zoomOut.tooltip')}
-      />
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Rotate3D className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('rotate.tooltip')}
-      />
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Maximize className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('maximize.tooltip')}
-      />
-      {/* <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Shrink className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('minimize.tooltip')}
-      /> */}
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Locate className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('location.tooltip')}
-      />
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <Camera className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('print.tooltip')}
-      />
-      <ButtonTooltip
-        button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-          >
-            <RotateCcw className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5}/>
-          </Button>
-        }
-        tooltip={t('reset.tooltip')}
-      />
+    <div className='absolute top-2 right-2 flex flex-col justify-start items-center gap-2 !w-8 z-10'>
+      <ZoomButtons />
+      <FullscreenToggle />
+      <LocationButton />
+      <PrintScreenButton />
+      <TexturesDropdown />
     </div>
   );
 };

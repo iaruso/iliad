@@ -26,24 +26,43 @@
       "zoomOut": {
         "tooltip": "Afastar"
       },
-      "rotate": {
-        "tooltip": "Rodar a visão"
-      },
       "maximize": {
-        "tooltip": "Maximizar a tela"
+        "tooltip": "Maximizar o ecrã"
       },
       "minimize": {
-        "tooltip": "Minimizar a tela"
+        "tooltip": "Minimizar o ecrã"
       },
       "location": {
         "tooltip": "Localização atual"
       },
       "print": {
-        "tooltip": "Imprimir a tela"
+        "tooltip": "Imprimir o ecrã"
       },
-      "reset": {
-        "tooltip": "Reiniciar a visão"
-      }
+      "layers": {
+        "tooltip": "Camadas",
+        "data": {
+          "title": "Representação de dados",
+          "options": {
+            "heatmaps": "Mapas de calor",
+            "points": "Pontos"
+          }
+        },
+        "textures": {
+          "title": "Qualidade das texturas",
+          "options": {
+            "low": "Baixa",
+            "high": "Alta"
+          }
+        },
+        "time": {
+          "title": "Ciclo dia noite",
+          "options": {
+            "on": "Ligado",
+            "off": "Desligado"
+          }
+        }
+      },
+      "manualExit": "Pressione ESC para sair do modo de ecrã cheio"
     },
     "timeline": {
       "skipBack": {
