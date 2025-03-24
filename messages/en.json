@@ -43,8 +43,14 @@
         "data": {
           "title": "Data representation",
           "options": {
-            "heatmaps": "Heatmaps",
-            "points": "Points"
+            "heatmaps": {
+              "title": "Heatmaps",
+              "description": "Visualize data using heat maps based on fluid density"
+            },
+            "points": {
+              "title": "Points",
+              "description": "Visualize data using points representing data collection locations"
+            }
           }
         },
         "textures": {

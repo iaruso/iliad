@@ -6,7 +6,6 @@ import { useTheme } from 'next-themes'
 import { useInterval } from 'usehooks-ts'
 import { getPanelElement } from 'react-resizable-panels'
 import { TextureLoader, ShaderMaterial, type Material, Vector2 } from 'three'
-import { GlobeMethods } from 'react-globe.gl'
 import { GlobePoint } from '@/types/globe'
 import { dayNightShader } from '@/lib/shaders'
 import { formatGlobeData } from '@/lib/formatters'
@@ -24,28 +23,30 @@ const Globe = dynamic(() => import('react-globe.gl'), {
   )
 })
 
-const VELOCITY = 1
+const VELOCITY = 60
 
 const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) => {
   const {
     globeRef,
     isGlobeReady,
     setIsGlobeReady,
+    globeMaterial,
+    setGlobeMaterial,
     currentLocation,
     zoomControl,
-    viewType 
+    viewType,
+    textureQuality,
+    dayNight,
+    altitude,
+    setAltitude,
+    date,
+    setDate,
+    playing,
   } = useContext(GlobeContext) as GlobeContextProps
   const { resolvedTheme } = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
-  const [dt, setDt] = useState(new Date())
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [altitude, setAltitude] = useState<number>(2.5)
   const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single')
-  const [, setMoment] = useState<'start' | 'end'>('start')
-  const [timelineSpeed, setTimelineSpeed] = useState<number>(1)
-  const [dateRange, setDateRange] = useState<DateRange | null>(null)
-  const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null)
 
   const rotationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -85,47 +86,66 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
   useEffect(() => {
     const textureLoader = new TextureLoader()
     textureLoader.setCrossOrigin('anonymous')
-    const dayTexture = '/earth-day.webp'
-    const nightTexture = '/earth-night.webp'
-    Promise.all([textureLoader.loadAsync(dayTexture), textureLoader.loadAsync(nightTexture)])
+    const dayTexture = textureQuality === 'low' ? '/earth-day.webp' : '/earth-day-hq.webp'
+    const nightTexture = textureQuality === 'low' ? '/earth-night.webp' : '/earth-night-hq.webp'
+
+    if (!dayNight) {
+      textureLoader.loadAsync(dayTexture)
+      .then((dayTex) => {
+        dayTex.needsUpdate = true
+        const material = new ShaderMaterial({
+        uniforms: {
+          dayTexture: { value: dayTex },
+          sunPosition: { value: new Vector2() },
+          globeRotation: { value: new Vector2() }
+        },
+        vertexShader: dayNightShader.vertexShader,
+        fragmentShader: dayNightShader.fragmentShader
+        })
+        setGlobeMaterial(material)
+      })
+      .catch((error) => {
+        console.error('Failed to load day texture:', error)
+      })
+    } else {
+      Promise.all([textureLoader.loadAsync(dayTexture), textureLoader.loadAsync(nightTexture)])
       .then(([dayTex, nightTex]) => {
         dayTex.needsUpdate = true
         nightTex.needsUpdate = true
         const material = new ShaderMaterial({
-          uniforms: {
-            dayTexture: { value: dayTex },
-            nightTexture: { value: nightTex },
-            sunPosition: { value: new Vector2() },
-            globeRotation: { value: new Vector2() }
-          },
-          vertexShader: dayNightShader.vertexShader,
-          fragmentShader: dayNightShader.fragmentShader
+        uniforms: {
+          dayTexture: { value: dayTex },
+          nightTexture: { value: nightTex },
+          sunPosition: { value: new Vector2() },
+          globeRotation: { value: new Vector2() }
+        },
+        vertexShader: dayNightShader.vertexShader,
+        fragmentShader: dayNightShader.fragmentShader
         })
         setGlobeMaterial(material)
       })
       .catch((error) => {
         console.error('Failed to load textures:', error)
       })
-  }, [])
+    }
+  }, [textureQuality, dayNight])
 
   // Update date if playing
   useInterval(() => {
-    if (isPlaying) {
-      setDt((prevDt) => {
-        const newDt = new Date(prevDt)
-        newDt.setMinutes(newDt.getMinutes() + VELOCITY)
-        return newDt
-      })
+    if (playing) {
+      const newDt = new Date(date)
+      newDt.setMinutes(newDt.getMinutes() + VELOCITY)
+      setDate(newDt)
     }
-  }, 1000/60)
+  }, 1000)
 
   // Update the sun position in the shader material based on dt
   useEffect(() => {
     if (globeMaterial?.uniforms) {
-      const [lng, lat] = sunPositionAt(dt)
+      const [lng, lat] = sunPositionAt(date)
       globeMaterial.uniforms.sunPosition.value.set(lng, lat)
     }
-  }, [dt, globeMaterial])
+  }, [date, globeMaterial])
 
   useEffect(() => {
     if (globeRef.current && zoomControl !== undefined) {
@@ -171,8 +191,6 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
     }
   }, [currentLocation])
 
-
-  // Handle globe rotation with a debounce; include viewType in dependencies so it updates correctly
   const handleGlobeRotation = useCallback(
     ({ lng, lat }: { lng: number; lat: number }) => {
       if (rotationTimeoutRef.current) clearTimeout(rotationTimeoutRef.current)
@@ -215,7 +233,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
           rendererConfig={{
             antialias: true,
             alpha: true,
-            powerPreference: 'low-power'
+            powerPreference: 'high-performance',
           }}
           width={dimensions.width}
           height={dimensions.height}
@@ -225,33 +243,29 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
           showAtmosphere={false}
           onZoom={handleGlobeRotation}
           backgroundImageUrl={resolvedTheme === 'dark' ? '/sky.webp' : null}
-          {...(viewType === 'heatmap'
-            ? {
-                heatmapsData: [memoizedGData],
-                heatmapPointLat: (d) => (d as GlobePoint).properties.latitude,
-                heatmapPointLng: (d) => (d as GlobePoint).properties.longitude,
-                heatmapPointWeight: (d) => (d as GlobePoint).properties.weight,
-                heatmapBandwidth: 0.6,
-                heatmapColorSaturation: 2.8,
-                heatmapTopAltitude: 0.01,
-                heatmapBaseAltitude: 0.005,
-                heatmapColorFn: () => getColor,
-                enablePointerInteraction: false
-              }
-            : {
-                labelsData: memoizedGData,
-                labelLat: (d) => (d as GlobePoint).properties.latitude,
-                labelLng: (d) => (d as GlobePoint).properties.longitude,
-                labelText: (d) => (d as GlobePoint).properties.name,
-                labelSize: (d) => Math.sqrt((d as GlobePoint).properties.weight) * 4e-10,
-                labelDotRadius: (d) =>
-                  Math.sqrt((d as GlobePoint).properties.weight) * altitude * 0.9,
-                labelColor: () => 'rgba(255, 0, 0, 1)',
-                onLabelHover: (label) => console.log(label)
-              }
+          {...(viewType === 'heatmap' ? {
+            heatmapsData: [memoizedGData],
+            heatmapPointLat: (d) => (d as GlobePoint).properties.latitude,
+            heatmapPointLng: (d) => (d as GlobePoint).properties.longitude,
+            heatmapPointWeight: (d) => (d as GlobePoint).properties.weight,
+            heatmapBandwidth: 0.6,
+            heatmapColorSaturation: 2.8,
+            heatmapTopAltitude: 0.01,
+            heatmapBaseAltitude: 0.005,
+            heatmapColorFn: () => getColor,
+            enablePointerInteraction: false
+          } : {
+            labelsData: memoizedGData,
+            labelLat: (d) => (d as GlobePoint).properties.latitude,
+            labelLng: (d) => (d as GlobePoint).properties.longitude,
+            labelText: (d) => (d as GlobePoint).properties.name,
+            labelSize: (d) => Math.sqrt((d as GlobePoint).properties.weight) * 4e-10,
+            labelDotRadius: (d) => Math.sqrt((d as GlobePoint).properties.weight) * altitude * 0.9,
+            labelColor: () => 'rgba(255, 0, 0, 1)',
+            onLabelHover: (label) => console.log(label)
+            }
           )}
         />
-        
       </div>
     </>
   )

@@ -43,8 +43,14 @@
         "data": {
           "title": "Representação de dados",
           "options": {
-            "heatmaps": "Mapas de calor",
-            "points": "Pontos"
+            "heatmaps": {
+              "title": "Mapas de calor",
+              "description": "Visualize dados usando mapas de calor baseados na densidade do fluido"
+            },
+            "points": {
+              "title": "Points",
+              "description": "Visualize dados usando pontos representando locais de coleta de dados"
+            }
           }
         },
         "textures": {
@@ -55,7 +61,7 @@
           }
         },
         "time": {
-          "title": "Ciclo dia noite",
+          "title": "Ciclo de dia e noite",
           "options": {
             "on": "Ligado",
             "off": "Desligado"

@@ -1,5 +1,6 @@
 import Container from '@/components/container';
 import Globe from '@/components/globe/globe';
+import Timeline from '@/components/timeline';
 import { GlobeProvider } from '@/context/globe-context';
 import {
   ResizableHandle,
@@ -25,18 +26,7 @@ export default async function HomePage() {
           <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
             <Globe initialData={globeData}/>
             <Controls />
-            <div className='w-full h-12 border-t bg-background'>
-              {/* <Timeline
-                date={dt}
-                isPlaying={isPlaying}
-                setIsPlaying={setIsPlaying}
-                timelineSpeed={timelineSpeed}
-                setTimelineSpeed={setTimelineSpeed}
-                setMoment={setMoment}
-                dateRange={dateRange}
-                setDateRange={setDateRange}
-              /> */}
-            </div>
+            <Timeline />
           </GlobeProvider>
         </ResizablePanel>
         <ResizableHandle/>
