@@ -47,6 +47,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
   const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single')
+  const [dataWeightMultiplier, setDataWeightMultiplier] = useState(3)
 
   const rotationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -74,7 +75,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
       height: (containerRef.current?.clientHeight ?? window.innerHeight) - 48
     })
     setNeedsResize(false)
-  }, needsResize ? 200 : null)
+  }, needsResize ? 100 : null)
 
   // Memoize formatted globe data
   const memoizedGData = useMemo(() => formatGlobeData(initialData, dataDetail), [
@@ -200,13 +201,20 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
       rotationTimeoutRef.current = setTimeout(() => {
         if (globeRef.current && viewType === 'points') {
           const newAltitude = globeRef.current.pointOfView().altitude
-          console.log('New altitude:', newAltitude)
+          globeRef.current.controls({ maxDistance: 500 })
           setDataDetail((prevDetail) => {
-            if (newAltitude > 0.5 && prevDetail !== 'single') return 'single'
-            if (newAltitude > 0.1 && newAltitude <= 0.5 && prevDetail !== 'low') return 'low'
-            if (newAltitude > 0.05 && newAltitude <= 0.1 && prevDetail !== 'medium') return 'medium'
-            if (newAltitude <= 0.05 && prevDetail !== 'high') return 'high'
+            if (newAltitude > 0.1 && prevDetail !== 'single') return 'single'
+            if (newAltitude > 0.02 && newAltitude <= 0.1 && prevDetail !== 'low') return 'low'
+            if (newAltitude > 0.01 && newAltitude <= 0.02 && prevDetail !== 'medium') return 'medium'
+            if (newAltitude <= 0.01 && prevDetail !== 'high') return 'high'
             return prevDetail
+          })
+          setDataWeightMultiplier((prevMultiplier) => {
+            if (newAltitude > 0.1 && prevMultiplier !== 1) return 3
+            if (newAltitude > 0.02 && newAltitude <= 0.1 && prevMultiplier !== 0.5) return 2
+            if (newAltitude > 0.01 && newAltitude <= 0.02 && prevMultiplier !== 0.25) return 1.5
+            if (newAltitude <= 0.01 && prevMultiplier !== 0.1) return 1
+            return prevMultiplier
           })
           setAltitude(newAltitude)
         }
@@ -256,13 +264,13 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
             enablePointerInteraction: false
           } : {
             labelsData: memoizedGData,
+            labelsTransitionDuration: 0,
             labelLat: (d) => (d as GlobePoint).properties.latitude,
             labelLng: (d) => (d as GlobePoint).properties.longitude,
             labelText: (d) => (d as GlobePoint).properties.name,
             labelSize: (d) => Math.sqrt((d as GlobePoint).properties.weight) * 4e-10,
-            labelDotRadius: (d) => Math.sqrt((d as GlobePoint).properties.weight) * altitude * 0.9,
-            labelColor: () => 'rgba(255, 0, 0, 1)',
-            onLabelHover: (label) => console.log(label)
+            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).properties.weight) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
+            labelColor: () => 'rgba(255, 0, 0, 1)'
             }
           )}
         />

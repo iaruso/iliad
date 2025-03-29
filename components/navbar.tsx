@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import ThemeToggle from '@/components/navbar/theme-toggle';
 import LocaleToggle from '@/components/navbar/locale-toggle';
-import Info from '@/components/navbar/info';
+import { SettingsDialog } from '@/components/navbar/settings';
 
 
 const Navbar: React.FC = () => {
@@ -12,10 +12,10 @@ const Navbar: React.FC = () => {
     <nav className='border-t h-12 flex items-center py-2 px-3 justify-between'>
       <h1 className='font-[550] select-none'>{t('app')}</h1>
       <div className='flex items-center gap-1.5'>
-        <Badge variant='version' className='tabular-nums'>v0.21</Badge>
+        <Badge variant='version' className='tabular-nums'>v0.22</Badge>
         <ThemeToggle/>
         <LocaleToggle/>
-        <Info/>
+        <SettingsDialog/>
       </div>
     </nav>
   );
