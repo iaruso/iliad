@@ -9,7 +9,6 @@ import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { RangeCalendar } from '@/components/ui/calendar-rac';
 import { Button } from '@/components/ui/button';
 import { SkipBack, Play, Pause, SkipForward, Calendar } from 'lucide-react';
-import { DateRange } from 'react-aria-components';
 
 const Timeline: FC = () => {
   const { 

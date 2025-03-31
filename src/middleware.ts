@@ -10,7 +10,6 @@ const intlMiddleware = createMiddleware({
 export default function middleware(request: NextRequest) {
   const response = intlMiddleware(request);
   const { browser } = userAgent(request)
-  console.log('browser:', browser)
   const supportsWebGPU = browser.name?.toLowerCase() === 'firefox' ? 'false' : 'true'
   response.headers.set('X-Supports-WebGPU', supportsWebGPU)
   return response

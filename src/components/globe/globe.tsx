@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import dynamic from 'next/dynamic'
 import { useState, useEffect, useMemo, useRef, useCallback, useContext } from 'react'
@@ -9,10 +10,12 @@ import { TextureLoader, ShaderMaterial, type Material, Vector2 } from 'three'
 import { GlobePoint } from '@/@types/globe'
 import { dayNightShader } from '@/lib/shaders'
 import { formatGlobeData } from '@/lib/formatters'
+import { formatGlobeStructure } from '@/lib/data'
 import { sunPositionAt } from '@/lib/solar'
 import { getColor } from '@/lib/colors'
 import { Loader2 } from 'lucide-react'
 import * as THREE from 'three'
+import { OilSpills } from '@/@types/oilspills'
 
 const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
@@ -26,8 +29,7 @@ const Globe = dynamic(() => import('react-globe.gl'), {
 function computeConvexHull(pts: THREE.Vector2[]): THREE.Vector2[] {
   const hull = [];
 
-  // Find leftmost point
-  let leftMost = pts.reduce((left, p) => (p.x < left.x ? p : left), pts[0]);
+  const leftMost = pts.reduce((left, p) => (p.x < left.x ? p : left), pts[0]);
   let current = leftMost;
 
   do {
@@ -55,10 +57,9 @@ function computeConvexHull(pts: THREE.Vector2[]): THREE.Vector2[] {
 
 const VELOCITY = 60
 
-const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) => {
+const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
   const {
     globeRef,
-    isGlobeReady,
     setIsGlobeReady,
     globeMaterial,
     setGlobeMaterial,
@@ -108,7 +109,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
   }, needsResize ? 100 : null)
 
   // Memoize formatted globe data
-  const memoizedGData = useMemo(() => formatGlobeData(initialData, dataDetail), [
+  const memoizedGData = useMemo(() => formatGlobeData(formatGlobeStructure(initialData), dataDetail), [
     initialData,
     dataDetail
   ])
@@ -245,8 +246,8 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
           setDataDetail((prevDetail) => {
             if (newAltitude > 0.1 && prevDetail !== 'single') return 'single'
             if (newAltitude > 0.02 && newAltitude <= 0.1 && prevDetail !== 'low') return 'low'
-            if (newAltitude > 0.01 && newAltitude <= 0.02 && prevDetail !== 'medium') return 'medium'
-            if (newAltitude <= 0.01 && prevDetail !== 'high') return 'high'
+            if (newAltitude <= 0.02 && prevDetail !== 'medium') return 'medium'
+            // if (newAltitude <= 0.01 && prevDetail !== 'high') return 'high'
             return prevDetail
           })
           setDataWeightMultiplier((prevMultiplier) => {
@@ -264,20 +265,32 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
   )
 
   const groupedGData = useMemo(() => {
-    const groups: Record<string, GlobePoint[]> = {};
-    for (const point of memoizedGData) {
-      const groupId = point.properties.groupId ?? 'default';
-      if (!groups[groupId]) groups[groupId] = [];
-      groups[groupId].push(point);
+    const groups: { id: string; points: GlobePoint[] }[] = [];
+  
+    for (const item of memoizedGData) {
+      const id = item._id ?? "default";
+  
+      // Podes trocar 'cluster' por outra chave se quiseres agrupar outros níveis
+      const clusterPoints = item.oilsByDensity?.cluster ?? [];
+  
+      if (clusterPoints.length > 0) {
+        groups.push({ id, points: clusterPoints });
+      }
     }
   
-    return Object.entries(groups).map(([id, points]) => ({
-      id,
-      points
-    }));
+    return groups;
   }, [memoizedGData]);
+
+  const labelsData = useMemo(() =>
+    memoizedGData.flatMap(entry =>
+      Array.isArray(entry.oilsByDensity?.cluster)
+        ? entry.oilsByDensity.cluster
+        : []
+    ), [memoizedGData]);
   
-  console.log(memoizedGData)
+  
+  console.log('Globe data:', labelsData)
+  
   return (
     <>
       <div className='w-full flex-1 flex overflow-hidden relative'>
@@ -304,7 +317,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
               const group = d as { id: string; points: GlobePoint[] };
 
               const flatPoints = group.points.map(p =>
-                new THREE.Vector2(p.properties.longitude, p.properties.latitude)
+                new THREE.Vector2(p.longitude, p.latitude)
               );
               const hull2D = computeConvexHull(flatPoints);
               if (hull2D.length < 3) return new THREE.Object3D();
@@ -371,9 +384,9 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
           })}
           {...(viewType === 'heatmap' ? {
             heatmapsData: [memoizedGData],
-            heatmapPointLat: (d) => (d as GlobePoint).properties.latitude,
-            heatmapPointLng: (d) => (d as GlobePoint).properties.longitude,
-            heatmapPointWeight: (d) => (d as GlobePoint).properties.density,
+            heatmapPointLat: (d) => (d as GlobePoint).latitude,
+            heatmapPointLng: (d) => (d as GlobePoint).longitude,
+            heatmapPointWeight: (d) => (d as GlobePoint).density,
             heatmapBandwidth: 0.6,
             heatmapColorSaturation: 2.8,
             heatmapTopAltitude: 0.01,
@@ -381,13 +394,13 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
             heatmapColorFn: () => getColor,
             enablePointerInteraction: false
           } : {
-            labelsData: memoizedGData,
+            labelsData: labelsData,
             labelsTransitionDuration: 0,
-            labelLat: (d) => (d as GlobePoint).properties.latitude,
-            labelLng: (d) => (d as GlobePoint).properties.longitude,
-            labelText: (d) => (d as GlobePoint).properties.name,
-            labelSize: (d) => Math.sqrt((d as GlobePoint).properties.density) * 4e-10,
-            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).properties.density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
+            labelLat: (d) => (d as GlobePoint).latitude,
+            labelLng: (d) => (d as GlobePoint).longitude,
+            labelText: (d) => (d as GlobePoint)._id || 'Unknown',
+            labelSize: (d) => Math.sqrt((d as GlobePoint).density) * 4e-10,
+            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
             labelColor: () => 'rgba(255, 0, 0, 1)'
             }
           )}

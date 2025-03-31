@@ -1,4 +1,5 @@
 export type OilSpill = {
+  _id: string;
   id: string;
   data: OilSpillData;
 }
@@ -26,3 +27,11 @@ export type ActorGeometry = {
 }
 
 export type ActorCoordinates = [number, number] | [number, number, number]; // lng, lat, alt (optional)
+
+export type OilSpills = {
+  page: number;
+  size: number;
+  items: number;
+  totalPages: number;
+  data: OilSpill[];
+}
