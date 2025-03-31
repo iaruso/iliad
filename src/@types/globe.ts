@@ -3,8 +3,8 @@ export interface GlobePoint {
   properties: {
     latitude: number
     longitude: number
-    name: string
-    weight: number
+    density: number
+    type?: string
     [key: string]: any;
   }
   [key: string]: any;

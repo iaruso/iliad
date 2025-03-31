@@ -68,7 +68,7 @@ export function SettingsDialog() {
       <ButtonTooltip
         button={
           <DialogTrigger asChild>
-            <Button variant="secondary" size="icon" className="h-6 w-6">
+            <Button variant="secondary" size="icon" className="h-6 w-6" disabled>
               <Settings className="h-4 w-4" />
             </Button>
           </DialogTrigger>

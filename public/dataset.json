@@ -10,8 +10,7 @@
                     "color": "#8e2720",
                     "type":"Object",
                     "url": "boat.glb",
-                    "scale":"1",
-                    "altObj": 0,
+                    "scale": 1,
                     "geometry": {
                         "type": "Point",
                         "coordinates": [

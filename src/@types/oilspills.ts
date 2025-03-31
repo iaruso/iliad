@@ -1,0 +1,28 @@
+export type OilSpill = {
+  id: string;
+  data: OilSpillData;
+}
+
+export type OilSpillData = {
+  timestamp: string;
+  actors: Actor[];
+}
+
+export type Actor = {
+  name?: string;
+  density: number;
+  color: string;
+  type: ActorType;
+  url?: string;
+  scale: number;
+  geometry: ActorGeometry;
+}
+
+export type ActorType = "Object" | "Oil";
+
+export type ActorGeometry = {
+  type: "Point" | "Polygon";
+  coordinates: ActorCoordinates[];
+}
+
+export type ActorCoordinates = [number, number] | [number, number, number]; // lng, lat, alt (optional)

@@ -1,9 +1,14 @@
-import { NextRequest, NextResponse, userAgent } from 'next/server'
+import { NextRequest, userAgent } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
-import { routing } from '@/i18n/routing';
+import { locales } from '@/i18n/routing';
+
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale: 'en',
+});
 
 export default function middleware(request: NextRequest) {
-  const response = createMiddleware(routing)(request)
+  const response = intlMiddleware(request);
   const { browser } = userAgent(request)
   console.log('browser:', browser)
   const supportsWebGPU = browser.name?.toLowerCase() === 'firefox' ? 'false' : 'true'

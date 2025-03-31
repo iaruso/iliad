@@ -1,47 +1,61 @@
-import "server-only"
-import { readFile } from "fs/promises"
-import { join } from "path"
+import "server-only";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
-interface GlobePoint {
+export interface GlobePoint {
   properties: {
-    latitude: number
-    longitude: number
-    name: string
-    weight: number
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    latitude: number;
+    longitude: number;
+    density: number;
+    type?: string;
     [key: string]: any;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  };
   [key: string]: any;
-}
-  
-
-interface PolygonData {
-  type: string
-  coordinates: [number, number][]
 }
 
 export async function getGlobeData(): Promise<GlobePoint[]> {
-  const filePath = join(process.cwd(), "public", "vc_cloudpoints_timeline.json")
-  const fileContents = await readFile(filePath, "utf-8")
-  const data = JSON.parse(fileContents)
+  const filePath = join(process.cwd(), "public", "dataset.json");
+  const fileContents = await readFile(filePath, "utf-8");
+  const dataset = JSON.parse(fileContents);
 
-  const stateData = data?.["@definitions"]?.["@actors"]?.["OilShape"]?.["@state"]?.[0]?.polygon
+  const result: GlobePoint[] = [];
 
-  if (!stateData) return []
+  for (const entry of dataset.data ?? []) {
+    for (const actor of entry.actors ?? []) {
+      const { type, density, geometry } = actor;
 
-  const parsedPolygon = JSON.parse(stateData) as PolygonData
+      if (!geometry?.type || !geometry?.coordinates) continue;
 
-  if (parsedPolygon?.type !== "MultiPoint" || !Array.isArray(parsedPolygon?.coordinates)) {
-    return []
+      if (geometry.type === "Point") {
+        const [lng, lat] = geometry.coordinates;
+        result.push({
+          properties: {
+            latitude: lat,
+            longitude: lng,
+            density,
+            ...(type !== "Oil" && { type }),
+          },
+        });
+      }
+
+      if (geometry.type === "Polygon") {
+        const coordinates: [number, number][][] = geometry.coordinates;
+
+        for (const ring of coordinates) {
+          for (const [lng, lat] of ring) {
+            result.push({
+              properties: {
+                latitude: lat,
+                longitude: lng,
+                density,
+                ...(type !== "Oil" && { type }),
+              },
+            });
+          }
+        }
+      }
+    }
   }
 
-  return parsedPolygon.coordinates.map(([lng, lat]: [number, number]) => ({
-    properties: {
-      name: "OilShape",
-      latitude: lat,
-      longitude: lng,
-      weight: 1 + Math.random() * 4, // Variable weight between 5 and 50
-    }
-  }))
+  return result;
 }

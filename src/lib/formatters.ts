@@ -1,15 +1,4 @@
-interface GlobePoint {
-  properties: {
-    latitude: number;
-    longitude: number;
-    name: string;
-    weight: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-  };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
+import { GlobePoint } from "@/@types/globe";
 
 type Density = "single" | "low" | "medium" | "high";
 
@@ -80,20 +69,20 @@ function kMeansClustering(data: GlobePoint[], k: number): GlobePoint[] {
 
 // Função para calcular o centro de um cluster
 function calculateClusterCenter(cluster: GlobePoint[]): GlobePoint {
-  let latSum = 0, lonSum = 0, totalWeight = 0;
+  let latSum = 0, lonSum = 0, totalDensity = 0;
 
   for (const point of cluster) {
-    latSum += point.properties.latitude * point.properties.weight;
-    lonSum += point.properties.longitude * point.properties.weight;
-    totalWeight += point.properties.weight;
+    latSum += point.properties.latitude * point.properties.density;
+    lonSum += point.properties.longitude * point.properties.density;
+    totalDensity += point.properties.density;
   }
 
   return {
     properties: {
-      latitude: latSum / totalWeight,
-      longitude: lonSum / totalWeight,
+      latitude: latSum / totalDensity,
+      longitude: lonSum / totalDensity,
       name: "Cluster Center",
-      weight: totalWeight / cluster.length * 4e-2 // Ajusta o peso para a visualização
+      density: totalDensity / cluster.length * 4e-2 // Ajusta o peso para a visualização
     }
   };
 }

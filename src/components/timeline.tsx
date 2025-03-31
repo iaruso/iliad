@@ -88,6 +88,7 @@ const Timeline: FC = () => {
         <PopoverTooltip
           button={
             <Button
+              disabled
               variant={'outline'}
               className='!h-8 w-48 cursor-pointer px-2.5 text-xs'
             >
@@ -101,7 +102,7 @@ const Timeline: FC = () => {
           }
         />
         <div className='flex flex-1 rounded-md border !h-8'>
-          <div className='flex-1'></div>
+          <div className='flex-1 bg-muted/20'></div>
           <div className='border-l bg-muted/60 text-xs font-medium flex items-center justify-center w-20'>
             {date.toLocaleDateString()}
           </div>

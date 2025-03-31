@@ -11,7 +11,6 @@ import { dayNightShader } from '@/lib/shaders'
 import { formatGlobeData } from '@/lib/formatters'
 import { sunPositionAt } from '@/lib/solar'
 import { getColor } from '@/lib/colors'
-import { DateRange } from 'react-aria-components'
 import { Loader2 } from 'lucide-react'
 import * as THREE from 'three'
 
@@ -278,7 +277,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
     }));
   }, [memoizedGData]);
   
-
+  console.log(memoizedGData)
   return (
     <>
       <div className='w-full flex-1 flex overflow-hidden relative'>
@@ -374,7 +373,7 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
             heatmapsData: [memoizedGData],
             heatmapPointLat: (d) => (d as GlobePoint).properties.latitude,
             heatmapPointLng: (d) => (d as GlobePoint).properties.longitude,
-            heatmapPointWeight: (d) => (d as GlobePoint).properties.weight,
+            heatmapPointWeight: (d) => (d as GlobePoint).properties.density,
             heatmapBandwidth: 0.6,
             heatmapColorSaturation: 2.8,
             heatmapTopAltitude: 0.01,
@@ -387,8 +386,8 @@ const GlobeComponent = ({ initialData = [] }: { initialData?: GlobePoint[] }) =>
             labelLat: (d) => (d as GlobePoint).properties.latitude,
             labelLng: (d) => (d as GlobePoint).properties.longitude,
             labelText: (d) => (d as GlobePoint).properties.name,
-            labelSize: (d) => Math.sqrt((d as GlobePoint).properties.weight) * 4e-10,
-            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).properties.weight) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
+            labelSize: (d) => Math.sqrt((d as GlobePoint).properties.density) * 4e-10,
+            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).properties.density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
             labelColor: () => 'rgba(255, 0, 0, 1)'
             }
           )}

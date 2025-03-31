@@ -1,10 +1,14 @@
 import React from 'react';
 import Navbar from '@/components/navbar';
 
+
+
 const Container: React.FC = () => {
   return (
     <div className='flex flex-col h-full'>
-      <div className='flex-1'></div>
+      <div className='flex-1'>
+        <div></div>
+      </div>
       <Navbar />
     </div>
   );
