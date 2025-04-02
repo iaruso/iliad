@@ -69,14 +69,14 @@ const MainPage: FC<MainPageProps> = async ({
           defaultSize={76}
         >
           <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
-            <Globe initialData={oilSpills}/>
+            <Globe data={oilSpills}/>
             <Controls />
             <Timeline />
           </GlobeProvider>
         </ResizablePanel>
         <ResizableHandle/>
         <ResizablePanel maxSize={32} minSize={16} defaultSize={24}>
-          <Container />
+          <Container data={oilSpills}/>
         </ResizablePanel>
       </ResizablePanelGroup>
     </AppProvider>

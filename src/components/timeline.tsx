@@ -34,6 +34,7 @@ const Timeline: FC = () => {
                 setPlaying(false);
                 setMoment('start');
               }}
+              disabled
             >
               <SkipBack className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
             </Button>
@@ -60,6 +61,7 @@ const Timeline: FC = () => {
             setPlaying(false);
             setMoment('end');
           }}
+          disabled
         >
           <SkipForward className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
         </Button>
@@ -68,6 +70,7 @@ const Timeline: FC = () => {
             <Button
               variant={'outline'}
               className='!h-8 !w-8 cursor-pointer p-0 text-xs'
+              disabled
             >
               {t(`speed.options.${String(timelineSpeed).replace('.', '_')}`)}
             </Button>

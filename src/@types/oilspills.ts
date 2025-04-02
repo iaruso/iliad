@@ -1,6 +1,7 @@
 export type OilSpill = {
   _id: string;
-  id: string;
+  coordinates?: [number, number][];
+  area?: number;
   data: OilSpillData;
 }
 

@@ -9,21 +9,43 @@ export function formatGlobeData(data: FormattedGlobeStructure[], density: Densit
   const numClusters = clusterSizes[density] || 1;
 
   return data.map((item) => {
-    const oilValues = item?.oilsByDensity ? Object.values(item.oilsByDensity).filter(Boolean) : [];
-    const allOilPoints = oilValues.reduce<GlobePoint[]>((acc, arr) => acc.concat(Array.isArray(arr) ? arr : []), []);
+    const newOilsByDensity: Record<string, GlobePoint[]> = {};
 
-    if (!Array.isArray(allOilPoints) || allOilPoints.length === 0) return item;
+    if (density === "single") {
+      // Juntar todos os pontos
+      const allOilPoints = Object.values(item.oilsByDensity ?? {}).flat();
+      if (!allOilPoints.length) return item;
 
-    const clustered = allOilPoints.length <= numClusters ? allOilPoints : kMeansClustering(allOilPoints, numClusters);
+      // Ponto de densidade mais alta
+      const highestDensityPoint = allOilPoints.reduce((prev, curr) =>
+        (curr.density ?? 0) > (prev.density ?? 0) ? curr : prev
+      );
+
+      return {
+        ...item,
+        oilsByDensity: {
+          cluster: [highestDensityPoint],
+        },
+      };
+    }
+
+    // Clustering por densidade
+    for (const [densityKey, points] of Object.entries(item.oilsByDensity ?? {})) {
+      if (!Array.isArray(points) || points.length === 0) continue;
+
+      const clustered =
+        points.length <= numClusters ? points : kMeansClustering(points, numClusters);
+
+      newOilsByDensity[densityKey] = clustered;
+    }
 
     return {
       ...item,
-      oilsByDensity: {
-        cluster: clustered,
-      },
+      oilsByDensity: newOilsByDensity,
     };
   });
 }
+
 
 function kMeansClustering(data: GlobePoint[], k: number): GlobePoint[] {
   const centroids = data.slice(0, k).map((p) => ({ ...p }));

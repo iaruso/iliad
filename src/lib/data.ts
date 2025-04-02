@@ -14,7 +14,7 @@ export function formatGlobeStructure(dataset: OilSpills): FormattedGlobeStructur
 
     for (const entry of entries) {
       for (const actor of entry?.actors ?? []) {
-        const { type, density, geometry } = actor;
+        const { type, density, geometry, color } = actor;
         if (!geometry?.type || !geometry?.coordinates) continue;
 
         const points: GlobePoint[] = [];
@@ -22,7 +22,7 @@ export function formatGlobeStructure(dataset: OilSpills): FormattedGlobeStructur
         if (geometry.type === "Point") {
           const [lng, lat] = geometry.coordinates ?? [];
           if (typeof lat === "number" && typeof lng === "number") {
-            points.push({ latitude: lat, longitude: lng, type, density });
+            points.push({ latitude: lat, longitude: lng, type, density, color });
           }
         } else if (geometry.type === "Polygon") {
           if (Array.isArray(geometry.coordinates)) {
@@ -32,7 +32,7 @@ export function formatGlobeStructure(dataset: OilSpills): FormattedGlobeStructur
                   if (Array.isArray(coord) && coord.length >= 2) {
                     const [lng, lat] = coord;
                     if (typeof lat === "number" && typeof lng === "number") {
-                      points.push({ latitude: lat, longitude: lng, type, density });
+                      points.push({ latitude: lat, longitude: lng, type, density, color });
                     }
                   }
                 }
@@ -51,6 +51,7 @@ export function formatGlobeStructure(dataset: OilSpills): FormattedGlobeStructur
       }
     }
 
+    console.log("formatted", formatted);
     return formatted;
   });
 }

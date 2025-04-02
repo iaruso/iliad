@@ -48,8 +48,8 @@
               "description": "Visualize data using heat maps based on fluid density"
             },
             "points": {
-              "title": "Points",
-              "description": "Visualize data using points representing data collection locations"
+              "title": "Points and convex hulls",
+              "description": "Visualize data using points and convex hulls representing data collection locations"
             }
           }
         },
@@ -94,6 +94,26 @@
       "calendar": {
         "tooltip": "Select date"
       }
+    },
+    "table": {
+      "header": {
+        "id": "ID",
+        "area": "Area",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "body": {
+        "noData": "There's no data to show"
+      }
     }
+  },
+  "pagination": {
+    "itemsPerPage": "Items per page",
+    "page": "Page",
+    "of": "of",
+    "goToFirst": "Go to the first page",
+    "goToPrevious": "Go to the previous page",
+    "goToNext": "Go to the next page",
+    "goToLast": "Go to the last page"
   }
 }

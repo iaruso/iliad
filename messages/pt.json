@@ -48,8 +48,8 @@
               "description": "Visualize dados usando mapas de calor baseados na densidade do fluido"
             },
             "points": {
-              "title": "Points",
-              "description": "Visualize dados usando pontos representando locais de coleta de dados"
+              "title": "Pontos e cascos convexos",
+              "description": "Visualize dados usando pontos e cascos convexos que representam locais de recolha de dados"
             }
           }
         },
@@ -94,6 +94,26 @@
       "calendar": {
         "tooltip": "Selecionar data"
       }
+    },
+    "table": {
+      "header": {
+        "id": "ID",
+        "area": "Área",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "body": {
+        "noData": "Não há dados para mostrar"
+      }
     }
+  },
+  "pagination": {
+    "itemsPerPage": "Itens por página",
+    "page": "Página",
+    "of": "de",
+    "goToFirst": "Ir para a primeira página",
+    "goToPrevious": "Ir para a página anterior",
+    "goToNext": "Ir para a próxima página",
+    "goToLast": "Ir para a última página"
   }
 }

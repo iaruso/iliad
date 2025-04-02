@@ -39,18 +39,19 @@ const TexturesDropdown = () => {
       content={
         <>
           <DropdownMenuLabel className='h-10 flex items-center px-2 py-1'>{t('layers.data.title')}</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setViewType('heatmap')} className='h-fit p-1 ml-1 mr-2 rounded-md' disabled={viewType === 'heatmap'}>
-            <div className='h-16 w-full flex gap-2'>
-              <div className='h-full aspect-square bg-background rounded-sm border'></div>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setViewType('heatmap')} className='h-fit border-b border-border/50 -m-1' disabled={viewType === 'heatmap'}>
+            <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+              {/* <div className='h-full aspect-square bg-background rounded-sm border'></div> */}
               <div className='flex flex-col gap-1'>
                 <p className='text-sm font-medium'>{t('layers.data.options.heatmaps.title')}</p>
                 <p className='text-xs text-muted-foreground'>{t('layers.data.options.heatmaps.description')}</p>
               </div>
             </div>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setViewType('points')} className='h-fit p-1 ml-1 mr-2 rounded-md' disabled={viewType === 'points'}>
-            <div className='h-16 w-full flex gap-2'>
-              <div className='h-full aspect-square bg-background rounded-sm border'></div>
+          <DropdownMenuItem onClick={() => setViewType('points')} className='h-fit -m-1' disabled={viewType === 'points'}>
+            <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+              {/* <div className='h-full aspect-square bg-background rounded-sm border'></div> */}
               <div className='flex flex-col gap-1'>
                 <p className='text-sm font-medium'>{t('layers.data.options.points.title')}</p>
                 <p className='text-xs text-muted-foreground'>{t('layers.data.options.points.description')}</p>

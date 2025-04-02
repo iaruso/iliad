@@ -57,7 +57,7 @@ function computeConvexHull(pts: THREE.Vector2[]): THREE.Vector2[] {
 
 const VELOCITY = 60
 
-const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
+const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const {
     globeRef,
     setIsGlobeReady,
@@ -109,8 +109,8 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
   }, needsResize ? 100 : null)
 
   // Memoize formatted globe data
-  const memoizedGData = useMemo(() => formatGlobeData(formatGlobeStructure(initialData), dataDetail), [
-    initialData,
+  const memoizedGData = useMemo(() => formatGlobeData(formatGlobeStructure(data), dataDetail), [
+    data,
     dataDetail
   ])
 
@@ -270,16 +270,22 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
     for (const item of memoizedGData) {
       const id = item._id ?? "default";
   
-      // Podes trocar 'cluster' por outra chave se quiseres agrupar outros níveis
-      const clusterPoints = item.oilsByDensity?.cluster ?? [];
-  
-      if (clusterPoints.length > 0) {
-        groups.push({ id, points: clusterPoints });
+      if (dataDetail === "single") {
+        const clusterPoints = item.oilsByDensity?.cluster ?? [];
+        if (clusterPoints.length > 0) {
+          groups.push({ id, points: clusterPoints });
+        }
+      } else {
+        for (const [density, points] of Object.entries(item.oilsByDensity ?? {})) {
+          if (Array.isArray(points) && points.length > 0) {
+            groups.push({ id: `${id}-${density}`, points });
+          }
+        }
       }
     }
   
     return groups;
-  }, [memoizedGData]);
+  }, [memoizedGData, dataDetail]);  
 
   const labelsData = useMemo(() =>
     memoizedGData.flatMap(entry =>
@@ -287,9 +293,13 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
         ? entry.oilsByDensity.cluster
         : []
     ), [memoizedGData]);
-  
-  
-  console.log('Globe data:', labelsData)
+
+  const heatmapsData = useMemo(() => {
+    return data.data ? data.data.map(item => ({
+      latitude: item.coordinates?.[1] ?? 0,
+      longitude: item.coordinates?.[0] ?? 0,
+    })) : [];
+  }, [data]);
   
   return (
     <>
@@ -354,10 +364,10 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
               geometry.computeVertexNormals();
 
               const fillMaterial = new THREE.MeshLambertMaterial({
-                color: '#ff0000',
+                color: group.points[0].color || '#ff0000',
                 transparent: true,
-                opacity: 0.3,
-                side: THREE.DoubleSide
+                opacity: Math.min(group.points[0].density, 0.3) || 0.1,
+                side: THREE.FrontSide
               });
 
               const mesh = new THREE.Mesh(geometry, fillMaterial);
@@ -367,7 +377,7 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
               contourPoints.push(contourPoints[0]);
 
               const lineGeometry = new THREE.BufferGeometry().setFromPoints(contourPoints);
-              const lineMaterial = new THREE.LineBasicMaterial({ color: '#ff0000', linewidth: 1 });
+              const lineMaterial = new THREE.LineBasicMaterial({ color: group.points[0].color || '#ff0000', linewidth: 1 });
               const line = new THREE.LineLoop(lineGeometry, lineMaterial);
 
               const groupObj = new THREE.Group();
@@ -383,10 +393,10 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
             customThreeObjectUpdate: () => {}
           })}
           {...(viewType === 'heatmap' ? {
-            heatmapsData: [memoizedGData],
+            heatmapsData: [heatmapsData],
             heatmapPointLat: (d) => (d as GlobePoint).latitude,
             heatmapPointLng: (d) => (d as GlobePoint).longitude,
-            heatmapPointWeight: (d) => (d as GlobePoint).density,
+            heatmapPointWeight: 1, //(d) => (d as GlobePoint).density,
             heatmapBandwidth: 0.6,
             heatmapColorSaturation: 2.8,
             heatmapTopAltitude: 0.01,
@@ -400,8 +410,8 @@ const GlobeComponent = ({ initialData }: { initialData: OilSpills }) => {
             labelLng: (d) => (d as GlobePoint).longitude,
             labelText: (d) => (d as GlobePoint)._id || 'Unknown',
             labelSize: (d) => Math.sqrt((d as GlobePoint).density) * 4e-10,
-            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier,
-            labelColor: () => 'rgba(255, 0, 0, 1)'
+            labelDotRadius: (d) => Math.min(Math.sqrt((d as GlobePoint).density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier * 0.2,
+            labelColor: (d) => (d as GlobePoint).color || '#ff0000',
             }
           )}
         />
