@@ -21,6 +21,11 @@ type Params = Promise<{ locale: Locale }>;
 type SearchParams = Promise<{
   page: string;
   size: string;
+  id?: string;
+  minArea?: string;
+  maxArea?: string;
+  sortField?: 'latitude' | 'longitude' | 'area';
+  sortDirection?: 'asc' | 'desc';
 }>;
 
 interface MainPageProps {
@@ -36,6 +41,11 @@ const MainPage: FC<MainPageProps> = async ({
   const {
     page,
     size,
+    id,
+    minArea,
+    maxArea,
+    sortField,
+    sortDirection,
   } = await searchParams;
 
   const { validPage: PAGE, validSize: SIZE } = validateAndSetParams(page, size);
@@ -44,21 +54,29 @@ const MainPage: FC<MainPageProps> = async ({
     const params = new URLSearchParams();
     params.set("page", PAGE.toString());
     params.set("size", SIZE.toString());
+    if (id) params.set("id", id);
+    if (minArea) params.set("minArea", minArea);
+    if (maxArea) params.set("maxArea", maxArea);
     redirect({ href: `?${params.toString()}`, locale: locale });
   }
 
   let oilSpills: OilSpills;
-  
+
   try {
     oilSpills = await getOilSpills({
       page: PAGE,
-      size: SIZE
+      size: SIZE,
+      id: id?.toLowerCase(),
+      minArea,
+      maxArea,
+      sortField,
+      sortDirection
     });
   } catch (error) {
     throw new Error(error as string);
   }
 
-  const supportsWebGPU = (await headers()).get('X-Supports-WebGPU')
+  const supportsWebGPU = (await headers()).get('X-Supports-WebGPU');
 
   return (
     <AppProvider>

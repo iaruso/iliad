@@ -231,3 +231,20 @@ html {
     max-height: var(--scrollbar-width-legacy);
   }
 }
+
+.globe-point-button {
+  @apply bg-background rounded-md px-2 pb-0.5 border text-foreground cursor-pointer transition-colors duration-200 ease-in-out pointer-events-auto overflow-hidden;
+}
+
+.globe-point-button > span {
+  @apply text-xs font-semibold uppercase;
+}
+
+.globe-point-button > div {
+  @apply w-0 h-0 flex flex-col items-end gap-0.5 text-[9.75px] font-medium;
+}
+
+.globe-point-button:hover div {
+  width: 100%;
+  height: 100%;
+}

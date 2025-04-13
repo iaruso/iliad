@@ -5,18 +5,24 @@ type ConstructUrlProps = {
   endpoint: string;
   page?: number;
   size?: number;
+  id?: string;
+  minArea?: string | number;
+  maxArea?: string | number;
 };
 
-
-// Create a function to get the session or token
 export async function getSession(): Promise<string | null> {
-  // Implement your session retrieval logic here
-  // This should return the authentication token or null
-  return null; // Replace with your actual implementation
+  return null;
 }
 
 export function constructUrl(urlParams: ConstructUrlProps): string {
-  const { endpoint, size, page } = urlParams;
+  const { 
+    endpoint,
+    size,
+    page,
+    id,
+    minArea,
+    maxArea
+  } = urlParams;
   const finalUrl: string = `${endpoint}`;
   const params = new URLSearchParams();
 
@@ -26,6 +32,18 @@ export function constructUrl(urlParams: ConstructUrlProps): string {
 
   if (size !== undefined && !isNaN(size)) {
     params.append("size", size.toString());
+  }
+
+  if (id !== undefined) {
+    params.append("id", id.toString());
+  }
+
+  if (minArea !== undefined) {
+    params.append("minArea", minArea.toString());
+  }
+
+  if (maxArea !== undefined) {
+    params.append("maxArea", maxArea.toString());
   }
 
   const url = `${finalUrl}?${params.toString()}`;

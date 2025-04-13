@@ -7,13 +7,14 @@ import ButtonTooltip from '@/components/ui/button-tooltip';
 import { Plus, Minus } from 'lucide-react';
 
 const ZoomButtons = () => {
-  const { globeRef, setAltitude } = useContext(GlobeContext) as GlobeContextProps;
+  const { globeRef, altitude, setAltitude } = useContext(GlobeContext) as GlobeContextProps;
   const t = useTranslations('globe.controls');
 
   const handleZoomIn = () => {
     if (globeRef.current) {
       const currentAltitude = globeRef.current.pointOfView().altitude;
-      const newAltitude = currentAltitude - 0.1;
+      const decrement = currentAltitude < 0.2 ? 0.01 : 0.1;
+      const newAltitude = currentAltitude - decrement;
       setAltitude(newAltitude);
       globeRef.current.pointOfView({ altitude: newAltitude });
     }
@@ -22,7 +23,8 @@ const ZoomButtons = () => {
   const handleZoomOut = () => {
     if (globeRef.current) {
       const currentAltitude = globeRef.current.pointOfView().altitude;
-      const newAltitude = currentAltitude + 0.1;
+      const increment = currentAltitude < 0.2 ? 0.01 : 0.1;
+      const newAltitude = currentAltitude + increment;
       setAltitude(newAltitude);
       globeRef.current.pointOfView({ altitude: newAltitude });
     }
@@ -32,7 +34,7 @@ const ZoomButtons = () => {
     <>
       <ButtonTooltip
         button={
-          <Button onClick={handleZoomIn} variant="outline" className="!h-8 !w-8 cursor-pointer p-0">
+          <Button onClick={handleZoomIn} variant="outline" className="!h-8 !w-8 cursor-pointer p-0" disabled={altitude <= 0.01}>
             <Plus className="!h-3.5 !w-3.5 stroke-primary" strokeWidth={2.5} />
           </Button>
         }
@@ -40,7 +42,7 @@ const ZoomButtons = () => {
       />
       <ButtonTooltip
         button={
-          <Button onClick={handleZoomOut} variant="outline" className="!h-8 !w-8 cursor-pointer p-0">
+          <Button onClick={handleZoomOut} variant="outline" className="!h-8 !w-8 cursor-pointer p-0" disabled={altitude >= 3.9}>
             <Minus className="!h-3.5 !w-3.5 stroke-primary" strokeWidth={2.5} />
           </Button>
         }

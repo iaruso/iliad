@@ -9,27 +9,82 @@ export function serializeOilSpill(oilSpill: any) {
   };
 }
 
-export async function fetchOilSpills(page: number, size: number) {
+export async function fetchOilSpills(
+  page: number,
+  size: number,
+  id?: string,
+  minArea?: string,
+  maxArea?: string,
+  sortField?: "area" | "latitude" | "longitude",
+  sortDirection?: "asc" | "desc"
+) {
   const skip = (page - 1) * size;
 
   const client = await clientPromise;
   const db = client.db("oilspills");
   const collection = db.collection("oilspills-min");
 
-  const data = await collection.find({})
-    .skip(skip)
-    .limit(size)
-    .toArray();
+  const tailExpr = {
+    $toLower: {
+      $substrCP: [
+        { $toString: "$_id" },
+        { $subtract: [{ $strLenCP: { $toString: "$_id" } }, 9] },
+        9,
+      ],
+    },
+  };
 
-  const items = await collection.countDocuments();
+  const match: any = {};
 
+  if (id) {
+    match.$expr = {
+      $regexMatch: {
+        input: tailExpr,
+        regex: id,
+      },
+    };
+  }
+
+  const parsedMin = typeof minArea === "string" ? parseFloat(minArea) : minArea;
+  const parsedMax = typeof maxArea === "string" ? parseFloat(maxArea) : maxArea;
+
+  if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
+    match.area = {};
+    if (!isNaN(parsedMin!)) match.area.$gte = parsedMin;
+    if (!isNaN(parsedMax!)) match.area.$lte = parsedMax;
+  }
+
+  const pipeline: any[] = [];
+
+  if (Object.keys(match).length > 0) {
+    pipeline.push({ $match: match });
+  }
+
+  if (sortField && ["area", "latitude", "longitude"].includes(sortField)) {
+    const direction = sortDirection === "desc" ? -1 : 1;
+  
+    const sortKey =
+      sortField === "area"
+        ? "area"
+        : sortField === "latitude"
+        ? "coordinates.1"
+        : "coordinates.0";
+  
+    pipeline.push({ $sort: { [sortKey]: direction } });
+  }  
+
+  pipeline.push({ $skip: skip }, { $limit: size });
+
+  const data = await collection.aggregate(pipeline).toArray();
   const serialized = data.map(serializeOilSpill);
+
+  const totalItems = await collection.countDocuments(match);
 
   return {
     page,
     size,
-    items,
-    totalPages: Math.ceil(items / size),
+    items: totalItems,
+    totalPages: Math.ceil(totalItems / size),
     data: serialized,
   };
 }

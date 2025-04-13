@@ -20,12 +20,14 @@ const buttonVariants = cva(
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         tab: 'text-muted-foreground bg-muted hover:text-foreground hover:bg-muted/9 text-sm font-medium px-2 py-1 rounded-md',
+        tableOrder: 'w-fit justify-between hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         default: 'h-9 px-4 py-2',
         sm: 'h-8 rounded-md px-3 text-xs',
         lg: 'h-10 rounded-md px-8',
         icon: 'h-9 w-9',
+        tableOrder: 'h-8 rounded-md pl-2 pr-[calc(0.5rem-3px)] gap-1'
       },
     },
     defaultVariants: {

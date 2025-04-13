@@ -63,7 +63,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const [timelineSpeed, setTimelineSpeed] = useState(1);
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null);
-  const [viewType, setViewType] = useState<'heatmap' | 'points'>(supportsWebGPU ? 'heatmap' : 'points');
+  const [viewType, setViewType] = useState<'heatmap' | 'points'>('points');
 
   return (
     <GlobeContext.Provider

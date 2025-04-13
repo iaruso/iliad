@@ -1,4 +1,11 @@
 // eslint-disable-entire-file @typescript-eslint/no-explicit-any
+export interface GlobeLocation {
+  _id?: string;
+  area?: number;
+  latitude: number;
+  longitude: number;
+}
+
 export interface GlobePoint {
   _id?: string
   latitude: number
