@@ -93,7 +93,7 @@ const MainPage: FC<MainPageProps> = async ({
           </GlobeProvider>
         </ResizablePanel>
         <ResizableHandle/>
-        <ResizablePanel maxSize={32} minSize={16} defaultSize={24}>
+        <ResizablePanel maxSize={36} minSize={28} defaultSize={28}>
           <Container data={oilSpills}/>
         </ResizablePanel>
       </ResizablePanelGroup>

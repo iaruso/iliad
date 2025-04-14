@@ -74,6 +74,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     date,
     setDate,
     playing,
+    labelsVisible
   } = useContext(GlobeContext) as GlobeContextProps
   const { resolvedTheme } = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -118,8 +119,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const groupedGlobeData = useMemo(() => {
     return prepareGlobeData(data, dataDetail);
   }, [data, dataDetail]);
-
-  console.log('Memo Globe Data:', memoizedGData)
 
   function getSolarDeclination(month: number): number {
     const days = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
@@ -500,6 +499,16 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
               return Math.min(Math.sqrt(density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier * 0.2;
             },
             labelColor: (d) => (d as GlobePoint).color || '#ff0000',
+          } : {
+            labelsData: [],
+            labelLat: () => 0,
+            labelLng: () => 0,
+            labelText: () => '',
+            labelSize: () => 0,
+            labelDotRadius: () => 0,
+            labelColor: () => '#ff0000'
+          })}
+          {...(dataDetail === 'single' && labelsVisible ? {
             htmlElementsData: htmlIndicators,
             htmlLat: (d) => (d as GlobeLocation).latitude,
             htmlLng: (d) => (d as GlobeLocation).longitude,
@@ -524,8 +533,8 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             
               // Posiciona no canto superior direito com offset
               inner.style.position = 'absolute';
-              inner.style.top = '-16px';
-              inner.style.right = '-16px';
+              inner.style.bottom = '4px';
+              inner.style.left = '4px';
             
               inner.style.pointerEvents = 'auto';
               inner.style.cursor = 'pointer';
@@ -535,18 +544,10 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
               wrapper.appendChild(inner);
               return wrapper;
             },
-            
             htmlElementVisibilityModifier: (el, isVisible) => {
               el.style.opacity = isVisible ? '1' : '0';
             }
           } : {
-            labelsData: [],
-            labelLat: () => 0,
-            labelLng: () => 0,
-            labelText: () => '',
-            labelSize: () => 0,
-            labelDotRadius: () => 0,
-            labelColor: () => '#ff0000',
             htmlElementsData: []
           })}
         />

@@ -7,21 +7,22 @@ import {
   PopoverContent
 } from '@/components/ui/popover'
 
-interface DropdownTooltipProps {
+interface PopoverTooltipProps {
   button: ReactNode;
   tooltip: string;
   content: ReactNode;
+  className?: string;
 }
 
-const DropdownTooltip: FC<DropdownTooltipProps> = ({ button, tooltip, content }) => {
+const PopoverTooltip: FC<PopoverTooltipProps> = ({ button, tooltip, content, className }) => {
   return (
     <Popover>
       <ButtonTooltip button={button} tooltip={tooltip} isPopover/>
-      <PopoverContent className='border-none p-0 w-fit' side='top' align='end' onCloseAutoFocus={(e) => e.preventDefault()}>
+      <PopoverContent className={`${className}`} side='top' align='end' onCloseAutoFocus={(e) => e.preventDefault()}>
         {content}
       </PopoverContent>
     </Popover>
   )
 }
 
-export default DropdownTooltip;
+export default PopoverTooltip;

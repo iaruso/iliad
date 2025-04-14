@@ -233,18 +233,37 @@ html {
 }
 
 .globe-point-button {
-  @apply bg-background rounded-md px-2 pb-0.5 border text-foreground cursor-pointer transition-colors duration-200 ease-in-out pointer-events-auto overflow-hidden;
+  @apply bg-background rounded-md px-2 pb-1 border text-foreground cursor-pointer transition-colors duration-200 ease-in-out pointer-events-auto overflow-hidden;
 }
 
 .globe-point-button > span {
-  @apply text-xs font-semibold uppercase;
+  @apply text-[10px] font-semibold uppercase;
 }
 
 .globe-point-button > div {
-  @apply w-0 h-0 flex flex-col items-end gap-0.5 text-[9.75px] font-medium;
+  @apply hidden flex-col items-end gap-0.5 text-[10px] font-semibold;
 }
 
 .globe-point-button:hover div {
-  width: 100%;
-  height: 100%;
+  @apply flex;
+}
+
+.globe-point-button:hover > span {
+  @apply text-[13px];
+}
+
+::selection {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.input-number::-webkit-outer-spin-button,
+.input-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-number {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

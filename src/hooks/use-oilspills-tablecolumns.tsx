@@ -18,7 +18,6 @@ const useOilSpillsTableColumns = (
   const directionParams = searchParams.get("sortDirection") || undefined;
 
   const setOrder = (field: string) => {
-    console.log(field)
     if (field === fieldParams) {
       if (directionParams === "asc") {
         handleOrderFilterChange(field, "desc");
@@ -49,7 +48,6 @@ const useOilSpillsTableColumns = (
             variant="tableOrder"
             size="tableOrder"
             onClick={() => setOrder("latitude")}
-            title={t("latitude")}
           >
             <span className="truncate">{t("latitude")}</span>
             {
@@ -82,7 +80,6 @@ const useOilSpillsTableColumns = (
             variant="tableOrder"
             size="tableOrder"
             onClick={() => setOrder("longitude")}
-            title={t("longitude")}
           >
             <span className="truncate">{t("longitude")}</span>
             {
@@ -115,9 +112,14 @@ const useOilSpillsTableColumns = (
             variant="tableOrder"
             size="tableOrder"
             onClick={() => setOrder("area")}
-            title={t("area")}
           >
-            <span className="truncate">{t("area")}</span>
+            <span className="truncate">
+              {
+                t.rich('areaKm2', {
+                  sup: (chunks) => <sup>{chunks}</sup>
+                })
+              }
+            </span>
             {
               fieldParams === "area" ? (
                 directionParams === "asc" ? (

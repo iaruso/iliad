@@ -66,6 +66,13 @@
             "on": "On",
             "off": "Off"
           }
+        },
+        "labels": {
+          "title": "Labels",
+          "options": {
+            "on": "On",
+            "off": "Off"
+          }
         }
       },
       "manualExit": "Press ESC to exit fullscreen"
@@ -95,10 +102,36 @@
         "tooltip": "Select date"
       }
     },
+    "search": {
+      "placeholder": "Search for a location",
+      "noResults": "No results found",
+      "filters": {
+        "label": "Filters",
+        "tooltip": "Filter locations",
+        "options": {
+          "areaRange": {
+            "label": "Area range (km<sup>2</sup>)",
+            "min": "Min area",
+            "max": "Max area"
+          },
+          "columns": {
+            "label": "Columns visibility",
+            "placeholder": "Select columns"
+          }
+        }
+      },
+      "add": {
+        "tooltip": "Add new location"
+      },
+      "reset": {
+        "tooltip": "Reset filters"
+      }
+    },
     "table": {
       "header": {
         "id": "ID",
         "area": "Area",
+        "areaKm2": "Area (km<sup>2</sup>)",
         "latitude": "Latitude",
         "longitude": "Longitude"
       },
@@ -109,8 +142,8 @@
   },
   "pagination": {
     "itemsPerPage": "Items per page",
-    "page": "Page",
-    "of": "of",
+    "itemsOutOf": "{items} items out of {total}",
+    "pageOf": "Page {page} of {total}",
     "goToFirst": "Go to the first page",
     "goToPrevious": "Go to the previous page",
     "goToNext": "Go to the next page",

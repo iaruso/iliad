@@ -45,7 +45,7 @@
           "options": {
             "heatmaps": {
               "title": "Mapas de calor",
-              "description": "Visualize dados usando mapas de calor baseados na densidade do fluido"
+              "description": "Visualize dados com mapas de calor baseados na densidade do fluido."
             },
             "points": {
               "title": "Pontos e cascos convexos",
@@ -62,6 +62,13 @@
         },
         "time": {
           "title": "Ciclo de dia e noite",
+          "options": {
+            "on": "Ligado",
+            "off": "Desligado"
+          }
+        },
+        "labels": {
+          "title": "Legendas",
           "options": {
             "on": "Ligado",
             "off": "Desligado"
@@ -95,10 +102,36 @@
         "tooltip": "Selecionar data"
       }
     },
+    "search": {
+      "placeholder": "Procurar por uma localização",
+      "noResults": "Nenhum resultado encontrado",
+      "filters": {
+        "label": "Filtros",
+        "tooltip": "Filtrar localizações",
+        "options": {
+          "areaRange": {
+            "label": "Intervalo de área (km<sup>2</sup>)",
+            "min": "Área mínima",
+            "max": "Área máxima"
+          },
+          "columns": {
+            "label": "Visibilidade das colunas",
+            "placeholder": "Selecionar colunas"
+          }
+        }
+      },
+      "add": {
+        "tooltip": "Adicionar nova localização"
+      },
+      "reset": {
+        "tooltip": "Repor filtros"
+      }
+    },
     "table": {
       "header": {
         "id": "ID",
         "area": "Área",
+        "areaKm2": "Área (km<sup>2</sup>)",
         "latitude": "Latitude",
         "longitude": "Longitude"
       },
@@ -109,8 +142,8 @@
   },
   "pagination": {
     "itemsPerPage": "Itens por página",
-    "page": "Página",
-    "of": "de",
+    "itemsOutOf": "{items} itens em {total}",
+    "pageOf": "Página {page} de {total}",
     "goToFirst": "Ir para a primeira página",
     "goToPrevious": "Ir para a página anterior",
     "goToNext": "Ir para a próxima página",

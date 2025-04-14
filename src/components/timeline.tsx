@@ -102,6 +102,7 @@ const Timeline: FC = () => {
           content={
             <RangeCalendar className='rounded-md border p-2 bg-background' value={dateRange} onChange={setDateRange} />
           }
+          className='border-none p-0 w-fit'
         />
         <div className='flex flex-1 rounded-md border !h-8'>
           <div className='flex-1 bg-muted/20'></div>

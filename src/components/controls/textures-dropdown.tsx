@@ -19,7 +19,10 @@ const TexturesDropdown = () => {
     textureQuality,
     setTextureQuality,
     dayNight,
-    setDayNight
+    setDayNight,
+    labelsVisible,
+    setLabelsVisible,
+    supportsWebGPU
   } = useContext(GlobeContext) as GlobeContextProps;
   const t = useTranslations('globe.controls');
   return (
@@ -38,27 +41,29 @@ const TexturesDropdown = () => {
       side='bottom'
       content={
         <>
-          <DropdownMenuLabel className='h-10 flex items-center px-2 py-1'>{t('layers.data.title')}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setViewType('heatmap')} className='h-fit border-b border-border/50 -m-1' disabled={viewType === 'heatmap'}>
-            <div className='h-16 w-full flex gap-2 px-1 pt-1'>
-              {/* <div className='h-full aspect-square bg-background rounded-sm border'></div> */}
-              <div className='flex flex-col gap-1'>
-                <p className='text-sm font-medium'>{t('layers.data.options.heatmaps.title')}</p>
-                <p className='text-xs text-muted-foreground'>{t('layers.data.options.heatmaps.description')}</p>
-              </div>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setViewType('points')} className='h-fit -m-1' disabled={viewType === 'points'}>
-            <div className='h-16 w-full flex gap-2 px-1 pt-1'>
-              {/* <div className='h-full aspect-square bg-background rounded-sm border'></div> */}
-              <div className='flex flex-col gap-1'>
-                <p className='text-sm font-medium'>{t('layers.data.options.points.title')}</p>
-                <p className='text-xs text-muted-foreground'>{t('layers.data.options.points.description')}</p>
-              </div>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          { supportsWebGPU && (
+            <>
+              <DropdownMenuLabel className='h-10 flex items-center px-2 py-1'>{t('layers.data.title')}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setViewType('points')} className='h-fit border-b -mx-1 -mt-1 rounded-none' disabled={viewType === 'points'}>
+                <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+                  <div className='flex flex-col gap-1'>
+                    <p className='text-sm font-medium'>{t('layers.data.options.points.title')}</p>
+                    <p className='text-xs text-muted-foreground'>{t('layers.data.options.points.description')}</p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setViewType('heatmap')} className='h-fit border-border/50 -mx-1 -mb-1 rounded-none' disabled={viewType === 'heatmap'}>
+                <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+                  <div className='flex flex-col gap-1'>
+                    <p className='text-sm font-medium'>{t('layers.data.options.heatmaps.title')}</p>
+                    <p className='text-xs text-muted-foreground'>{t('layers.data.options.heatmaps.description')}</p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuLabel className='px-2 py-1'>
             <div className='flex items-center justify-between p-0'>
               <p>{t('layers.textures.title')}</p>
@@ -79,6 +84,18 @@ const TexturesDropdown = () => {
                 onChange={() => setDayNight(!dayNight)}
                 falseLabel={t('layers.time.options.off')}
                 trueLabel={t('layers.time.options.on')}
+              />
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className='px-2 py-1'>
+            <div className='flex items-center justify-between p-0'>
+              <p>{t('layers.labels.title')}</p>
+              <CustomSwitch 
+                checked={labelsVisible}
+                onChange={() => setLabelsVisible(!labelsVisible)}
+                falseLabel={t('layers.labels.options.off')}
+                trueLabel={t('layers.labels.options.on')}
               />
             </div>
           </DropdownMenuLabel>

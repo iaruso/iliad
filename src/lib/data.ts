@@ -51,7 +51,6 @@ export function formatGlobeStructure(dataset: OilSpills): FormattedGlobeStructur
       }
     }
 
-    console.log("formatted", formatted);
     return formatted;
   });
 }

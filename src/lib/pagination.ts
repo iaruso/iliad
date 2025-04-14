@@ -1,4 +1,4 @@
-const PAGE_SIZE = [10, 20, 30, 40, 50];
+import { PAGE_SIZE } from '@/lib/constants';
 
 export const validateAndSetParams = (
   page: string | undefined,

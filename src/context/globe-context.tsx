@@ -41,6 +41,8 @@ export interface GlobeContextProps {
   supportsWebGPU: boolean;
   viewType: 'heatmap' | 'points';
   setViewType: (view: 'heatmap' | 'points') => void;
+  labelsVisible: boolean;
+  setLabelsVisible: (visible: boolean) => void;
 }
 
 export const GlobeContext = createContext<GlobeContextProps | undefined>(undefined);
@@ -64,6 +66,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null);
   const [viewType, setViewType] = useState<'heatmap' | 'points'>('points');
+  const [labelsVisible, setLabelsVisible] = useState(true);
 
   return (
     <GlobeContext.Provider
@@ -97,7 +100,9 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
         setDateRange,
         supportsWebGPU,
         viewType,
-        setViewType
+        setViewType,
+        labelsVisible,
+        setLabelsVisible
       }}
     >
       {children}
