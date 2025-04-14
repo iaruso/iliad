@@ -11,6 +11,8 @@ import { ShaderMaterial } from 'three';
 import { DateRange } from 'react-aria-components';
 
 export interface GlobeContextProps {
+  groupedGlobeData: Record<string, any[]>;
+  setGroupedGlobeData: (data: Record<string, any[]>) => void;
   isGlobeReady: boolean;
   setIsGlobeReady: (isReady: boolean) => void;
   globeRef: React.MutableRefObject<any>;
@@ -49,6 +51,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   children,
   supportsWebGPU
 }) => {
+  const [groupedGlobeData, setGroupedGlobeData] = useState<Record<string, any[]>>({});
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const globeRef = useRef<any>(undefined);
   const [zoomControl, setZoomControl] = useState<number>(0);
@@ -68,6 +71,8 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   return (
     <GlobeContext.Provider
       value={{
+        groupedGlobeData,
+        setGroupedGlobeData,
         isGlobeReady,
         setIsGlobeReady,
         globeRef,

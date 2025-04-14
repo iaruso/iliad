@@ -54,10 +54,10 @@ function computeConvexHull(pts: THREE.Vector2[]): THREE.Vector2[] {
   return hull;
 }
 
-const VELOCITY = 60
-
 const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const {
+    setGroupedGlobeData,
+    groupedGlobeData,
     globeRef,
     isGlobeReady,
     setIsGlobeReady,
@@ -73,6 +73,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     date,
     setDate,
     playing,
+    setPlaying,
     labelsVisible
   } = useContext(GlobeContext) as GlobeContextProps
   const { resolvedTheme } = useTheme()
@@ -109,10 +110,22 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     setNeedsResize(false)
   }, needsResize ? 100 : null)
 
-  const groupedGlobeData = useMemo(() => {
-    if (!data.data) return {}
-    return prepareGlobeData(data, dataDetail);
-  }, [data, dataDetail]);
+  useEffect(() => {
+    if (!data.data) return;
+  
+    const result = prepareGlobeData(data, dataDetail);
+    setGroupedGlobeData(result);
+  
+    const timestamps = Object.keys(result).sort((a, b) =>
+      new Date(a).getTime() - new Date(b).getTime()
+    );
+  
+    if (timestamps.length > 0) {
+      setDate(new Date(timestamps[0]));
+    }
+  }, [data, dataDetail]);  
+  
+  
 
   function getSolarDeclination(month: number): number {
     const days = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
@@ -174,13 +187,24 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   }, [textureQuality, dayNight])
 
   // Update date if playing
+  const timestamps = Object.keys(groupedGlobeData).sort((a, b) =>
+    new Date(a).getTime() - new Date(b).getTime()
+  );
+  
   useInterval(() => {
     if (playing) {
-      const newDt = new Date(date)
-      newDt.setMinutes(newDt.getMinutes() + VELOCITY)
-      setDate(newDt)
+      const currentIndex = timestamps.findIndex(ts =>
+        new Date(ts).getTime() === date.getTime()
+      );
+      const next = timestamps[currentIndex + 1];
+      if (next) {
+        setDate(new Date(next));
+      } else {
+        setPlaying(false); // chegou ao fim
+      }
     }
-  }, 1000)
+  }, 1000);
+  
 
   // Update the sun position in the shader material based on dt
   useEffect(() => {
@@ -275,22 +299,26 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     const timestamps = Object.keys(groupedGlobeData);
     if (timestamps.length === 0) return groups;
   
-    const firstTimestamp = timestamps[0];
-    const oilSpills = groupedGlobeData[firstTimestamp];
+    const currentTimestamp =
+      timestamps.find(ts => new Date(ts).getTime() === date.getTime()) ||
+      timestamps[0];
+  
+    const oilSpills = groupedGlobeData[currentTimestamp] ?? [];
   
     for (const spill of oilSpills) {
       for (const [densityKey, densityData] of Object.entries(spill.densities)) {
-        if (densityData.points.length > 0) {
+        if ((densityData as { points: GlobePoint[] }).points.length > 0) {
           groups.push({
-            id: `${firstTimestamp}-${spill.id}-${densityKey}`,
-            points: densityData.points,
+            id: `${currentTimestamp}-${spill.id}-${densityKey}`,
+            points: (densityData as { points: GlobePoint[] }).points,
           });
         }
       }
     }
   
     return groups;
-  }, [groupedGlobeData]);
+  }, [groupedGlobeData, date]);
+  
 
   useEffect(() => {
     if (globeRef.current && data.single) {
@@ -335,12 +363,16 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     const timestamps = Object.keys(groupedGlobeData);
     if (timestamps.length === 0) return [];
   
-    const firstTimestamp = timestamps[0];
-    const oilSpills = groupedGlobeData[firstTimestamp];
+    const currentTimestamp = Object.keys(groupedGlobeData).find(ts =>
+      new Date(ts).getTime() === date.getTime()
+    );
+    
+    const oilSpills = groupedGlobeData[currentTimestamp ?? ''] ?? [];
+    
   
     return oilSpills.flatMap(spill =>
       Object.values(spill.densities).flatMap(d =>
-        d.points.filter(p =>
+        (d as { points: GlobePoint[] }).points.filter(p =>
           typeof p.latitude === 'number' &&
           typeof p.longitude === 'number' &&
           typeof p.density === 'number' &&
@@ -357,8 +389,12 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     const timestamps = Object.keys(groupedGlobeData);
     if (timestamps.length === 0) return [];
   
-    const firstTimestamp = timestamps[0];
-    const oilSpills = groupedGlobeData[firstTimestamp];
+    const currentTimestamp = Object.keys(groupedGlobeData).find(ts =>
+      new Date(ts).getTime() === date.getTime()
+    );
+    
+    const oilSpills = groupedGlobeData[currentTimestamp ?? ''] ?? [];
+    
   
     return oilSpills.map(spill => {
       const original = data.data?.find(entry => entry._id === spill.id);
@@ -377,12 +413,16 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     const timestamps = Object.keys(groupedGlobeData);
     if (timestamps.length === 0) return [];
   
-    const firstTimestamp = timestamps[0];
-    const oilSpills = groupedGlobeData[firstTimestamp];
+    const currentTimestamp = Object.keys(groupedGlobeData).find(ts =>
+      new Date(ts).getTime() === date.getTime()
+    );
+    
+    const oilSpills = groupedGlobeData[currentTimestamp ?? ''] ?? [];
+    
   
     const allPoints = oilSpills.flatMap(spill =>
       Object.values(spill.densities).flatMap(d =>
-        d.points.map(p => ({
+        (d as { points: GlobePoint[] }).points.map(p => ({
           latitude: p.latitude,
           longitude: p.longitude,
           density: p.density ?? 1,
