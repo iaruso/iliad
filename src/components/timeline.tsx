@@ -17,7 +17,6 @@ const Timeline: FC = () => {
     setPlaying,
     timelineSpeed,
     setTimelineSpeed,
-    setMoment,
     dateRange,
     setDateRange
   } = useContext(GlobeContext) as GlobeContextProps;
@@ -32,7 +31,6 @@ const Timeline: FC = () => {
               className='!h-8 !w-8 cursor-pointer p-0'
               onClick={() => {
                 setPlaying(false);
-                setMoment('start');
               }}
               disabled
             >
@@ -59,7 +57,6 @@ const Timeline: FC = () => {
           className='!h-8 !w-8 cursor-pointer p-0'
           onClick={() => {
             setPlaying(false);
-            setMoment('end');
           }}
           disabled
         >

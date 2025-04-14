@@ -61,7 +61,7 @@ export function DataTablePagination<TData>({
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p className='text-sm'>{t('itemsOutOf', {
+              <p className='text-xs'>{t('itemsOutOf', {
                 items: `${table.getState().pagination.pageSize}`,
                 total: `${items}`,
               })}</p>
@@ -77,7 +77,7 @@ export function DataTablePagination<TData>({
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p className='text-sm'>{t('pageOf', {
+              <p className='text-xs'>{t('pageOf', {
                 page: `${table.getState().pagination.pageIndex + 1}`,
                 total: `${table.getPageCount()}`,
               })}</p>
@@ -91,12 +91,14 @@ export function DataTablePagination<TData>({
               size="icon"
               className="h-8 w-fit gap-0.5 pl-2 pr-[calc(0.5rem-3px)] [&>svg]:h-4 [&>svg]:w-4"
             >
-              <ListFilter strokeWidth={2} />
+              <ListFilter strokeWidth={2} className='mr-0.5' />
               <span className="text-sm">{table.getState().pagination.pageSize}</span>
               <ChevronDown className="h-4 w-4" strokeWidth={2} />
             </Button>
           }
-          tooltip={t('itemsPerPage')}
+          tooltip={t('itemsPerPage', {
+            items: `${table.getState().pagination.pageSize}`
+          })}
           className="min-w-0 w-[calc(var(--radix-popper-anchor-width)-1px)]"
           content={
             <>

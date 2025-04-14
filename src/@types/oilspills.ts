@@ -30,9 +30,10 @@ export type ActorGeometry = {
 export type ActorCoordinates = [number, number] | [number, number, number]; // lng, lat, alt (optional)
 
 export type OilSpills = {
-  page: number;
-  size: number;
-  items: number;
-  totalPages: number;
+  page?: number;
+  size?: number;
+  items?: number;
+  totalPages?: number;
+  single?: boolean;
   data: OilSpill[];
 }

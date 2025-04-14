@@ -10,6 +10,6 @@ export const getOilSpills = async ({
   return await fetchOilSpills(page, size, id, minArea, maxArea, sortField, sortDirection);
 };
 
-export const getOilSpillByID = async ({ id }: { id: string }) => {
-  return await fetchOilSpillById(id);
+export const getOilSpillByID = async ({ oilspill }: { oilspill: string }) => {
+  return await fetchOilSpillById(oilspill);
 };

@@ -8,6 +8,7 @@ type ConstructUrlProps = {
   id?: string;
   minArea?: string | number;
   maxArea?: string | number;
+  oilspill?: string;
 };
 
 export async function getSession(): Promise<string | null> {
@@ -21,7 +22,8 @@ export function constructUrl(urlParams: ConstructUrlProps): string {
     page,
     id,
     minArea,
-    maxArea
+    maxArea,
+    oilspill
   } = urlParams;
   const finalUrl: string = `${endpoint}`;
   const params = new URLSearchParams();
@@ -44,6 +46,10 @@ export function constructUrl(urlParams: ConstructUrlProps): string {
 
   if (maxArea !== undefined) {
     params.append("maxArea", maxArea.toString());
+  }
+
+  if (oilspill !== undefined) {
+    params.append("oilspill", oilspill.toString());
   }
 
   const url = `${finalUrl}?${params.toString()}`;
@@ -76,7 +82,7 @@ export const requestKy = ky.create({
     afterResponse: [
       async (request, _options, response) => {
         const path = new URL(request.url).pathname;
-        
+        console.log("oof");
         if (
           request.method === "PUT" ||
           request.method === "POST" ||

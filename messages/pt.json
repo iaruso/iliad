@@ -141,7 +141,7 @@
     }
   },
   "pagination": {
-    "itemsPerPage": "Itens por página",
+    "itemsPerPage": "{items} itens por página",
     "itemsOutOf": "{items} itens em {total}",
     "pageOf": "Página {page} de {total}",
     "goToFirst": "Ir para a primeira página",

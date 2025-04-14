@@ -32,8 +32,6 @@ export interface GlobeContextProps {
   setDate: (date: Date) => void;
   playing: boolean;
   setPlaying: (playing: boolean) => void;
-  moment: 'start' | 'end';
-  setMoment: (moment: 'start' | 'end') => void;
   timelineSpeed: number;
   setTimelineSpeed: (speed: number) => void;
   dateRange: DateRange | null;
@@ -61,7 +59,6 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single');
   const [date, setDate] = useState(new Date());
   const [playing, setPlaying] = useState(false);
-  const [moment, setMoment] = useState<'start' | 'end'>('start');
   const [timelineSpeed, setTimelineSpeed] = useState(1);
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null);
@@ -92,8 +89,6 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
         setDate,
         playing,
         setPlaying,
-        moment,
-        setMoment,
         timelineSpeed,
         setTimelineSpeed,
         dateRange,

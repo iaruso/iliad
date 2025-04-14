@@ -6,7 +6,7 @@ export const validateAndSetParams = (
 ) => {
   const validSize =
     isNaN(Number(size)) || !PAGE_SIZE.includes(Number(size))
-      ? 10
+      ? 100
       : Number(size);
   const validPage = isNaN(Number(page)) || Number(page) < 1 ? 1 : Number(page);
 

@@ -67,7 +67,7 @@ const useOilSpillsTableColumns = (
       cell: ({ row }) => {
         return (
           <div>
-            {row.original.coordinates[1].toFixed(5) || "-"}
+            {row.original.coordinates[1]?.toFixed(5) || "-"}
           </div>
         );
       },
@@ -99,7 +99,7 @@ const useOilSpillsTableColumns = (
       cell: ({ row }) => {
         return (
           <div>
-            {row.original.coordinates[0].toFixed(5) || "-"}
+            {row.original.coordinates[0]?.toFixed(5) || "-"}
           </div>
         );
       },

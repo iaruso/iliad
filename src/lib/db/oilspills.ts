@@ -89,12 +89,12 @@ export async function fetchOilSpills(
   };
 }
 
-export async function fetchOilSpillById(id: string) {
+export async function fetchOilSpillById(oilspill: string) {
   const client = await clientPromise;
   const db = client.db("oilspills");
-  const collection = db.collection("oilspills-min");
+  const collection = db.collection("oilspills");
 
-  const data = await collection.findOne({ _id: new ObjectId(id) });
+  const data = await collection.findOne({ _id: new ObjectId(oilspill) });
 
   if (!data) throw new Error("Not found");
 
