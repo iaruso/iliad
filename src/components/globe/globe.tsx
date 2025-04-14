@@ -9,8 +9,6 @@ import { getPanelElement } from 'react-resizable-panels'
 import { TextureLoader, ShaderMaterial, type Material, Vector2 } from 'three'
 import { GlobePoint, GlobeLocation } from '@/@types/globe'
 import { dayNightShader } from '@/lib/shaders'
-import { formatGlobeData } from '@/lib/formatters'
-import { formatGlobeStructure } from '@/lib/data'
 import { sunPositionAt } from '@/lib/solar'
 import { getColor } from '@/lib/colors'
 import { Loader2 } from 'lucide-react'
@@ -109,12 +107,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     })
     setNeedsResize(false)
   }, needsResize ? 100 : null)
-
-  // Memoize formatted globe data
-  const memoizedGData = useMemo(() => formatGlobeData(formatGlobeStructure(data), dataDetail), [
-    data,
-    dataDetail
-  ])
 
   const groupedGlobeData = useMemo(() => {
     return prepareGlobeData(data, dataDetail);
