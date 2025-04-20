@@ -15,6 +15,7 @@ import { Loader2 } from 'lucide-react'
 import * as THREE from 'three'
 import { OilSpills } from '@/@types/oilspills'
 import { prepareGlobeData } from '@/lib/globe-data'
+import { useRouter } from '@/i18n/navigation'
 
 const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
@@ -81,6 +82,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
   const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single')
   const [dataWeightMultiplier, setDataWeightMultiplier] = useState(3)
+  const router = useRouter()
 
   const rotationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -110,20 +112,24 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     setNeedsResize(false)
   }, needsResize ? 100 : null)
 
+  const globeData = useMemo(() => {
+    if (!data.data) return {};
+    return prepareGlobeData(data, dataDetail);
+  }, [data, dataDetail]);
+  
   useEffect(() => {
-    if (!data.data) return;
+    setGroupedGlobeData(globeData);
+  }, [globeData]);
   
-    const result = prepareGlobeData(data, dataDetail);
-    setGroupedGlobeData(result);
-  
-    const timestamps = Object.keys(result).sort((a, b) =>
+  useEffect(() => {
+    const timestamps = Object.keys(globeData).sort((a, b) =>
       new Date(a).getTime() - new Date(b).getTime()
     );
   
     if (timestamps.length > 0) {
       setDate(new Date(timestamps[0]));
     }
-  }, [data, dataDetail]);  
+  }, [data]);
   
   
 
@@ -200,13 +206,12 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
       if (next) {
         setDate(new Date(next));
       } else {
-        setPlaying(false); // chegou ao fim
+        setPlaying(false);
       }
     }
-  }, 1000);
+  }, 500);
   
 
-  // Update the sun position in the shader material based on dt
   useEffect(() => {
     if (globeMaterial?.uniforms) {
       const [lng, lat] = sunPositionAt(date)
@@ -322,7 +327,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
 
   useEffect(() => {
     if (globeRef.current && data.single) {
-      console.log('Single data:', data.data[0]?.coordinates?.[0])
       const latitude = data.data[0]?.coordinates?.[1] || 0;
       const longitude = data.data[0]?.coordinates?.[0] || 0;
       const currentView = globeRef.current.pointOfView();
@@ -382,7 +386,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         )
       )
     );
-  }, [groupedGlobeData]);
+  }, [groupedGlobeData, date]);
    
 
   const htmlIndicators = useMemo(() => {
@@ -407,7 +411,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         area: original?.area ?? 0
       };
     });
-  }, [groupedGlobeData]);   
+  }, [groupedGlobeData, date]);   
 
   const heatmapsData = useMemo(() => {
     const timestamps = Object.keys(groupedGlobeData);
@@ -431,7 +435,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     );
   
     return allPoints;
-  }, [groupedGlobeData]);  
+  }, [groupedGlobeData, date]);
   
   return (
     <>
@@ -453,7 +457,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
           showAtmosphere={false}
           onZoom={handleGlobeRotation}
           backgroundImageUrl={resolvedTheme === 'dark' ? '/sky.webp' : null}
-
           customLayerData={groupedGData}
           customThreeObject={(d: object) => {
               const group = d as { id: string; points: GlobePoint[] };
@@ -532,7 +535,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
                 const { latitude, longitude, density, color } = point;
               
                 const position = globeRef.current.getCoords(latitude, longitude, 0.0000012);
-                const radius = Math.min(Math.sqrt(density ?? 1) * 0.01, 0.2) * dataWeightMultiplier * 0.1;
+                const radius = Math.min(Math.sqrt(Math.min(density ?? 1, 1)) * 0.01, 0.2) * dataWeightMultiplier * 0.1;
               
                 const dotGeometry = new THREE.SphereGeometry(radius, 8, 8);
                 const dotMaterial = new THREE.MeshBasicMaterial({
@@ -570,7 +573,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             labelSize: 4e-10,
             labelDotRadius: (d) => {
               const density = Number.isFinite((d as GlobePoint).density) ? (d as GlobePoint).density : 1;
-              return Math.min(Math.sqrt(density) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier * 0.2;
+              return Math.min(Math.sqrt(Math.min(density, 1)) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier * 0.2;
             },
             labelColor: (d) => (d as GlobePoint).color || '#ff0000',
           } : {
@@ -598,29 +601,30 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
               inner.classList.add('globe-point-button');
               inner.href = `?oilspill=${(d as GlobeLocation)._id}`;
               inner.style.textDecoration = 'none';
-              inner.style.pointerEvents = 'none';
-
-                inner.innerHTML = `
+              inner.style.pointerEvents = 'auto';
+              inner.style.cursor = 'pointer';
+            
+              inner.innerHTML = `
                 <span>${id}</span>
                 <div>
                   <span>${area} km²</span>
                   <span>[${(d as GlobeLocation).latitude.toFixed(2)}, ${(d as GlobeLocation).longitude.toFixed(2)}]</span>
                 </div>
-                `;
+              `;
             
-              // Posiciona no canto superior direito com offset
+              inner.onclick = (e) => {
+                e.preventDefault();
+                router.push(`?oilspill=${(d as GlobeLocation)._id}`);
+              };
+            
+              // Posição
               inner.style.position = 'absolute';
               inner.style.bottom = '4px';
               inner.style.left = '4px';
             
-              inner.style.pointerEvents = 'auto';
-              inner.style.cursor = 'pointer';
-            
-              inner.onclick = () => console.info(d);
-            
               wrapper.appendChild(inner);
               return wrapper;
-            },
+            },            
             htmlElementVisibilityModifier: (el, isVisible) => {
               el.style.opacity = isVisible ? '1' : '0';
             }

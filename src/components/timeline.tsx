@@ -1,5 +1,5 @@
 'use client';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useContext, useState, useMemo } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
 import ButtonTooltip from '@/components/ui/button-tooltip';
@@ -27,11 +27,51 @@ const Timeline: FC = () => {
   } = useContext(GlobeContext) as GlobeContextProps;
   const locale = useLocale() === 'en' ? enUS : pt;
   const t = useTranslations('globe.timeline');
+  const [rangeFilter] = useState<'1d' | '7d' | '30d' | '3m' | '6m' | '1y'>('1y');
   const timestamps = useMemo(() => {
     return Object.keys(groupedGlobeData).sort((a, b) =>
       new Date(a).getTime() - new Date(b).getTime()
     );
   }, [groupedGlobeData]);
+  console.log(groupedGlobeData)
+
+  const [minDate, maxDate] = useMemo(() => {
+    const dates = timestamps.map(ts => new Date(ts.replace(' ', 'T')));
+    dates.sort((a, b) => a.getTime() - b.getTime());
+    return [dates[0], dates[dates.length - 1]];
+  }, [timestamps]);
+
+  const filteredTimestamps = useMemo(() => {
+    if (!minDate || !maxDate) return [];
+  
+    const cutoff = new Date(maxDate);
+  
+    switch (rangeFilter) {
+      case '1d':
+        cutoff.setDate(cutoff.getDate() - 1);
+        break;
+      case '7d':
+        cutoff.setDate(cutoff.getDate() - 7);
+        break;
+      case '30d':
+        cutoff.setDate(cutoff.getDate() - 30);
+        break;
+      case '3m':
+        cutoff.setMonth(cutoff.getMonth() - 3);
+        break;
+      case '6m':
+        cutoff.setMonth(cutoff.getMonth() - 6);
+        break;
+      case '1y':
+        cutoff.setFullYear(cutoff.getFullYear() - 1);
+        break;
+    }
+  
+    return timestamps.filter(ts => {
+      const date = new Date(ts.replace(' ', 'T'));
+      return date >= cutoff && date <= maxDate;
+    });
+  }, [timestamps, rangeFilter, minDate, maxDate]);  
   
   return (
     <div className='w-full h-12 border-t bg-background'>
@@ -118,48 +158,75 @@ const Timeline: FC = () => {
         <div className='flex flex-1 rounded-md border !h-8 overflow-hidden relative'>
   {/* timeline por hora */}
   {(() => {
-    const start = new Date(timestamps[0]);
-    const end = new Date(timestamps[timestamps.length - 1]);
+  if (timestamps.length === 0) return null;
 
-    const fullHourSteps: Date[] = [];
-    const cursor = new Date(start);
-    cursor.setMinutes(0, 0, 0);
+  const parseDate = (ts: string) => new Date(ts.replace(' ', 'T'));
+  const start = parseDate(filteredTimestamps[0]);
+  const end = parseDate(filteredTimestamps[filteredTimestamps.length - 1]);
 
-    while (cursor <= end) {
-      fullHourSteps.push(new Date(cursor));
-      cursor.setHours(cursor.getHours() + 1);
+  const fullHourSteps: Date[] = [];
+  const cursor = new Date(start);
+  cursor.setMinutes(0, 0, 0);
+
+  while (cursor <= end) {
+    fullHourSteps.push(new Date(cursor));
+    cursor.setHours(cursor.getHours() + 1);
+  }
+
+  // Mapeamento: hora -> set de ids únicos
+  const hourMap: Record<string, Set<string>> = {};
+
+  Object.entries(groupedGlobeData).forEach(([timestamp, spills]) => {
+    const d = parseDate(timestamp);
+    const hourKey = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()).toISOString().slice(0, 13); // yyyy-MM-ddTHH
+
+    for (const spill of spills) {
+      hourMap[hourKey] ||= new Set();
+      hourMap[hourKey].add(spill.id);
     }
+  });
 
-    return fullHourSteps.map((hour) => {
-      const hourStr = hour.toISOString();
 
-      const exists = timestamps.some(ts => {
-        const d = new Date(ts);
-        return d.getFullYear() === hour.getFullYear() &&
-               d.getMonth() === hour.getMonth() &&
-               d.getDate() === hour.getDate() &&
-               d.getHours() === hour.getHours();
-      });
+  return fullHourSteps.map((hour) => {
+    const hourStr = hour.toISOString();
+    const hourKey = hourStr.slice(0, 13);
+    const count = hourMap[hourKey]?.size ?? 0;
+    const exists = count > 0;
+    const isActive =
+  date >= hour &&
+  date < new Date(hour.getTime() + 60 * 60 * 1000); // +1 hora
 
-      const isActive = hour.getTime() === date.getTime();
 
-      const bg = isActive
-        ? 'bg-primary/20'
-        : exists
-        ? 'bg-muted/20'
-        : 'bg-background';
+    const bg = isActive
+      ? 'bg-primary/60'
+      : exists
+      ? 'bg-muted/40'
+      : 'bg-background';
 
       return (
         <div
           key={hourStr}
-          className={`flex-1 h-full transition-colors ${bg}`}
-          title={hourStr}
-        />
+          className={`flex-1 flex items-end h-full ${exists ? 'cursor-pointer hover:bg-primary/20 min-w-[2px]' : 'cursor-not-allowed hover:bg-red-600/10'}`}
+          onClick={() => exists && setDate(hour)}
+          role="button"
+          aria-pressed={isActive}
+          aria-label={`${hourKey}: ${count} unique oilspill(s)`}
+          tabIndex={exists ? 0 : -1}
+          onKeyDown={(e) => {
+            if (exists && (e.key === 'Enter' || e.key === ' ')) {
+              setDate(hour);
+            }
+          }}
+        >
+          <div
+            className={`w-full ${bg} ${exists && 'h-full'}`}
+            title={`${hourKey}: ${count} unique oilspill(s)`}
+          />
+        </div>
       );
-    });
-  })()}
-
-  {/* caixa com a data e hora atual */}
+      
+  });
+})()}
   <div className='relative z-20 flex items-center justify-center w-36 border-l bg-muted/60 text-xs font-medium px-1 text-center'>
     {format(date, 'yyyy-MM-dd HH:mm', { locale })}
   </div>

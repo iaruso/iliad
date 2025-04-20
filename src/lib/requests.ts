@@ -82,7 +82,6 @@ export const requestKy = ky.create({
     afterResponse: [
       async (request, _options, response) => {
         const path = new URL(request.url).pathname;
-        console.log("oof");
         if (
           request.method === "PUT" ||
           request.method === "POST" ||

@@ -1,5 +1,6 @@
 'use client';
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useState, useContext } from 'react';
+import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
 import { OilSpills } from '@/@types/oilspills';
 import { 
@@ -57,6 +58,11 @@ const orderableColumns = [
 ];
 
 const Container: FC<ContainerProps> = ({ data }) => {
+  const { 
+      date,
+      groupedGlobeData
+    } = useContext(GlobeContext) as GlobeContextProps;
+
   const t = useTranslations('globe.search');
   const tTable = useTranslations('globe.table');
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -356,11 +362,28 @@ const Container: FC<ContainerProps> = ({ data }) => {
                   <TableBody className='[&>tr:last-child]:!border-transparent [&>tr:last-child]:border-b-1'>
                     {table.getRowModel().rows?.length && (
                       table.getRowModel().rows.map((row) => (
-                        <TableRow
-                          className='border-border/50 !h-10 relative'
-                          key={row.id}
-                          data-state={row.getIsSelected() && 'selected'}
-                        >
+<TableRow
+  key={row.id}
+  className={`border-border/50 !h-10 relative ${
+    Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
+      const ts = new Date(timestamp.replace(' ', 'T')).getTime();
+      const hourStart = date.getTime();
+      const hourEnd = hourStart + 60 * 60 * 1000;
+
+      return (
+        ts >= hourStart &&
+        ts < hourEnd &&
+        spills.some((spill) => spill.id === row.original._id)
+      );
+    })
+      ? 'bg-muted/20 text-foreground'
+      : ''
+  }`}
+  data-state={row.getIsSelected() && 'selected'}
+>
+
+
+
                           <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
                             <Link
                               className='cursor-pointer absolute inset-0 w-full h-full'
