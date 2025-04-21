@@ -32,7 +32,7 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
           .map(entry => {
             try {
               return new Date(entry.timestamp);
-            } catch (e) {
+            } catch {
               console.error("Invalid timestamp format:", entry.timestamp);
               return null;
             }
