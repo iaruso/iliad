@@ -13,7 +13,11 @@ import { enUS, pt } from 'date-fns/locale'
 import { format } from 'date-fns'
 import { useLocale } from 'next-intl';
 
-const Timeline: FC = () => {
+interface TimelineProps {
+  isSingle?: boolean;
+}
+
+const Timeline: FC<TimelineProps> = ({ isSingle }) => {
   const { 
     date,
     setDate,
@@ -33,7 +37,6 @@ const Timeline: FC = () => {
       new Date(a).getTime() - new Date(b).getTime()
     );
   }, [groupedGlobeData]);
-  console.log(groupedGlobeData)
 
   const [minDate, maxDate] = useMemo(() => {
     const dates = timestamps.map(ts => new Date(ts.replace(' ', 'T')));
@@ -156,46 +159,45 @@ const Timeline: FC = () => {
           className='border-none p-0 w-fit'
         />
         <div className='flex flex-1 rounded-md border !h-8 overflow-hidden relative'>
-  {/* timeline por hora */}
-  {(() => {
+  {/* timeline por hora ou por 15min */}
+{(() => {
   if (timestamps.length === 0) return null;
 
   const parseDate = (ts: string) => new Date(ts.replace(' ', 'T'));
   const start = parseDate(filteredTimestamps[0]);
   const end = parseDate(filteredTimestamps[filteredTimestamps.length - 1]);
 
-  const fullHourSteps: Date[] = [];
+  const stepSize = isSingle ? 15 : 60; // minutos
+  const steps: Date[] = [];
   const cursor = new Date(start);
-  cursor.setMinutes(0, 0, 0);
+  cursor.setMinutes(Math.floor(cursor.getMinutes() / stepSize) * stepSize, 0, 0); // arredondar para o bloco anterior
 
   while (cursor <= end) {
-    fullHourSteps.push(new Date(cursor));
-    cursor.setHours(cursor.getHours() + 1);
+    steps.push(new Date(cursor));
+    cursor.setMinutes(cursor.getMinutes() + stepSize);
   }
 
-  // Mapeamento: hora -> set de ids únicos
-  const hourMap: Record<string, Set<string>> = {};
+  // Mapeamento: bloco de tempo -> set de ids únicos
+  const timeMap: Record<string, Set<string>> = {};
 
   Object.entries(groupedGlobeData).forEach(([timestamp, spills]) => {
     const d = parseDate(timestamp);
-    const hourKey = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()).toISOString().slice(0, 13); // yyyy-MM-ddTHH
+    const block = new Date(d);
+    block.setMinutes(Math.floor(block.getMinutes() / stepSize) * stepSize, 0, 0);
+    const key = block.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
 
     for (const spill of spills) {
-      hourMap[hourKey] ||= new Set();
-      hourMap[hourKey].add(spill.id);
+      timeMap[key] ||= new Set();
+      timeMap[key].add(spill.id);
     }
   });
 
-
-  return fullHourSteps.map((hour) => {
-    const hourStr = hour.toISOString();
-    const hourKey = hourStr.slice(0, 13);
-    const count = hourMap[hourKey]?.size ?? 0;
+  return steps.map((time) => {
+    const timeStr = time.toISOString();
+    const key = timeStr.slice(0, 16);
+    const count = timeMap[key]?.size ?? 0;
     const exists = count > 0;
-    const isActive =
-  date >= hour &&
-  date < new Date(hour.getTime() + 60 * 60 * 1000); // +1 hora
-
+    const isActive = date >= time && date < new Date(time.getTime() + stepSize * 60 * 1000);
 
     const bg = isActive
       ? 'bg-primary/60'
@@ -203,30 +205,30 @@ const Timeline: FC = () => {
       ? 'bg-muted/40'
       : 'bg-background';
 
-      return (
+    return (
+      <div
+        key={timeStr}
+        className={`flex-1 flex items-end h-full ${exists ? 'cursor-pointer hover:bg-primary/20 min-w-[2px]' : 'cursor-not-allowed hover:bg-red-600/10'}`}
+        onClick={() => exists && setDate(time)}
+        role="button"
+        aria-pressed={isActive}
+        aria-label={`${key}: ${count} unique oilspill(s)`}
+        tabIndex={exists ? 0 : -1}
+        onKeyDown={(e) => {
+          if (exists && (e.key === 'Enter' || e.key === ' ')) {
+            setDate(time);
+          }
+        }}
+      >
         <div
-          key={hourStr}
-          className={`flex-1 flex items-end h-full ${exists ? 'cursor-pointer hover:bg-primary/20 min-w-[2px]' : 'cursor-not-allowed hover:bg-red-600/10'}`}
-          onClick={() => exists && setDate(hour)}
-          role="button"
-          aria-pressed={isActive}
-          aria-label={`${hourKey}: ${count} unique oilspill(s)`}
-          tabIndex={exists ? 0 : -1}
-          onKeyDown={(e) => {
-            if (exists && (e.key === 'Enter' || e.key === ' ')) {
-              setDate(hour);
-            }
-          }}
-        >
-          <div
-            className={`w-full ${bg} ${exists && 'h-full'}`}
-            title={`${hourKey}: ${count} unique oilspill(s)`}
-          />
-        </div>
-      );
-      
+          className={`w-full ${bg} ${exists && 'h-full'}`}
+          title={`${key}: ${count} unique oilspill(s)`}
+        />
+      </div>
+    );
   });
 })()}
+
   <div className='relative z-20 flex items-center justify-center w-36 border-l bg-muted/60 text-xs font-medium px-1 text-center'>
     {format(date, 'yyyy-MM-dd HH:mm', { locale })}
   </div>

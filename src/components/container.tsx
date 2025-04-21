@@ -46,6 +46,7 @@ import {
   DropdownMenuItem
  } from '@/components/ui/dropdown-menu';
 import PopoverTooltip from '@/components/ui/popover-tooltip';
+import OilSpillInfo from './oilspill-info';
 
 interface ContainerProps {
   data: OilSpills;
@@ -362,28 +363,25 @@ const Container: FC<ContainerProps> = ({ data }) => {
                   <TableBody className='[&>tr:last-child]:!border-transparent [&>tr:last-child]:border-b-1'>
                     {table.getRowModel().rows?.length && (
                       table.getRowModel().rows.map((row) => (
-<TableRow
-  key={row.id}
-  className={`border-border/50 !h-10 relative ${
-    Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
-      const ts = new Date(timestamp.replace(' ', 'T')).getTime();
-      const hourStart = date.getTime();
-      const hourEnd = hourStart + 60 * 60 * 1000;
+                        <TableRow
+                          key={row.id}
+                          className={`border-border/50 !h-10 relative ${
+                            Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
+                              const ts = new Date(timestamp.replace(' ', 'T')).getTime();
+                              const hourStart = date.getTime();
+                              const hourEnd = hourStart + 60 * 60 * 1000;
 
-      return (
-        ts >= hourStart &&
-        ts < hourEnd &&
-        spills.some((spill) => spill.id === row.original._id)
-      );
-    })
-      ? 'bg-muted/20 text-foreground'
-      : ''
-  }`}
-  data-state={row.getIsSelected() && 'selected'}
->
-
-
-
+                              return (
+                                ts >= hourStart &&
+                                ts < hourEnd &&
+                                spills.some((spill) => spill.id === row.original._id)
+                              );
+                            })
+                              ? 'bg-muted/20 text-foreground'
+                              : ''
+                          }`}
+                          data-state={row.getIsSelected() && 'selected'}
+                        >
                           <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
                             <Link
                               className='cursor-pointer absolute inset-0 w-full h-full'
@@ -397,16 +395,18 @@ const Container: FC<ContainerProps> = ({ data }) => {
                               </TableCell>
                             ) : (
                               <TableCell
-                                className='text-xs font-medium'
+                                className={`text-xs font-medium ${
+                                  orderableColumns.includes(cell.column.id) ? 'px-2' : ''
+                                }`}
                                 key={cell.id}
                                 align={
                                   (
-                                    cell.column.columnDef.meta as {
-                                      align: AlignCellProps;
-                                    }
+                                  cell.column.columnDef.meta as {
+                                    align: AlignCellProps;
+                                  }
                                   )?.align
                                 }
-                              >
+                                >
                                 {flexRender(
                                   cell.column.columnDef.cell,
                                   cell.getContext()
@@ -436,14 +436,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
           </div>
         )}
         {paramOilSpill && (
-          <div className='flex items-center justify-center h-full'>
-            <Link
-              className='text-sm font-medium text-primary underline'
-              href='?'
-            >
-              return
-            </Link>
-          </div>
+          <OilSpillInfo data={data.data[0]} />
         )}
       </div>
       <Navbar />

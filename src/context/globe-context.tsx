@@ -5,7 +5,8 @@ import {
   FC,
   ReactNode,
   useRef,
-  useState
+  useState,
+  useContext
 } from 'react';
 import { ShaderMaterial } from 'three';
 import { DateRange } from 'react-aria-components';
@@ -108,4 +109,10 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
       {children}
     </GlobeContext.Provider>
   );
+};
+
+export const useGlobe = () => {
+  const ctx = useContext(GlobeContext);
+  if (!ctx) throw new Error('GlobeContext missing');
+  return ctx;
 };

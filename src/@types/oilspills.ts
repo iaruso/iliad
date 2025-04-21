@@ -3,6 +3,7 @@ export type OilSpill = {
   coordinates?: [number, number][];
   area?: number;
   data: OilSpillData;
+  single?: boolean;
 }
 
 export type OilSpillData = {

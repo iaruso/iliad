@@ -2,7 +2,7 @@
 import { OilSpillData, OilSpills } from '@/@types/oilspills';
 import { GlobePoint } from '@/@types/globe';
 
-type Density = 'single' | 'low' | 'medium' | 'high';
+type Density = 'single' | 'low' | 'medium' | 'high' | 'veryHigh';
 
 export type GlobePrepared = Record<
   string, // timestamp
@@ -18,7 +18,7 @@ export type GlobePrepared = Record<
   }[]
 >;
 
-const clusterSizes = { single: 1, low: 16, medium: 32, high: 64 };
+const clusterSizes = { single: 1, low: 16, medium: 32, high: 64, veryHigh: 512 };
 
 function toDate(ts: string): Date | null {
   if (typeof ts !== 'string') return null;

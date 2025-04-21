@@ -138,22 +138,20 @@ const MainPage: FC<MainPageProps> = async ({
   return (
     <AppProvider>
       <ResizablePanelGroup direction='horizontal'>
-      <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
-        <ResizablePanel
-          id='content-panel'
-          className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
-          defaultSize={72}
-        >
-          
+        <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
+          <ResizablePanel
+            id='content-panel'
+            className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
+            defaultSize={72}
+          >
             <Globe data={oilSpills}/>
             <Controls />
-            <Timeline />
-          
-        </ResizablePanel>
-        <ResizableHandle/>
-        <ResizablePanel maxSize={36} minSize={28} defaultSize={28}>
-          <Container data={oilSpills}/>
-        </ResizablePanel>
+            <Timeline isSingle={oilSpills.single}/>
+          </ResizablePanel>
+          <ResizableHandle/>
+          <ResizablePanel maxSize={36} minSize={28} defaultSize={28}>
+            <Container data={oilSpills}/>
+          </ResizablePanel>
         </GlobeProvider>
       </ResizablePanelGroup>
     </AppProvider>

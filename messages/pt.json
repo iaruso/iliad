@@ -148,5 +148,19 @@
     "goToPrevious": "Ir para a página anterior",
     "goToNext": "Ir para a próxima página",
     "goToLast": "Ir para a última página"
+  },
+  "oilspillInfo": {
+    "return": "Todos os derrames de óleo",
+    "summary": "Resumo do derrame",
+    "timestampsCollected": "Momentos recolhidos",
+    "interval": "Intervalo",
+    "averageInterval": "Intervalo médio",
+    "location": "Localização",
+    "totalPolygons": "Total de polígonos",
+    "totalDensity": "Densidade total",
+    "averageDensity": "Densidade média",
+    "densityDistribution": "Distribuição por densidade",
+    "spillsPerTimestamp": "Derrames por momento"
   }
+
 }

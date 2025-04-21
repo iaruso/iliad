@@ -148,5 +148,18 @@
     "goToPrevious": "Go to the previous page",
     "goToNext": "Go to the next page",
     "goToLast": "Go to the last page"
+  },
+  "oilspillInfo": {
+    "return": "All oilspills",
+    "summary": "Spill summary",
+    "timestampsCollected": "Timestamps collected",
+    "interval": "Interval",
+    "averageInterval": "Average interval",
+    "location": "Location",
+    "totalPolygons": "Total polygons",
+    "totalDensity": "Total density",
+    "averageDensity": "Average density",
+    "densityDistribution": "Density distribution",
+    "spillsPerTimestamp": "Spills per timestamp"
   }
 }

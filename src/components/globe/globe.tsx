@@ -80,7 +80,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const { resolvedTheme } = useTheme()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
-  const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single')
+  const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high' | 'veryHigh'>('single')
   const [dataWeightMultiplier, setDataWeightMultiplier] = useState(3)
   const router = useRouter()
 
@@ -278,6 +278,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
           const newAltitude = globeRef.current.pointOfView().altitude
           globeRef.current.controls({ maxDistance: 500 })
           setDataDetail((prevDetail) => {
+            if (data.single) return 'veryHigh'
             if (newAltitude > 0.1 && prevDetail !== 'single') return 'single'
             if (newAltitude > 0.02 && newAltitude <= 0.1 && prevDetail !== 'low') return 'low'
             if (newAltitude <= 0.02 && prevDetail !== 'medium') return 'medium'
@@ -295,7 +296,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         }
       }, 200)
     },
-    [globeMaterial, viewType]
+    [globeMaterial, viewType, data.single]
   )
 
   const groupedGData = useMemo(() => {
@@ -324,14 +325,13 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     return groups;
   }, [groupedGlobeData, date]);
   
-
   useEffect(() => {
     if (globeRef.current && data.single) {
       const latitude = data.data[0]?.coordinates?.[1] || 0;
       const longitude = data.data[0]?.coordinates?.[0] || 0;
       const currentView = globeRef.current.pointOfView();
       const targetView = { latitude, longitude, altitude: 0.01 };
-      const duration = 5000;
+      const duration = 4000;
 
       let animationFrameId: number | null = null;
       const startTime = performance.now();
@@ -564,7 +564,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             heatmapColorFn: () => getColor,
             enablePointerInteraction: false
           })}
-          {...(dataDetail === 'single' ? {
+          {...(dataDetail === 'single' && !data.single ? {
             labelsData: labelsData,
             labelsTransitionDuration: 0,
             labelLat: (d) => (d as GlobePoint).latitude,
@@ -585,7 +585,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             labelDotRadius: () => 0,
             labelColor: () => '#ff0000'
           })}
-          {...(dataDetail === 'single' && labelsVisible && !data.single ? {
+          {...(!data.single && labelsVisible ? {
             htmlElementsData: htmlIndicators,
             htmlLat: (d) => (d as GlobeLocation).latitude,
             htmlLng: (d) => (d as GlobeLocation).longitude,
