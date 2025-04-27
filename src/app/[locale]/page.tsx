@@ -1,5 +1,7 @@
 import { FC } from 'react';
+import Navbar from '@/components/navbar';
 import Container from '@/components/container';
+import OilSpillInfo from '@/components/oilspill-info';
 import Globe from '@/components/globe/globe';
 import Timeline from '@/components/timeline';
 import { GlobeProvider } from '@/context/globe-context';
@@ -76,7 +78,6 @@ const MainPage: FC<MainPageProps> = async ({
       if (!single) {
         oilSpills = { data: [] };
       } else {
-        // tenta extrair a primeira coordenada válida
         let coordinates: [number, number] = [0, 0];
         let found = false;
   
@@ -150,7 +151,18 @@ const MainPage: FC<MainPageProps> = async ({
           </ResizablePanel>
           <ResizableHandle/>
           <ResizablePanel maxSize={36} minSize={28} defaultSize={28}>
-            <Container data={oilSpills}/>
+            <div className='flex flex-col h-full'>
+              <div className='flex-1'>
+                { 
+                  oilspill ? (
+                    <OilSpillInfo data={oilSpills.data[0]} />
+                  ) : (
+                    <Container data={oilSpills}/>
+                  )
+                }
+              </div>
+              <Navbar />
+            </div>
           </ResizablePanel>
         </GlobeProvider>
       </ResizablePanelGroup>

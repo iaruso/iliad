@@ -8,7 +8,6 @@ import {
   Plus,
   RotateCcw
 } from 'lucide-react';
-import Navbar from '@/components/navbar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -46,7 +45,6 @@ import {
   DropdownMenuItem
  } from '@/components/ui/dropdown-menu';
 import PopoverTooltip from '@/components/ui/popover-tooltip';
-import OilSpillInfo from './oilspill-info';
 
 interface ContainerProps {
   data: OilSpills;
@@ -73,8 +71,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const paramOilSpill = searchParams.get('oilspill') || undefined;
 
   const paramIdFilter = searchParams.get('id')?.toLowerCase() ?? '';
   const [idFilter, setIdFilter] = useState<string>(paramIdFilter);
@@ -221,225 +217,215 @@ const Container: FC<ContainerProps> = ({ data }) => {
   });
 
   return (
-    <div className='flex flex-col h-full'>
-      <div className='flex-1'>
-        { !paramOilSpill && (
-          <div className='flex flex-col border-b'>
-            <div className='flex items-center gap-2 h-12 p-2 border-b'>
-              <Input
-                placeholder={t('placeholder')}
-                value={idFilter}
-                onChange={(e) => handleIdFilterChange(e.target.value)}
-                className='flex-1 h-8 px-2'
-              />
-              <PopoverTooltip
-                button={
-                  <Button
-                    variant='outline'
-                    className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'
-                  >
-                    <Settings2 className='h-4 w-4' />
-                    {t('filters.label')}
-                    <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
-                      {activeFilters}
-                    </span>
-                  </Button>
+    <div className='flex flex-col border-b'>
+      <div className='flex items-center gap-2 h-12 p-2 border-b'>
+        <Input
+          placeholder={t('placeholder')}
+          value={idFilter}
+          onChange={(e) => handleIdFilterChange(e.target.value)}
+          className='flex-1 h-8 px-2'
+        />
+        <PopoverTooltip
+          button={
+            <Button
+              variant='outline'
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'
+            >
+              <Settings2 className='h-4 w-4' />
+              {t('filters.label')}
+              <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
+                {activeFilters}
+              </span>
+            </Button>
+          }
+          tooltip={t('filters.tooltip')}
+          content={
+            <>
+              <Label className='text-sm font-medium'>
+                {
+                  t.rich('filters.options.areaRange.label', {
+                    sup: (chunks) => <sup>{chunks}</sup>
+                  })
                 }
-                tooltip={t('filters.tooltip')}
-                content={
-                  <>
-                    <Label className='text-sm font-medium'>
-                      {
-                        t.rich('filters.options.areaRange.label', {
-                          sup: (chunks) => <sup>{chunks}</sup>
-                        })
-                      }
-                    </Label>
-                    <div className='flex items-center gap-2'>
-                      <Input
-                        className='input-number h-8 px-2'
-                        placeholder={t('filters.options.areaRange.min')}
-                        value={minArea}
-                        onChange={(e) => handleMinAreaChange(e.target.value)}
-                        type='number'
-                      />
-                      <span className='text-sm font-medium text-muted-foreground'>-</span>
-                      <Input
-                        className='input-number h-8 px-2'
-                        placeholder={t('filters.options.areaRange.max')}
-                        value={maxArea}
-                        onChange={(e) => handleMaxAreaChange(e.target.value)}
-                        type='number'
-                      />
-                    </div>
-                    <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant='outline' className='w-full h-8'>
-                          {t('filters.options.columns.placeholder')}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        {table.
-                          getAllColumns()
-                          .filter((column) => column.getCanHide())
-                          .map((column) => {
-                            return (
-                            <DropdownMenuItem
-                              key={column.id}
-                              className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
-                              onClick={() => column.toggleVisibility()}
-                              onSelect={(event) => event.preventDefault()}
-                            >
-                              {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
-                            </DropdownMenuItem>
-                            );
-                          }
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </>
-                }
-                className='w-64 flex flex-col gap-2'
-              />
-              <ButtonTooltip
-                button={
-                  <Button
-                    disabled
-                    variant='outline'
-                    className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
-                  >
-                    <Plus className='!size-4' />
-                  </Button>
-                }
-                tooltip={t('add.tooltip')}
-              />
-              <ButtonTooltip
-                button={
-                  <Button
-                    variant='outline'
-                    onClick={resetFilters}
-                    disabled={activeFilters === 0}
-                    className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
-                  >
-                    <RotateCcw className='!size-4' />
-                  </Button>
-                }
-                tooltip={t('reset.tooltip')}
-              />
-            </div>
-            { data.data.length > 0 && !data.single ? (
-              <>
-                <Table className='border-b border-border/50' divClassName='h-[440px] overflow-y-auto'>
-                  <TableHeader className='sticky top-0 z-10 bg-background'>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow
-                        key={headerGroup.id}
-                        className='relative hover:bg-transparent border-border/50'
-                      >
-                        <TableHead
-                          className='p-0 h-10'
-                          key={'link-head'}
-                          aria-label='Search Engine Link'
-                        />
-                        {headerGroup.headers.map((header) => {
-                          return (
-                            <TableHead
-                              key={header.id}
-                              className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
-                            >
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </TableHead>
-                          );
-                        })}
-                      </TableRow>
-                    ))}
-                  </TableHeader>
-                  <TableBody className='[&>tr:last-child]:!border-transparent [&>tr:last-child]:border-b-1'>
-                    {table.getRowModel().rows?.length && (
-                      table.getRowModel().rows.map((row) => (
-                        <TableRow
-                          key={row.id}
-                          className={`border-border/50 !h-10 relative ${
-                            Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
-                              const ts = new Date(timestamp.replace(' ', 'T')).getTime();
-                              const hourStart = date.getTime();
-                              const hourEnd = hourStart + 60 * 60 * 1000;
-
-                              return (
-                                ts >= hourStart &&
-                                ts < hourEnd &&
-                                spills.some((spill) => spill.id === row.original._id)
-                              );
-                            })
-                              ? 'bg-muted/20 text-foreground'
-                              : ''
-                          }`}
-                          data-state={row.getIsSelected() && 'selected'}
-                        >
-                          <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
-                            <Link
-                              className='cursor-pointer absolute inset-0 w-full h-full'
-                              href={`?oilspill=${row.original._id}`}
-                            />
-                          </TableCell>
-                          {row.getVisibleCells().map((cell) =>
-                            isPending ? (
-                              <TableCell key={cell.id} className='p-0'>
-                                <Skeleton className='m-2 h-5 min-w-16' />
-                              </TableCell>
-                            ) : (
-                              <TableCell
-                                className={`text-xs font-medium ${
-                                  orderableColumns.includes(cell.column.id) ? 'px-2' : ''
-                                }`}
-                                key={cell.id}
-                                align={
-                                  (
-                                  cell.column.columnDef.meta as {
-                                    align: AlignCellProps;
-                                  }
-                                  )?.align
-                                }
-                                >
-                                {flexRender(
-                                  cell.column.columnDef.cell,
-                                  cell.getContext()
-                                )}
-                              </TableCell>
-                            )
-                          )}
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-                <DataTablePagination
-                  className={`${(data.items ?? 0) < 10 && 'border-t border-border/50'}`}
-                  table={table}
-                  onPaginationChange={handlePageTransition}
-                  items={data.items || 0}
-              />
-              </>
-            ) : (
-              <div className='flex items-center justify-center h-[488px]'>
-                <p className='text-sm text-muted-foreground'>
-                  {tTable('body.noData')}
-                </p>
+              </Label>
+              <div className='flex items-center gap-2'>
+                <Input
+                  className='input-number h-8 px-2'
+                  placeholder={t('filters.options.areaRange.min')}
+                  value={minArea}
+                  onChange={(e) => handleMinAreaChange(e.target.value)}
+                  type='number'
+                />
+                <span className='text-sm font-medium text-muted-foreground'>-</span>
+                <Input
+                  className='input-number h-8 px-2'
+                  placeholder={t('filters.options.areaRange.max')}
+                  value={maxArea}
+                  onChange={(e) => handleMaxAreaChange(e.target.value)}
+                  type='number'
+                />
               </div>
-            )}
-          </div>
-        )}
-        {paramOilSpill && (
-          <OilSpillInfo data={data.data[0]} />
-        )}
+              <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='outline' className='w-full h-8'>
+                    {t('filters.options.columns.placeholder')}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {table.
+                    getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      return (
+                      <DropdownMenuItem
+                        key={column.id}
+                        className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
+                        onClick={() => column.toggleVisibility()}
+                        onSelect={(event) => event.preventDefault()}
+                      >
+                        {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
+                      </DropdownMenuItem>
+                      );
+                    }
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          }
+          className='w-64 flex flex-col gap-2'
+        />
+        <ButtonTooltip
+          button={
+            <Button
+              disabled
+              variant='outline'
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+            >
+              <Plus className='!size-4' />
+            </Button>
+          }
+          tooltip={t('add.tooltip')}
+        />
+        <ButtonTooltip
+          button={
+            <Button
+              variant='outline'
+              onClick={resetFilters}
+              disabled={activeFilters === 0}
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+            >
+              <RotateCcw className='!size-4' />
+            </Button>
+          }
+          tooltip={t('reset.tooltip')}
+        />
       </div>
-      <Navbar />
+      { data.data.length > 0 && !data.single ? (
+        <>
+          <Table className='border-b border-border/50' divClassName='h-[440px] overflow-y-auto'>
+            <TableHeader className='sticky top-0 z-10 bg-background'>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className='relative hover:bg-transparent border-border/50'
+                >
+                  <TableHead
+                    className='p-0 h-10'
+                    key={'link-head'}
+                    aria-label='Search Engine Link'
+                  />
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody className={`${table.getRowModel().rows?.length > 9 && '[&>tr:last-child]:!border-transparent'} [&>tr:last-child]:border-b-1`}>
+              {table.getRowModel().rows?.length && (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className={`border-border/50 !h-10 relative ${
+                      Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
+                        const ts = new Date(timestamp.replace(' ', 'T')).getTime();
+                        const hourStart = date.getTime();
+                        const hourEnd = hourStart + 60 * 60 * 1000;
+
+                        return (
+                          ts >= hourStart &&
+                          ts < hourEnd &&
+                          spills.some((spill) => spill.id === row.original._id)
+                        );
+                      })
+                        ? 'bg-muted/20 text-foreground'
+                        : ''
+                    }`}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
+                      <Link
+                        className='cursor-pointer absolute inset-0 w-full h-full'
+                        href={`?oilspill=${row.original._id}`}
+                      />
+                    </TableCell>
+                    {row.getVisibleCells().map((cell) =>
+                      isPending ? (
+                        <TableCell key={cell.id} className='p-0'>
+                          <Skeleton className='m-2 h-5 min-w-16' />
+                        </TableCell>
+                      ) : (
+                        <TableCell
+                          className={`text-xs font-medium ${
+                            orderableColumns.includes(cell.column.id) ? 'px-2' : ''
+                          }`}
+                          key={cell.id}
+                          align={
+                            (
+                            cell.column.columnDef.meta as {
+                              align: AlignCellProps;
+                            }
+                            )?.align
+                          }
+                          >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    )}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+          <DataTablePagination
+            className={`${(data.items ?? 0) < 10 && 'border-t border-border/50'}`}
+            table={table}
+            onPaginationChange={handlePageTransition}
+            items={data.items || 0}
+          />
+        </>
+      ) : (
+        <div className='flex items-center justify-center h-[488px]'>
+          <p className='text-sm text-muted-foreground'>
+            {tTable('body.noData')}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
