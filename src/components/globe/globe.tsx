@@ -445,9 +445,9 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
           ref={globeRef}
           onGlobeReady={() => setIsGlobeReady(true)}
           rendererConfig={{
-            antialias: true,
+            antialias: false,
             alpha: true,
-            powerPreference: 'high-performance',
+            powerPreference: 'default',
           }}
           width={dimensions.width}
           height={dimensions.height}
