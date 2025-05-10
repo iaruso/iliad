@@ -2,12 +2,12 @@
 import { FC, useContext, useState, useMemo } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
-import ButtonTooltip from '@/components/ui/button-tooltip';
-import DropdownTooltip from '@/components/ui/dropdown-tooltip';
-import PopoverTooltip from '@/components/ui/popover-tooltip';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { RangeCalendar } from '@/components/ui/calendar-rac';
-import { Button } from '@/components/ui/button';
+import ButtonTooltip from '@/components/ui-custom/button-tooltip';
+import DropdownTooltip from '@/components/ui-custom/dropdown-tooltip';
+import PopoverTooltip from '@/components/ui-custom/popover-tooltip';
+import { DropdownMenuItem } from '@/components/ui-custom/dropdown-menu';
+import { RangeCalendar } from '@/components/ui-custom/calendar-rac';
+import { Button } from '@/components/ui-custom/button';
 import { SkipBack, Play, Pause, SkipForward, Calendar } from 'lucide-react';
 import { enUS, pt } from 'date-fns/locale'
 import { format } from 'date-fns'
@@ -210,7 +210,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
         key={timeStr}
         className={`flex-1 flex items-end h-full ${exists ? 'cursor-pointer hover:bg-primary/20 min-w-[2px]' : 'cursor-not-allowed hover:bg-red-600/10'}`}
         onClick={() => exists && setDate(time)}
-        role="button"
+        role='button'
         aria-pressed={isActive}
         aria-label={`${key}: ${count} unique oilspill(s)`}
         tabIndex={exists ? 0 : -1}

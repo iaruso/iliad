@@ -1,9 +1,9 @@
-import { PageSearchParamName, SizeSearchParamName } from "@/@types/search-params";
-import { PAGE_SIZE } from "@/lib/constants";
-import { useRouter } from "@/i18n/navigation";
-import { PaginationState } from "@tanstack/react-table";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { PageSearchParamName, SizeSearchParamName } from '@/@types/search-params';
+import { PAGE_SIZE } from '@/lib/constants';
+import { useRouter } from '@/i18n/navigation';
+import { PaginationState } from '@tanstack/react-table';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 
 interface UsePaginationProps {
   totalPages: number;
@@ -15,8 +15,8 @@ interface UsePaginationProps {
 export function usePagination({
   totalPages,
   defaultPageSize = 10,
-  pageSearchParamName = "page",
-  sizeSearchParamName = "size",
+  pageSearchParamName = 'page',
+  sizeSearchParamName = 'size',
 }: UsePaginationProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -49,7 +49,7 @@ export function usePagination({
 
     if (pageParam > totalPages) {
       const params = new URLSearchParams(searchParams);
-      params.set(pageSearchParamName, "1");
+      params.set(pageSearchParamName, '1');
       params.set(sizeSearchParamName, currentSize.toString());
       startTransition(() =>
         router.replace(`?${params.toString()}`, { scroll: false }),

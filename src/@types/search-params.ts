@@ -1,14 +1,5 @@
 export type SearchParams = { [key: string]: string | string[] | undefined };
-
 export type PageSearchParamName =
-  | "page"
-  | "sessionsPage"
-  | "notificationsPage"
-  | "usersPage"
-  | "historyPage";
+  | 'page'
 export type SizeSearchParamName =
-  | "size"
-  | "sessionsSize"
-  | "notificationsSize"
-  | "usersSize"
-  | "historySize";
+  | 'size'

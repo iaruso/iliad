@@ -2,6 +2,7 @@ export type OilSpill = {
   _id: string;
   coordinates?: [number, number][];
   area?: number;
+  points?: number;
   data: OilSpillData;
   single?: boolean;
 }
@@ -21,14 +22,14 @@ export type Actor = {
   geometry: ActorGeometry;
 }
 
-export type ActorType = "Object" | "Oil";
+export type ActorType = 'Object' | 'Oil';
 
 export type ActorGeometry = {
-  type: "Point" | "Polygon";
+  type: 'Point' | 'Polygon';
   coordinates: ActorCoordinates[];
 }
 
-export type ActorCoordinates = [number, number] | [number, number, number]; // lng, lat, alt (optional)
+export type ActorCoordinates = [number, number] | [number, number, number];
 
 export type OilSpills = {
   page?: number;

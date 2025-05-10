@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import clientPromise from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export function serializeOilSpill(oilSpill: any) {
   return {
@@ -15,20 +15,20 @@ export async function fetchOilSpills(
   id?: string,
   minArea?: string,
   maxArea?: string,
-  sortField?: "area" | "latitude" | "longitude",
-  sortDirection?: "asc" | "desc"
+  sortField?: 'latitude' | 'longitude' | 'area' | 'points',
+  sortDirection?: 'asc' | 'desc'
 ) {
   const skip = (page - 1) * size;
 
   const client = await clientPromise;
-  const db = client.db("oilspills");
-  const collection = db.collection("oilspills-min");
+  const db = client.db('oilspills');
+  const collection = db.collection('oilspills-min');
 
   const tailExpr = {
     $toLower: {
       $substrCP: [
-        { $toString: "$_id" },
-        { $subtract: [{ $strLenCP: { $toString: "$_id" } }, 9] },
+        { $toString: '$_id' },
+        { $subtract: [{ $strLenCP: { $toString: '$_id' } }, 9] },
         9,
       ],
     },
@@ -45,8 +45,8 @@ export async function fetchOilSpills(
     };
   }
 
-  const parsedMin = typeof minArea === "string" ? parseFloat(minArea) : minArea;
-  const parsedMax = typeof maxArea === "string" ? parseFloat(maxArea) : maxArea;
+  const parsedMin = typeof minArea === 'string' ? parseFloat(minArea) : minArea;
+  const parsedMax = typeof maxArea === 'string' ? parseFloat(maxArea) : maxArea;
 
   if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
     match.area = {};
@@ -60,15 +60,10 @@ export async function fetchOilSpills(
     pipeline.push({ $match: match });
   }
 
-  if (sortField && ["area", "latitude", "longitude"].includes(sortField)) {
-    const direction = sortDirection === "desc" ? -1 : 1;
+  if (sortField && ['latitude', 'longitude', 'area', 'points'].includes(sortField)) {
+    const direction = sortDirection === 'desc' ? -1 : 1;
   
-    const sortKey =
-      sortField === "area"
-        ? "area"
-        : sortField === "latitude"
-        ? "coordinates.1"
-        : "coordinates.0";
+    const sortKey = sortField === 'latitude' ? 'coordinates.1' : sortField === 'longitude' ? 'coordinates.0' : sortField;
   
     pipeline.push({ $sort: { [sortKey]: direction } });
   }  
@@ -91,12 +86,12 @@ export async function fetchOilSpills(
 
 export async function fetchOilSpillById(oilspill: string) {
   const client = await clientPromise;
-  const db = client.db("oilspills");
-  const collection = db.collection("oilspills");
+  const db = client.db('oilspills');
+  const collection = db.collection('oilspills');
 
   const data = await collection.findOne({ _id: new ObjectId(oilspill) });
 
-  if (!data) throw new Error("Not found");
+  if (!data) throw new Error('Not found');
 
   return serializeOilSpill(data);
 }

@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI as string;
 const options = {};
@@ -7,10 +7,10 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Por favor define a variável de ambiente MONGODB_URI");
+  throw new Error('Por favor define a variável de ambiente MONGODB_URI');
 }
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === 'development') {
   // @ts-expect-error: Global type definition for _mongoClientPromise is missing
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);

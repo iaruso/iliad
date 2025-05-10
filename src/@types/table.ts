@@ -1,9 +1,9 @@
 export type AlignCellProps =
-  | "left"
-  | "center"
-  | "right"
-  | "justify"
-  | "char"
+  | 'left'
+  | 'center'
+  | 'right'
+  | 'justify'
+  | 'char'
   | undefined;
 
 export type SkeletonColumn = {

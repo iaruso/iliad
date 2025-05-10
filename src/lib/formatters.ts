@@ -1,9 +1,9 @@
-import { GlobePoint, FormattedGlobeStructure } from "@/@types/globe";
+import { GlobePoint, FormattedGlobeStructure } from '@/@types/globe';
 
-type Density = "single" | "low" | "medium" | "high";
+type Density = 'single' | 'low' | 'medium' | 'high';
 
 export function formatGlobeData(data: FormattedGlobeStructure[], density: Density): FormattedGlobeStructure[] {
-  if (!Array.isArray(data) || data.length === 0) throw new Error("O array de dados está vazio.");
+  if (!Array.isArray(data) || data.length === 0) throw new Error('O array de dados está vazio.');
 
   const clusterSizes = { single: 1, low: 16, medium: 32, high: 64 };
   const numClusters = clusterSizes[density] || 1;
@@ -11,7 +11,7 @@ export function formatGlobeData(data: FormattedGlobeStructure[], density: Densit
   return data.map((item) => {
     const newOilsByDensity: Record<string, GlobePoint[]> = {};
 
-    if (density === "single") {
+    if (density === 'single') {
       // Juntar todos os pontos
       const allOilPoints = Object.values(item.oilsByDensity ?? {}).flat();
       if (!allOilPoints.length) return item;

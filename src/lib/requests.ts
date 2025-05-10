@@ -1,10 +1,12 @@
-import ky from "ky";
-import { revalidatePath } from "next/cache";
+import ky from 'ky';
+import { revalidatePath } from 'next/cache';
 
 type ConstructUrlProps = {
   endpoint: string;
   page?: number;
   size?: number;
+  sortField?: 'latitude' | 'longitude' | 'area' | 'points';
+  sortDirection?: 'asc' | 'desc';
   id?: string;
   minArea?: string | number;
   maxArea?: string | number;
@@ -18,8 +20,10 @@ export async function getSession(): Promise<string | null> {
 export function constructUrl(urlParams: ConstructUrlProps): string {
   const { 
     endpoint,
-    size,
     page,
+    size,
+    sortField,
+    sortDirection,
     id,
     minArea,
     maxArea,
@@ -29,27 +33,35 @@ export function constructUrl(urlParams: ConstructUrlProps): string {
   const params = new URLSearchParams();
 
   if (page !== undefined && !isNaN(page)) {
-    params.append("page", page.toString());
+    params.append('page', page.toString());
   }
 
   if (size !== undefined && !isNaN(size)) {
-    params.append("size", size.toString());
+    params.append('size', size.toString());
+  }
+
+  if (sortField !== undefined) {
+    params.append('sortField', sortField);
+  }
+
+  if (sortDirection !== undefined) {
+    params.append('sortDirection', sortDirection);
   }
 
   if (id !== undefined) {
-    params.append("id", id.toString());
+    params.append('id', id.toString());
   }
 
   if (minArea !== undefined) {
-    params.append("minArea", minArea.toString());
+    params.append('minArea', minArea.toString());
   }
 
   if (maxArea !== undefined) {
-    params.append("maxArea", maxArea.toString());
+    params.append('maxArea', maxArea.toString());
   }
 
   if (oilspill !== undefined) {
-    params.append("oilspill", oilspill.toString());
+    params.append('oilspill', oilspill.toString());
   }
 
   const url = `${finalUrl}?${params.toString()}`;
@@ -57,7 +69,7 @@ export function constructUrl(urlParams: ConstructUrlProps): string {
 }
 
 export const constructHeaders = (): HeadersInit => ({
-  "Content-Type": "application/json"
+  'Content-Type': 'application/json'
 });
 
 export const requestKy = ky.create({
@@ -67,7 +79,7 @@ export const requestKy = ky.create({
       async (request) => {
         const token = await getSession();
         if (!token) {
-          throw new Error("401");
+          throw new Error('401');
         }
 
         const headers = constructHeaders();
@@ -83,32 +95,32 @@ export const requestKy = ky.create({
       async (request, _options, response) => {
         const path = new URL(request.url).pathname;
         if (
-          request.method === "PUT" ||
-          request.method === "POST" ||
-          request.method === "PATCH" ||
-          request.method === "DELETE"
+          request.method === 'PUT' ||
+          request.method === 'POST' ||
+          request.method === 'PATCH' ||
+          request.method === 'DELETE'
         ) {
           if (response.status === 201 || response.status === 200) {
-            revalidatePath(path || "/");
+            revalidatePath(path || '/');
           }
         }
         if (
-          request.method === "PUT" ||
-          request.method === "POST" ||
-          request.method === "PATCH"
+          request.method === 'PUT' ||
+          request.method === 'POST' ||
+          request.method === 'PATCH'
         ) {
           if (
             response.status === 409 ||
             response.status === 400 ||
             response.status === 405
           ) {
-            revalidatePath(path || "/");
+            revalidatePath(path || '/');
           }
         }
 
-        if (request.method === "GET") {
+        if (request.method === 'GET') {
           if (response.status === 401) {
-            throw new Error("401");
+            throw new Error('401');
           }
           if (
             response.status === 500 ||

@@ -8,13 +8,13 @@ import {
   Plus,
   RotateCcw
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui-custom/input';
+import { Button } from '@/components/ui-custom/button';
+import { Skeleton } from '@/components/ui-custom/skeleton';
 import { Link } from '@/i18n/navigation';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AlignCellProps } from '@/@types/table';
-import { DataTablePagination } from '@/components/data-table-pagination';
+import TablePagination from '@/components/table-pagination';
 import {
   Table,
   TableBody,
@@ -22,10 +22,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui-custom/table';
 import { usePagination } from '@/hooks/use-pagination';
-import ButtonTooltip from '@/components/ui/button-tooltip';
-import { Label } from '@/components/ui/label';
+import ButtonTooltip from '@/components/ui-custom/button-tooltip';
+import { Label } from '@/components/ui-custom/label';
 import {
   ColumnFiltersState,
   SortingState,
@@ -37,14 +37,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import useOilSpillsTableColumns from '@/hooks/use-oilspills-tablecolumns';
+import useOilSpillsTableColumns from '@/hooks/use-oilspills-table-columns';
 import { 
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem
- } from '@/components/ui/dropdown-menu';
-import PopoverTooltip from '@/components/ui/popover-tooltip';
+ } from '@/components/ui-custom/dropdown-menu';
+import PopoverTooltip from '@/components/ui-custom/popover-tooltip';
 
 interface ContainerProps {
   data: OilSpills;
@@ -53,7 +53,8 @@ interface ContainerProps {
 const orderableColumns = [
   'latitude',
   'longitude',
-  'area'
+  'area',
+  'points'
 ];
 
 const Container: FC<ContainerProps> = ({ data }) => {
@@ -412,7 +413,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
               )}
             </TableBody>
           </Table>
-          <DataTablePagination
+          <TablePagination
             className={`${(data.items ?? 0) < 10 && 'border-t border-border/50'}`}
             table={table}
             onPaginationChange={handlePageTransition}

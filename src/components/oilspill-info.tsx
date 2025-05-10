@@ -10,7 +10,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from '@/components/ui-custom/breadcrumb';
 import { formatDistance, format } from 'date-fns';
 import { enUS, pt } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
@@ -33,7 +33,7 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
             try {
               return new Date(entry.timestamp);
             } catch {
-              console.error("Invalid timestamp format:", entry.timestamp);
+              console.error('Invalid timestamp format:', entry.timestamp);
               return null;
             }
           })
@@ -140,9 +140,9 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="p-4 space-y-4">
-        <h2 className="text-xl font-semibold">{t('summary')}</h2>
-        <div className="grid grid-cols-1 gap-4 text-sm">
+      <div className='p-4 space-y-4'>
+        <h2 className='text-xl font-semibold'>{t('summary')}</h2>
+        <div className='grid grid-cols-1 gap-4 text-sm'>
           <div><strong>{t('timestampsCollected')}:</strong> {stats.totalTimestamps}</div>
           <div>
             <strong>{t('interval')}:</strong>{' '}
@@ -160,8 +160,8 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
 
 
         {/* <div>
-          <h3 className="font-medium mt-4 mb-2">Density distribution:</h3>
-          <ul className="list-disc list-inside text-sm">
+          <h3 className='font-medium mt-4 mb-2'>Density distribution:</h3>
+          <ul className='list-disc list-inside text-sm'>
             {Object.entries(stats.densityGroups).map(([range, count]) => (
               <li key={range}><strong>{range}:</strong> {count} spill(s)</li>
             ))}
@@ -169,8 +169,8 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
         </div>
 
         <div>
-          <h3 className="font-medium mt-4 mb-2">Spills per timestamp:</h3>
-          <ul className="list-disc list-inside text-sm max-h-40 overflow-y-auto">
+          <h3 className='font-medium mt-4 mb-2'>Spills per timestamp:</h3>
+          <ul className='list-disc list-inside text-sm max-h-40 overflow-y-auto'>
             {Object.entries(stats.spillsPerTimestamp).map(([ts, count]) => (
               <li key={ts}><strong>{ts}:</strong> {count} spill(s)</li>
             ))}

@@ -130,10 +130,11 @@
     "table": {
       "header": {
         "id": "ID",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
         "area": "Área",
         "areaKm2": "Área (km<sup>2</sup>)",
-        "latitude": "Latitude",
-        "longitude": "Longitude"
+        "points": "Pontos"
       },
       "body": {
         "noData": "Não há dados para mostrar"

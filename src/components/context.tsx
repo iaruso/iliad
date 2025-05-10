@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { createContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useState, useEffect, type ReactNode } from 'react'
 
 // This is a placeholder for your actual data structure
 interface AppData {
-  "@definitions": {
-    "@actors": {
+  '@definitions': {
+    '@actors': {
       OilShape: {
-        "@state": Array<{
+        '@state': Array<{
           polygon: string
         }>
       }
@@ -32,13 +32,13 @@ export const AppContext = createContext<AppContextType>({
 
 // Sample data for demonstration
 const sampleData: AppData = {
-  "@definitions": {
-    "@actors": {
+  '@definitions': {
+    '@actors': {
       OilShape: {
-        "@state": [
+        '@state': [
           {
             polygon: JSON.stringify({
-              type: "MultiPoint",
+              type: 'MultiPoint',
               coordinates: Array.from({ length: 100 }, () => [Math.random() * 360 - 180, Math.random() * 180 - 90]),
             }),
           },
@@ -67,7 +67,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setData(sampleData)
         setLoading(false)
       } catch {
-        setError("Failed to fetch data")
+        setError('Failed to fetch data')
         setLoading(false)
       }
     }

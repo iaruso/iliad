@@ -1,16 +1,16 @@
 'use client';
 import { useContext } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
-import DropdownTooltip from '@/components/ui/dropdown-tooltip';
+import DropdownTooltip from '@/components/ui-custom/dropdown-tooltip';
 import { 
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui-custom/dropdown-menu';
+import { Button } from '@/components/ui-custom/button';
 import { Layers } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import CustomSwitch from '../ui/custom-switch';
+import CustomSwitch from '../ui-custom/custom-switch';
 
 const TexturesDropdown = () => {
   const { 
