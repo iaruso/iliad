@@ -1,26 +1,30 @@
 import { FC } from 'react';
+import dynamic from 'next/dynamic';
 import Navbar from '@/components/navbar';
-import Container from '@/components/container';
-import OilSpillInfo from '@/components/oilspill-info';
-import Globe from '@/components/globe/globe';
-import Timeline from '@/components/timeline';
-import { GlobeProvider } from '@/context/globe-context';
 import { redirect } from '@/i18n/navigation';
+import { GlobeProvider } from '@/context/globe-context';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui-custom/resizable';
-import { Controls } from '@/components/controls'
-import { AppProvider } from '@/components/context';
+import { headers } from 'next/headers';
 import { validateAndSetParams } from '@/lib/pagination';
-import { headers } from 'next/headers'
-import { Locale } from 'next-intl';
-import { OilSpills } from '@/@types/oilspills';
-import {
-  getOilSpills,
-  getOilSpillByID
-} from '@/actions/oilspills';
+import { fetchOilspillData } from '@/lib/helpers/oilspill';
+import type { Locale } from 'next-intl';
+import type { OilSpills } from '@/@types/oilspills';
+import Globe from '@/components/globe/globe';
+import Controls from '@/components/controls';
+import Timeline from '@/components/timeline';
+
+const OilSpillInfo = dynamic(() => import('@/components/oilspill-info'), {
+  loading: () => <div className='p-4'>A carregar derrame...</div>,
+});
+
+
+const Container = dynamic(() => import('@/components/container'), {
+  loading: () => <div className='p-4'>A carregar resultados...</div>,
+});
 
 type Params = Promise<{ locale: Locale }>;
 type SearchParams = Promise<{
@@ -29,7 +33,7 @@ type SearchParams = Promise<{
   id?: string;
   minArea?: string;
   maxArea?: string;
-  sortField?: 'latitude' | 'longitude' | 'area';
+  sortField?: 'latitude' | 'longitude' | 'area' | 'points';
   sortDirection?: 'asc' | 'desc';
   oilspill?: string;
 }>;
@@ -38,11 +42,8 @@ interface MainPageProps {
   params: Params;
   searchParams: SearchParams;
 }
- 
-const MainPage: FC<MainPageProps> = async ({
-  params,
-  searchParams,
-}) => {
+
+const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
   const { locale } = await params;
   const {
     page,
@@ -52,11 +53,11 @@ const MainPage: FC<MainPageProps> = async ({
     maxArea,
     sortField,
     sortDirection,
-    oilspill
+    oilspill,
   } = await searchParams;
 
   const { validPage: PAGE, validSize: SIZE } = validateAndSetParams(page, size);
-  
+
   if (oilspill) {
     const params = new URLSearchParams();
     params.set('oilspill', oilspill);
@@ -69,108 +70,50 @@ const MainPage: FC<MainPageProps> = async ({
     if (maxArea) params.set('maxArea', maxArea);
     if (sortField) params.set('sortField', sortField);
     if (sortDirection) params.set('sortDirection', sortDirection);
-    redirect({ href: `?${params.toString()}`, locale: locale });
+    redirect({ href: `?${params.toString()}`, locale });
   }
 
-  let oilSpills: OilSpills;
-
-  try {
-    if (oilspill) {
-      const single = await getOilSpillByID({ oilspill: oilspill.toLowerCase() });
-  
-      if (!single) {
-        oilSpills = { data: [] };
-      } else {
-        let coordinates: [number, number] = [0, 0];
-        let found = false;
-  
-        for (const entry of single.data ?? []) {
-          for (const actor of entry.actors ?? []) {
-            const geom = actor.geometry;
-  
-            if (geom?.type === 'Point' && Array.isArray(geom.coordinates)) {
-              const [lng, lat] = geom.coordinates;
-              if (typeof lng === 'number' && typeof lat === 'number') {
-                coordinates = [lng, lat];
-                found = true;
-                break;
-              }
-            }
-  
-            if (geom?.type === 'Polygon' && Array.isArray(geom.coordinates)) {
-              const ring = geom.coordinates[0];
-              if (Array.isArray(ring) && ring.length) {
-                const [lng, lat] = ring[0];
-                if (typeof lng === 'number' && typeof lat === 'number') {
-                  coordinates = [lng, lat];
-                  found = true;
-                  break;
-                }
-              }
-            }
-          }
-          if (found) break;
-        }
-  
-        oilSpills = {
-          single: true,
-          data: [
-            {
-              ...single,
-              coordinates
-            },
-          ],
-        };
-      }
-    } else {
-      oilSpills = await getOilSpills({
-        page: PAGE,
-        size: SIZE,
-        id: id?.toLowerCase(),
-        minArea,
-        maxArea,
-        sortField,
-        sortDirection,
-      });
-    }
-  } catch (error) {
-    throw new Error(error as string);
-  }
+  const oilSpills: OilSpills = await fetchOilspillData({
+    oilspill,
+    page: PAGE,
+    size: SIZE,
+    id,
+    minArea,
+    maxArea,
+    sortField,
+    sortDirection,
+  });
 
   const supportsWebGPU = (await headers()).get('X-Supports-WebGPU');
 
   return (
-    <AppProvider>
-      <ResizablePanelGroup direction='horizontal'>
-        <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
-          <ResizablePanel
-            id='content-panel'
-            className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
-            defaultSize={64}
-          >
-            <Globe data={oilSpills}/>
-            <Controls />
-            <Timeline isSingle={oilSpills.single}/>
-          </ResizablePanel>
-          <ResizableHandle/>
-          <ResizablePanel maxSize={40} minSize={32} defaultSize={32}>
-            <div className='flex flex-col h-full'>
-              <div className='flex-1'>
-                { 
-                  oilspill ? (
-                    <OilSpillInfo data={oilSpills.data[0]} />
-                  ) : (
-                    <Container data={oilSpills}/>
-                  )
-                }
-              </div>
-              <Navbar />
+    <ResizablePanelGroup direction='horizontal'>
+      <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
+        <ResizablePanel
+          id='content-panel'
+          className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
+          defaultSize={64}
+        >
+          <Globe data={oilSpills} />
+          <Controls />
+          <Timeline isSingle={oilSpills.single} />
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel maxSize={40} minSize={32} defaultSize={32}>
+          <div className='flex flex-col h-full'>
+            <div className='flex-1'>
+              {oilspill ? (
+                <OilSpillInfo data={oilSpills.data[0]} />
+              ) : (
+                <Container data={oilSpills} />
+              )}
             </div>
-          </ResizablePanel>
-        </GlobeProvider>
-      </ResizablePanelGroup>
-    </AppProvider>
+            <Navbar />
+          </div>
+        </ResizablePanel>
+      </GlobeProvider>
+    </ResizablePanelGroup>
   );
-}
+};
 
 export default MainPage;

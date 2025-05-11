@@ -52,42 +52,44 @@ export default function DataTablePagination<TData>({
   return (
     <div className={`p-2 flex items-center justify-end h-12 border-t ${className}`}>
       <div className='flex items-center gap-2 justify-end w-full'>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className='focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
-              <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
-                <p className='text-sm'>{Math.min(table.getState().pagination.pageSize, items)}/{items}</p>
-                <CircleDotDashed className='size-4' strokeWidth={2} />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className='text-xs'>
-                {t('itemsOutOf', {
-                  items: `${table.getState().pagination.pageSize}`,
-                  total: `${items}`
-                })}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className='mr-auto focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
-              <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
-                <p className='text-sm'>{table.getState().pagination.pageIndex + 1}/{table.getPageCount()}</p>
-                <BookOpenText className='size-4' strokeWidth={2} />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className='text-xs'>
-                {t('pageOf', {
-                  page: `${table.getState().pagination.pageIndex + 1}`,
-                  total: `${table.getPageCount()}`
-                })}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className='flex items-center gap-2 mr-auto'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className='focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
+                <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
+                  <BookOpenText className='size-4' strokeWidth={2} />
+                  <p className='text-sm'>{table.getState().pagination.pageIndex + 1}/{table.getPageCount()}</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className='text-xs'>
+                  {t('pageOf', {
+                    page: `${table.getState().pagination.pageIndex + 1}`,
+                    total: `${table.getPageCount()}`
+                  })}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className='focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
+                <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
+                  <CircleDotDashed className='size-4' strokeWidth={2} />
+                  <p className='text-sm'>{Math.min(table.getState().pagination.pageSize, items)}/{items}</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className='text-xs'>
+                  {t('itemsOutOf', {
+                    items: `${table.getState().pagination.pageSize}`,
+                    total: `${items}`
+                  })}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <DropdownTooltip
           button={
             <Button

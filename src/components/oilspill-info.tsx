@@ -14,8 +14,8 @@ import {
 import { formatDistance, format } from 'date-fns';
 import { enUS, pt } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
-//import dynamic from 'next/dynamic';
 
+//import dynamic from 'next/dynamic';
 //const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
 
 interface OilSpillInfoProps {

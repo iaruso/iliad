@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Kumbh_Sans } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { ThemeProvider } from '@/providers/theme-provider'
-import { ReactScan } from '@/components/scanner'
+// import { ReactScan } from '@/components/scanner'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
@@ -18,7 +18,7 @@ const kumbhSans = Kumbh_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Oil Spill Monitor - 0.6.2',
+  title: 'Oil Spill Monitor - 0.6.3',
   description: 'A web application to visualize oil spills on a globe',
 }
 
@@ -45,12 +45,12 @@ export default async function RootLayout(
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <ReactScan />
+      {/* <ReactScan /> */}
       <body className={`${kumbhSans.variable} antialiased p-0 m-0`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
             <main className='flex h-screen w-screen p-4 justify-center items-center'>
-              <div className='h-full w-full max-container border rounded-lg overflow-hidden'>
+              <div className='h-full w-full max-container border rounded-lg overflow-hidden bg-background'>
                 {children}
               </div>
             </main>

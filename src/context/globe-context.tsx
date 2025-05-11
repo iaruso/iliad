@@ -6,7 +6,8 @@ import {
   ReactNode,
   useRef,
   useState,
-  useContext
+  useContext,
+  useMemo
 } from 'react';
 import { ShaderMaterial } from 'three';
 import { DateRange } from 'react-aria-components';
@@ -44,6 +45,7 @@ export interface GlobeContextProps {
   setViewType: (view: 'heatmap' | 'points') => void;
   labelsVisible: boolean;
   setLabelsVisible: (visible: boolean) => void;
+  dataToDisplay: any[]; // <-- nova propriedade
 }
 
 export const GlobeContext = createContext<GlobeContextProps | undefined>(undefined);
@@ -56,7 +58,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const globeRef = useRef<any>(undefined);
   const [zoomControl, setZoomControl] = useState<number>(0);
-  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number, date: Date } | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number; date: Date } | null>(null);
   const [textureQuality, setTextureQuality] = useState<'low' | 'high'>('low');
   const [dayNight, setDayNight] = useState(true);
   const [altitude, setAltitude] = useState(2.5);
@@ -68,6 +70,14 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null);
   const [viewType, setViewType] = useState<'heatmap' | 'points'>('points');
   const [labelsVisible, setLabelsVisible] = useState(true);
+
+  const dataToDisplay = useMemo(() => {
+    const timestamps = Object.keys(groupedGlobeData);
+    if (timestamps.length === 0 || !date) return [];
+
+    const currentTimestamp = timestamps.find(ts => new Date(ts).getTime() === date.getTime());
+    return groupedGlobeData[currentTimestamp ?? ''] ?? [];
+  }, [groupedGlobeData, date]);
 
   return (
     <GlobeContext.Provider
@@ -103,7 +113,8 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
         viewType,
         setViewType,
         labelsVisible,
-        setLabelsVisible
+        setLabelsVisible,
+        dataToDisplay // <-- incluído no context
       }}
     >
       {children}

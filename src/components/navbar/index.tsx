@@ -11,7 +11,7 @@ const Navbar = async () => {
     <nav className='border-t h-12 flex items-center py-2 px-3 justify-between gap-2'>
       <div className='flex items-start gap-2'>
         <h1 className='font-[550] select-none line-clamp-1'>{t('app')}</h1>
-        <Badge variant='version' className='tabular-nums'>0.6.2</Badge>
+        <Badge variant='version' className='tabular-nums'>0.6.3</Badge>
       </div>
       <div className='flex items-center gap-1.5'>
         <ThemeToggle />
