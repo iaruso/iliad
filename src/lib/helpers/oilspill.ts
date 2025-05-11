@@ -47,6 +47,7 @@ export async function fetchOilspillData({
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function extractCoordinatesFromSingleOilSpill(data: any[]): [number, number] {
   for (const entry of data) {
     for (const actor of entry.actors ?? []) {

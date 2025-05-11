@@ -1,5 +1,5 @@
 import * as solar from 'solar-calculator';
-import { type Material, Vector2 } from 'three';
+import { Vector2 } from 'three';
 
 export const sunPositionAt = (dt: Date): [number, number] => {
   const day = new Date(+dt).setUTCHours(0, 0, 0, 0);
