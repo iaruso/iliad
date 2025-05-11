@@ -1,10 +1,24 @@
+export type OilSpillStats = {
+  timestamp?: string;
+  area: number;
+  points: number;
+  density: number;
+  compaction: number;
+  dispersionRadius: number;
+  dispersionDistance: number;
+  bearing: number;
+}
+
 export type OilSpill = {
   _id: string;
   coordinates?: [number, number][];
   area?: number;
   points?: number;
   data: OilSpillData;
+  stats: OilSpillStats[] | OilSpillStats;
   single?: boolean;
+  duration: number;
+  frequency: number;
 }
 
 export type OilSpillData = {

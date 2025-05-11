@@ -2,6 +2,7 @@
 import { FC, useCallback, useState, useContext } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { OilSpills } from '@/@types/oilspills';
 import { 
   Settings2,
@@ -11,8 +12,8 @@ import {
 import { Input } from '@/components/ui-custom/input';
 import { Button } from '@/components/ui-custom/button';
 import { Skeleton } from '@/components/ui-custom/skeleton';
-import { Link } from '@/i18n/navigation';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Stats from '@/components/stats';
 import { AlignCellProps } from '@/@types/table';
 import TablePagination from '@/components/table-pagination';
 import {
@@ -72,7 +73,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const paramIdFilter = searchParams.get('id')?.toLowerCase() ?? '';
   const [idFilter, setIdFilter] = useState<string>(paramIdFilter);
   const paramMinArea = searchParams.get('minArea');
@@ -218,7 +218,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
   });
 
   return (
-    <div className='flex flex-col border-b'>
+    <>
       <div className='flex items-center gap-2 h-12 p-2 border-b'>
         <Input
           placeholder={t('placeholder')}
@@ -419,6 +419,10 @@ const Container: FC<ContainerProps> = ({ data }) => {
             onPaginationChange={handlePageTransition}
             items={data.items || 0}
           />
+          <Stats
+            data={data}
+            type='multiple'
+          />
         </>
       ) : (
         <div className='flex items-center justify-center h-[488px]'>
@@ -427,7 +431,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
           </p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

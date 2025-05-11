@@ -18,12 +18,12 @@ import Controls from '@/components/controls';
 import Timeline from '@/components/timeline';
 
 const OilSpillInfo = dynamic(() => import('@/components/oilspill-info'), {
-  loading: () => <div className='p-4'>A carregar derrame...</div>,
+  loading: () => <div className='p-4'></div>,
 });
 
 
 const Container = dynamic(() => import('@/components/container'), {
-  loading: () => <div className='p-4'>A carregar resultados...</div>,
+  loading: () => <div className='p-4'></div>,
 });
 
 type Params = Promise<{ locale: Locale }>;
@@ -101,13 +101,13 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
         <ResizableHandle />
         <ResizablePanel maxSize={40} minSize={32} defaultSize={32}>
           <div className='flex flex-col h-full'>
-            <div className='flex-1'>
+            <>
               {oilspill ? (
                 <OilSpillInfo data={oilSpills.data[0]} />
               ) : (
                 <Container data={oilSpills} />
               )}
-            </div>
+            </>
             <Navbar />
           </div>
         </ResizablePanel>
