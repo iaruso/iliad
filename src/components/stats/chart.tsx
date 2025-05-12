@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import type { FC } from 'react'
-import { Area, AreaChart, XAxis, YAxis, ResponsiveContainer, ReferenceLine  } from 'recharts'
+import { Area, AreaChart, YAxis, ResponsiveContainer, ReferenceLine  } from 'recharts'
 import { type ChartConfig, ChartContainer } from '@/components/ui-custom/chart'
 
 interface ChartProps {

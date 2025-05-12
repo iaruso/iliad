@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, ReactNode } from 'react';
 import Chart from './chart';
 import {
