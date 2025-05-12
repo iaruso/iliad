@@ -30,7 +30,7 @@ const Chart: FC<ChartProps> = ({ data, min, max, avg }) => {
           data={chartData}
           accessibilityLayer
           margin={{
-            top: 45,
+            top: 50,
             right: -5,
             left: -5,
             bottom: -5,

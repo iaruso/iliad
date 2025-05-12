@@ -164,7 +164,7 @@ html {
   overscroll-behavior: none;
   --scrollbar-color-thumb: hsl(var(--muted));
   --scrollbar-color-track: hsl(var(--muted), 0.3);
-  --scrollbar-width: thin;
+  --scrollbar-width: 0.5rem;
   --scrollbar-width-legacy: 0.5rem;
 }
 
@@ -228,4 +228,8 @@ html {
 .input-number {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+.scrollbar-gutter-stable-both-edges {
+  scrollbar-gutter: stable both-edges;
 }

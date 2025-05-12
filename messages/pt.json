@@ -13,33 +13,8 @@
         "en": "Inglês",
         "pt": "Português"
       },
-      "info": {
-        "tooltip": "Ver o código fonte"
-      }
-    }
-  },
-  "globe": {
-    "controls": {
-      "zoomIn": {
-        "tooltip": "Aproximar"
-      },
-      "zoomOut": {
-        "tooltip": "Afastar"
-      },
-      "maximize": {
-        "tooltip": "Maximizar o ecrã"
-      },
-      "minimize": {
-        "tooltip": "Minimizar o ecrã"
-      },
-      "location": {
-        "tooltip": "Localização atual"
-      },
-      "print": {
-        "tooltip": "Imprimir o ecrã"
-      },
-      "layers": {
-        "tooltip": "Camadas",
+      "settings": {
+        "tooltip": "Definições",
         "data": {
           "title": "Representação de dados",
           "options": {
@@ -74,6 +49,31 @@
             "off": "Desligado"
           }
         }
+      },
+      "info": {
+        "tooltip": "Ver o código fonte"
+      }
+    }
+  },
+  "globe": {
+    "controls": {
+      "zoomIn": {
+        "tooltip": "Aproximar"
+      },
+      "zoomOut": {
+        "tooltip": "Afastar"
+      },
+      "maximize": {
+        "tooltip": "Maximizar o ecrã"
+      },
+      "minimize": {
+        "tooltip": "Minimizar o ecrã"
+      },
+      "location": {
+        "tooltip": "Localização atual"
+      },
+      "print": {
+        "tooltip": "Imprimir o ecrã"
       },
       "manualExit": "Pressione ESC para sair do modo de ecrã cheio"
     },
@@ -139,6 +139,98 @@
       "body": {
         "noData": "Não há dados para mostrar"
       }
+    },
+    "stats": {
+      "area": {
+        "label": "Área",
+        "detail": "(km<sup>2</sup>)",
+        "tooltip": {
+          "info": "Área do derrame de óleo",
+          "min": "Área mínima - {min}",
+          "max": "Área máxima - {max}",
+          "avg": "Área média - {avg}"
+        }
+      },
+      "duration": {
+        "label": "Duração",
+        "detail": "por derrame de óleo",
+        "tooltip": {
+          "info": "Duração do derrame de óleo",
+          "min": "Duração mínima - {min}",
+          "max": "Duração máxima - {max}",
+          "avg": "Duração média - {avg}"
+        }
+      },
+      "frequency": {
+        "label": "Frequência de dados",
+        "detail": "por minuto",
+        "tooltip": {
+          "info": "Frequência de recolha de dados",
+          "min": "Frequência mínima de dados - {min}",
+          "max": "Frequência máxima de dados - {max}",
+          "avg": "Frequência média de dados - {avg}"
+        }
+      },
+      "points": {
+        "label": "Pontos",
+        "detail": "por derrame de óleo",
+        "tooltip": {
+          "info": "Número de pontos por intervalo de tempo",
+          "min": "Mínimo de pontos - {min}",
+          "max": "Máximo de pontos - {max}",
+          "avg": "Média de pontos - {avg}"
+        }
+      },
+      "density": {
+        "label": "Densidade",
+        "detail": "pontos por km<sup>2</sup>",
+        "tooltip": {
+          "info": "Densidade de pontos na área afetada",
+          "min": "Densidade mínima - {min}",
+          "max": "Densidade máxima - {max}",
+          "avg": "Densidade média - {avg}"
+        }
+      },
+      "perimeter": {
+        "label": "Perímetro",
+        "detail": "km",
+        "tooltip": {
+          "info": "Perímetro da área afetada (convex hull)",
+          "min": "Perímetro mínimo - {min}",
+          "max": "Perímetro máximo - {max}",
+          "avg": "Perímetro médio - {avg}"
+        }
+      },
+      "compaction": {
+        "label": "Circularidade",
+        "detail": "índice",
+        "tooltip": {
+          "info": "Índice de circularidade - 1 é um círculo perfeito enquanto 0 é irregular",
+          "min": "Circularidade mínima: {min}",
+          "max": "Circularidade máxima: {max}",
+          "avg": "Circularidade média: {avg}"
+        }
+      },
+      "dispersionRadius": {
+        "label": "Raio de dispersão",
+        "detail": "km",
+        "tooltip": {
+          "info": "Distância entre os pontos e o centro do derrame de óleo",
+          "min": "Raio de dispersão mínimo - {min}",
+          "max": "Raio de dispersão máximo - {max}",
+          "avg": "Raio de dispersão médio - {avg}"
+        }
+      },
+      "dispersionDistance": {
+        "label": "Distância de dispersão",
+        "detail": "km",
+        "tooltip": {
+          "info": "Distância entre os pontos e a localização do ator",
+          "min": "Distância de dispersão mínima - {min}",
+          "max": "Distância de dispersão máxima - {max}",
+          "avg": "Distância de dispersão média - {avg}"
+        }
+      }
     }
   },
   "pagination": {
@@ -163,5 +255,4 @@
     "densityDistribution": "Distribuição por densidade",
     "spillsPerTimestamp": "Derrames por momento"
   }
-
 }

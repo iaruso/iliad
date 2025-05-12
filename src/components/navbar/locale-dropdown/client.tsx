@@ -10,12 +10,12 @@ import { Globe } from 'lucide-react'
 import { DropdownMenuItem } from '@/components/ui-custom/dropdown-menu'
 import DropdownTooltip from '@/components/ui-custom/dropdown-tooltip'
 
-interface LocaleToggleClientProps {
+interface LocaleDropdownClientProps {
   tooltip: string
   labels: Record<Locale, string>
 }
 
-const LocaleToggleClient: FC<LocaleToggleClientProps> = ({ tooltip, labels }) => {
+const LocaleDropdownClient: FC<LocaleDropdownClientProps> = ({ tooltip, labels }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -44,4 +44,4 @@ const LocaleToggleClient: FC<LocaleToggleClientProps> = ({ tooltip, labels }) =>
   )
 }
 
-export default LocaleToggleClient
+export default LocaleDropdownClient

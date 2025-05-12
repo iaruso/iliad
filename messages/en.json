@@ -13,33 +13,8 @@
         "en": "English",
         "pt": "Portuguese"
       },
-      "info": {
-        "tooltip": "Check out source code"
-      }
-    }
-  },
-  "globe": {
-    "controls": {
-      "zoomIn": {
-        "tooltip": "Zoom in"
-      },
-      "zoomOut": {
-        "tooltip": "Zoom out"
-      },
-      "maximize": {
-        "tooltip": "Maximize screen"
-      },
-      "minimize": {
-        "tooltip": "Minimize screen"
-      },
-      "location": {
-        "tooltip": "Current location"
-      },
-      "print": {
-        "tooltip": "Printscreen"
-      },
-      "layers": {
-        "tooltip": "Layers",
+      "settings": {
+        "tooltip": "Settings",
         "data": {
           "title": "Data representation",
           "options": {
@@ -74,6 +49,31 @@
             "off": "Off"
           }
         }
+      },
+      "info": {
+        "tooltip": "Check out source code"
+      }
+    }
+  },
+  "globe": {
+    "controls": {
+      "zoomIn": {
+        "tooltip": "Zoom in"
+      },
+      "zoomOut": {
+        "tooltip": "Zoom out"
+      },
+      "maximize": {
+        "tooltip": "Maximize screen"
+      },
+      "minimize": {
+        "tooltip": "Minimize screen"
+      },
+      "location": {
+        "tooltip": "Current location"
+      },
+      "print": {
+        "tooltip": "Printscreen"
       },
       "manualExit": "Press ESC to exit fullscreen"
     },
@@ -138,6 +138,98 @@
       },
       "body": {
         "noData": "There's no data to show"
+      }
+    },
+    "stats": {
+      "area": {
+        "label": "Area",
+        "detail": "(km<sup>2</sup>)",
+        "tooltip": {
+          "info": "Area of the oil spill",
+          "min": "Minimum area - {min}",
+          "max": "Maximum area - {max}",
+          "avg": "Average area - {avg}"
+        }
+      },
+      "duration": {
+        "label": "Duration",
+        "detail": "per oil spill",
+        "tooltip": {
+          "info": "Duration of the oil spill",
+          "min": "Minimum duration - {min}",
+          "max": "Maximum duration - {max}",
+          "avg": "Average duration - {avg}"
+        }
+      },
+      "frequency": {
+        "label": "Data frequency",
+        "detail": "per minutes",
+        "tooltip": {
+          "info": "Frequency of data collection",
+          "min": "Minimum data frequency - {min}",
+          "max": "Maximum data frequency - {max}",
+          "avg": "Average data frequency - {avg}"
+        }
+      },
+      "points": {
+        "label": "Points",
+        "detail": "per oil spill",
+        "tooltip": {
+          "info": "Number of points per time interval",
+          "min": "Minimum points - {min}",
+          "max": "Maximum points - {max}",
+          "avg": "Average points - {avg}"
+        }
+      },
+      "density": {
+        "label": "Density",
+        "detail": "points per km<sup>2</sup>",
+        "tooltip": {
+          "info": "Density of points in the affected area",
+          "min": "Minimum density - {min}",
+          "max": "Maximum density - {max}",
+          "avg": "Average density - {avg}"
+        }
+      },
+      "perimeter": {
+        "label": "Perimeter",
+        "detail": "km",
+        "tooltip": {
+          "info": "Perimeter of the affected area (convex hull)",
+          "min": "Minimum perimeter - {min}",
+          "max": "Maximum perimeter - {max}",
+          "avg": "Average perimeter - {avg}"
+        }
+      },
+      "compaction": {
+        "label": "Circularity",
+        "detail": "index",
+        "tooltip": {
+          "info": "Circularity index - 1 is a perfect circle while 0 is irregular",
+          "min": "Minimum circularity: {min}",
+          "max": "Maximum circularity: {max}",
+          "avg": "Average circularity: {avg}"
+        }
+      },
+      "dispersionRadius": {
+        "label": "Dispersion radius",
+        "detail": "km",
+        "tooltip": {
+          "info": "Distance between points and the center of the oil spill",
+          "min": "Minimum dispersion radius - {min}",
+          "max": "Maximum dispersion radius - {max}",
+          "avg": "Average dispersion radius - {avg}"
+        }
+      },
+      "dispersionDistance": {
+        "label": "Dispersion distance",
+        "detail": "km",
+        "tooltip": {
+          "info": "Distance between points and the actor location",
+          "min": "Minimum dispersion distance - {min}",
+          "max": "Maximum dispersion distance - {max}",
+          "avg": "Average dispersion distance - {avg}"
+        }
       }
     }
   },

@@ -6,12 +6,12 @@ import { Moon, Sun } from 'lucide-react'
 import { DropdownMenuItem } from '@/components/ui-custom/dropdown-menu'
 import DropdownTooltip from '@/components/ui-custom/dropdown-tooltip'
 
-interface ThemeToggleClientProps {
+interface ThemeDropdownClientProps {
   tooltip: string
   labels: Record<'light' | 'dark' | 'system', string>
 }
 
-const ThemeToggleClient: FC<ThemeToggleClientProps> = ({ tooltip, labels }) => {
+const ThemeDropdownClient: FC<ThemeDropdownClientProps> = ({ tooltip, labels }) => {
   const { setTheme } = useTheme()
 
   return (
@@ -32,4 +32,4 @@ const ThemeToggleClient: FC<ThemeToggleClientProps> = ({ tooltip, labels }) => {
   )
 }
 
-export default ThemeToggleClient
+export default ThemeDropdownClient

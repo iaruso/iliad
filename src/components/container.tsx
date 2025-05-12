@@ -324,7 +324,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
       </div>
       { data.data.length > 0 && !data.single ? (
         <>
-          <Table className='border-b border-border/50' divClassName='h-[440px] overflow-y-auto'>
+          <Table className='border-b border-border/50' divClassName='h-[440px] overflow-y-auto scrollbar-gutter-stable-both-edges -ml-2 w-[calc(100%+1rem)]'>
             <TableHeader className='sticky top-0 z-10 bg-background'>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow

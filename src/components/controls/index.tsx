@@ -1,5 +1,4 @@
 import { FC } from 'react'
-import TexturesDropdown from './textures-dropdown'
 import FullscreenToggle from './fullscreen-toggle'
 import LocationButton from './location-button'
 import PrintScreenButton from './printscreen-button'
@@ -12,7 +11,6 @@ const Controls: FC = () => {
       <FullscreenToggle />
       <LocationButton />
       <PrintScreenButton />
-      <TexturesDropdown />
     </div>
   )
 }

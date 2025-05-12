@@ -1,8 +1,11 @@
 import React from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui-custom/badge'
-import ThemeToggle from './theme-toggle'
-import LocaleToggle from './locale-toggle'
+import ThemeToggle from './theme-dropdown'
+import LocaleToggle from './locale-dropdown'
+import SettingsDropdown from './settings-dropdown'
+import { CircleHelp } from 'lucide-react'
+import { Button } from '@/components/ui-custom/button'
 
 const Navbar = async () => {
   const t = await getTranslations('navbar')
@@ -16,6 +19,10 @@ const Navbar = async () => {
       <div className='flex items-center gap-1.5'>
         <ThemeToggle />
         <LocaleToggle />
+        <Button variant='secondary' size='icon' className='shadow-none h-6 w-6' disabled>
+          <CircleHelp className='h-4! w-4!' />
+        </Button>
+        <SettingsDropdown />
       </div>
     </nav>
   )
