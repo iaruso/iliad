@@ -37,7 +37,7 @@ const StatsCard: FC<StatsCardProps> = ({
     <div className='flex flex-col w-full border border-border/50 rounded-md overflow-hidden relative h-[8rem] bg-accent/10'>
       <div className='flex flex-col absolute top-0 p-2 w-full'>
         <span className='text-xs text-foreground'>{label}</span>
-        <span className='text-[0.7rem] text-muted-foreground'>{detail}</span>
+        <span className='text-[0.7rem] text-muted-foreground -mt-0.5'>{detail}</span>
       </div>
       <div className='flex w-full h-24 pointer-events-none'>
         { data ? (

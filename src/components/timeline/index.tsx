@@ -226,7 +226,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
               );
             });
           })()}
-          <div className='relative z-20 flex items-center justify-center w-36 border-l bg-muted/60 text-xs font-medium px-1 text-center'>
+          <div className='relative z-20 flex items-center justify-center max-w-40 w-full border-l bg-chart-1/10 text-xs font-medium px-1 text-center'>
             {format(date, 'yyyy-MM-dd HH:mm', { locale })}
           </div>
         </div>

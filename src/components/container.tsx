@@ -299,18 +299,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
         <ButtonTooltip
           button={
             <Button
-              disabled
-              variant='outline'
-              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
-            >
-              <Plus className='!size-4' />
-            </Button>
-          }
-          tooltip={t('add.tooltip')}
-        />
-        <ButtonTooltip
-          button={
-            <Button
               variant='outline'
               onClick={resetFilters}
               disabled={activeFilters === 0}
@@ -320,6 +308,18 @@ const Container: FC<ContainerProps> = ({ data }) => {
             </Button>
           }
           tooltip={t('reset.tooltip')}
+        />
+        <ButtonTooltip
+          button={
+            <Button
+              disabled
+              variant='outline'
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+            >
+              <Plus className='!size-4' />
+            </Button>
+          }
+          tooltip={t('add.tooltip')}
         />
       </div>
       { data.data.length > 0 && !data.single ? (

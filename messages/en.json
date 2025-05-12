@@ -143,7 +143,7 @@
     "stats": {
       "area": {
         "label": "Area",
-        "detail": "(km<sup>2</sup>)",
+        "detail": "km<sup>2</sup>",
         "tooltip": {
           "info": "Area of the oil spill",
           "min": "Minimum area - {min}",
