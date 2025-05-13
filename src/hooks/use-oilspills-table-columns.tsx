@@ -143,6 +143,74 @@ const useOilSpillsTableColumns = (
       },
     },
     {
+      accessorKey: 'duration',
+      header: () => {
+        return (
+          <Button
+            variant='tableOrder'
+            size='tableOrder'
+            onClick={() => setOrder('duration')}
+          >
+            <span className='truncate'>
+              {t('duration')}
+            </span>
+            {
+              fieldParams === 'duration' ? (
+                directionParams === 'asc' ? (
+                  <ChevronUp className='!size-3.5' />
+                ) : (
+                  <ChevronDown className='!size-3.5' />
+                )
+              ) : (
+                <ChevronsUpDown className='!size-3.5' />
+              )
+            }
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.duration || '-'}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: 'frequency',
+      header: () => {
+        return (
+          <Button
+            variant='tableOrder'
+            size='tableOrder'
+            onClick={() => setOrder('frequency')}
+          >
+            <span className='truncate'>
+              {t('frequency')}
+            </span>
+            {
+              fieldParams === 'frequency' ? (
+                directionParams === 'asc' ? (
+                  <ChevronUp className='!size-3.5' />
+                ) : (
+                  <ChevronDown className='!size-3.5' />
+                )
+              ) : (
+                <ChevronsUpDown className='!size-3.5' />
+              )
+            }
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        return (
+          <div>
+            {row.original.frequency || '-'}
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: 'points',
       header: () => {
         return (

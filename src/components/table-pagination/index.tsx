@@ -58,11 +58,11 @@ export default function DataTablePagination<TData>({
               <TooltipTrigger className='focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
                 <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
                   <BookOpenText className='size-4' strokeWidth={2} />
-                  <p className='text-sm'>{table.getState().pagination.pageIndex + 1}/{table.getPageCount()}</p>
+                  <p className='text-xs font-medium'>{table.getState().pagination.pageIndex + 1}/{table.getPageCount()}</p>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p className='text-xs'>
+                <p className='text-xs font-medium'>
                   {t('pageOf', {
                     page: `${table.getState().pagination.pageIndex + 1}`,
                     total: `${table.getPageCount()}`
@@ -76,11 +76,11 @@ export default function DataTablePagination<TData>({
               <TooltipTrigger className='focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-md'>
                 <div className='flex items-center gap-1 px-2 rounded-md border h-8 user-select-none cursor-default'>
                   <CircleDotDashed className='size-4' strokeWidth={2} />
-                  <p className='text-sm'>{Math.min(table.getState().pagination.pageSize, items)}/{items}</p>
+                  <p className='text-xs font-medium'>{Math.min(table.getState().pagination.pageSize, items)}/{items}</p>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p className='text-xs'>
+                <p className='text-xs font-medium'>
                   {t('itemsOutOf', {
                     items: `${table.getState().pagination.pageSize}`,
                     total: `${items}`
@@ -98,7 +98,7 @@ export default function DataTablePagination<TData>({
               className='h-8 w-fit gap-0.5 pl-2 pr-[calc(0.5rem-3px)] [&>svg]:h-4 [&>svg]:w-4'
             >
               <ListFilter strokeWidth={2} className='mr-0.5' />
-              <span className='text-sm'>{table.getState().pagination.pageSize}</span>
+              <span className='text-xs font-medium'>{table.getState().pagination.pageSize}</span>
               <ChevronDown className='h-4 w-4' strokeWidth={2} />
             </Button>
           }
@@ -110,7 +110,7 @@ export default function DataTablePagination<TData>({
                 <Button
                   key={pageSize}
                   variant='ghost'
-                  className='w-full justify-start text-sm px-2 !h-8'
+                  className='w-full justify-start text-xs font-medium px-2 !h-8'
                   onClick={() => handlePageSizeChange(pageSize)}
                 >
                   {pageSize}

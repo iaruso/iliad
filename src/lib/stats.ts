@@ -38,7 +38,6 @@ function avg(arr: number[]): number {
   return arr.reduce((a, b) => a + b, 0) / arr.length
 }
 
-// 🍯 Arredonda com 2 casas, mas devolve number
 function roundSmart(n: number): number {
   const rounded = +n.toFixed(2)
   return Number.isInteger(rounded) ? Math.round(rounded) : rounded
@@ -87,4 +86,37 @@ export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
     dispersionDistance: getStatsWithAbs('dispersionDistance'),
     bearing: getStatsWithAbs('bearing')
   }
+}
+
+export function formatRadarData(data: number[]) {
+  const step = 15
+  const numBuckets = 360 / step
+  const counts = new Array(numBuckets).fill(0)
+
+  data.forEach((value) => {
+    let normalized = value % 360
+    if (normalized < 0) normalized += 360
+    const index = Math.floor(normalized / step)
+    counts[index]++
+  })
+
+  const propagated = counts.map((value, index) => {
+    if (value !== 0) return value
+
+    const previousIndex = (index - 1 + numBuckets) % numBuckets
+    return counts[previousIndex]
+  })
+
+  const max = Math.max(...counts)
+
+  return propagated.map((value, i) => {
+    const from = i * step
+    const to = from + step
+    return {
+      subject: `Deg${from}_${to}`,
+      A: value > 0 ? Math.max(value, 3) : value,
+      B: 0,
+      fullMark: max,
+    }
+  })
 }

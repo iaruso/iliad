@@ -15,7 +15,7 @@ export const getOilSpills = async ({
   id?: string,
   minArea?: string,
   maxArea?: string,
-  sortField?: 'latitude' | 'longitude' | 'area' | 'points',
+  sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
   sortDirection?: 'asc' | 'desc'
 }) => {
   return await fetchOilSpills(

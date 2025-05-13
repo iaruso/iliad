@@ -55,7 +55,9 @@ const orderableColumns = [
   'latitude',
   'longitude',
   'area',
-  'points'
+  'points',
+  'duration',
+  'frequency'
 ];
 
 const Container: FC<ContainerProps> = ({ data }) => {
@@ -336,11 +338,11 @@ const Container: FC<ContainerProps> = ({ data }) => {
                     key={'link-head'}
                     aria-label='Search Engine Link'
                   />
-                  {headerGroup.headers.map((header) => {
+                  {headerGroup.headers.map((header, index) => {
                     return (
                       <TableHead
                         key={header.id}
-                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
+                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''} ${index === 0 && 'sticky left-2 bg-background z-10'}`}
                       >
                         {header.isPlaceholder
                           ? null
@@ -382,7 +384,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                         href={`?oilspill=${row.original._id}`}
                       />
                     </TableCell>
-                    {row.getVisibleCells().map((cell) =>
+                    {row.getVisibleCells().map((cell, index) =>
                       isPending ? (
                         <TableCell key={cell.id} className='p-0'>
                           <Skeleton className='m-2 h-5 min-w-16' />
@@ -391,7 +393,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                         <TableCell
                           className={`text-xs font-medium ${
                             orderableColumns.includes(cell.column.id) ? 'px-2' : ''
-                          }`}
+                          } ${index === 0 && 'sticky left-2 bg-background z-10'}`}
                           key={cell.id}
                           align={
                             (

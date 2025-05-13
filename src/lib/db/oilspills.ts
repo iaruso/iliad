@@ -15,7 +15,7 @@ export async function fetchOilSpills(
   id?: string,
   minArea?: string,
   maxArea?: string,
-  sortField?: 'latitude' | 'longitude' | 'area' | 'points',
+  sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
   sortDirection?: 'asc' | 'desc'
 ) {
   const skip = (page - 1) * size;
@@ -60,7 +60,7 @@ export async function fetchOilSpills(
     pipeline.push({ $match: match });
   }
 
-  if (sortField && ['latitude', 'longitude', 'area', 'points'].includes(sortField)) {
+  if (sortField && ['latitude', 'longitude', 'area', 'points', 'duration', 'frequency'].includes(sortField)) {
     const direction = sortDirection === 'desc' ? -1 : 1;
   
     const sortKey = sortField === 'latitude' ? 'coordinates.1' : sortField === 'longitude' ? 'coordinates.0' : sortField;

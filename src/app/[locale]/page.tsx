@@ -21,7 +21,6 @@ const OilSpillInfo = dynamic(() => import('@/components/oilspill-info'), {
   loading: () => <div className='p-4'></div>,
 });
 
-
 const Container = dynamic(() => import('@/components/container'), {
   loading: () => <div className='p-4'></div>,
 });
@@ -92,7 +91,7 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
         <ResizablePanel
           id='content-panel'
           className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
-          defaultSize={64}
+          defaultSize={68}
         >
           <Globe data={oilSpills} />
           <Controls />

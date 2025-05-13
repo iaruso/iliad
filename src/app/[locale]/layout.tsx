@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Kumbh_Sans } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { ThemeProvider } from '@/providers/theme-provider'
-// import { ReactScan } from '@/components/scanner'
+import { ReactScan } from '@/components/scanner'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
@@ -45,7 +45,7 @@ export default async function RootLayout(
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      {/* <ReactScan /> */}
+      <ReactScan />
       <body className={`${kumbhSans.variable} antialiased p-0 m-0`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>

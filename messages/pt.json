@@ -134,13 +134,21 @@
         "longitude": "Longitude",
         "area": "Área",
         "areaKm2": "Área (km<sup>2</sup>)",
-        "points": "Pontos"
+        "points": "Pontos",
+        "duration": "Duração",
+        "frequency": "Frequência"
       },
       "body": {
         "noData": "Não há dados para mostrar"
       }
     },
     "stats": {
+      "radar": {
+        "n": "N",
+        "s": "S",
+        "e": "E",
+        "w": "O"
+      },
       "area": {
         "label": "Área",
         "detail": "km<sup>2</sup>",
@@ -206,9 +214,9 @@
         "detail": "índice",
         "tooltip": {
           "info": "Índice de circularidade - 1 é um círculo perfeito enquanto 0 é irregular",
-          "min": "Circularidade mínima: {min}",
-          "max": "Circularidade máxima: {max}",
-          "avg": "Circularidade média: {avg}"
+          "min": "Circularidade mínima - {min}",
+          "max": "Circularidade máxima - {max}",
+          "avg": "Circularidade média - {avg}"
         }
       },
       "dispersionRadius": {
@@ -229,6 +237,16 @@
           "min": "Distância de dispersão mínima - {min}",
           "max": "Distância de dispersão máxima - {max}",
           "avg": "Distância de dispersão média - {avg}"
+        }
+      },
+      "bearing": {
+        "label": "Direção",
+        "detail": "graus",
+        "tooltip": {
+          "info": "Direção do derrame de petróleo",
+          "min": "Direção mínima - {min}",
+          "max": "Direção máxima - {max}",
+          "avg": "Mediana da direção - {avg}"
         }
       }
     }

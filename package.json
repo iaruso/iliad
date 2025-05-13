@@ -48,7 +48,7 @@
     "react-dom": "19.0.0",
     "react-globe.gl": "^2.33.1",
     "react-resizable-panels": "^2.1.7",
-    "react-scan": "^0.2.14",
+    "react-scan": "^0.3.3",
     "recharts": "^2.15.3",
     "satellite.js": "^5.0.0",
     "solar-calculator": "^0.3.0",
