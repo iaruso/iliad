@@ -6,7 +6,7 @@ import { formatRadarData } from '@/lib/stats'
 
 interface ChartRadarProps {
   data: number[]
-  avg: number
+  median: number
 }
 
 const chartConfig = {
@@ -16,9 +16,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const ChartRadar: FC<ChartRadarProps> = ({ data, avg }) => {
+const ChartRadar: FC<ChartRadarProps> = ({ data, median }) => {
   const dataG = data ? formatRadarData(data) : []
-
+  console.log('dataG', dataG)
   return (
     <div className={`
       w-full h-full flex items-center justify-center relative overflow-hidden
@@ -28,7 +28,7 @@ const ChartRadar: FC<ChartRadarProps> = ({ data, avg }) => {
         <RadarChart cx='50%' cy='50%' outerRadius='100%' data={dataG} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <PolarGrid />
           <PolarAngleAxis dataKey='a' tickLine={false} axisLine={false} tick={false} />
-          <PolarRadiusAxis tick={false} angle={90-avg} stroke='var(--color-chart)' strokeWidth={1} strokeOpacity={0.7}/>
+          <PolarRadiusAxis tick={false} angle={90-median} stroke='var(--color-chart)' strokeWidth={1} strokeOpacity={0.7}/>
           <Radar
             animationDuration={0}
             dataKey='A'

@@ -52,6 +52,7 @@ const ChartBanded: FC<ChartBandedProps> = ({ data }) => {
           ]}
         />
         <Area
+          animationDuration={0}
           dataKey='a'
           stroke='none'
           fill='hsl(var(--chart-1) / 0.5)'
@@ -60,6 +61,7 @@ const ChartBanded: FC<ChartBandedProps> = ({ data }) => {
           activeDot={false}
         />
         <Line
+          animationDuration={0}
           type='monotone'
           dataKey='b'
           stroke='hsl(var(--chart-1))'

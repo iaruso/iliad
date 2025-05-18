@@ -14,7 +14,6 @@ interface StatsProps {
 const Stats: FC<StatsProps> = ({ data }) => {
   const t = useTranslations('globe.stats')
   const stats: FormattedStats = formatOilspillStats(data.data)
-  console.log('stats', stats)
   return (
     <div className='p-2 border-t text-sm flex-1 h-0 grid grid-rows-2 gap-2 w-full'>
       <div className='flex-1 flex gap-2'>

@@ -14,7 +14,7 @@ export const dayNightShader = {
     uniform sampler2D dayTexture;
     uniform sampler2D nightTexture;
     uniform sampler2D noLightsTexture;
-    uniform vec2 sunPosition; // x = longitude, y = declinação
+    uniform vec2 sunPosition;
 
     varying vec3 vWorldPos;
     varying vec2 vUv;
@@ -32,26 +32,24 @@ export const dayNightShader = {
     }
 
     void main() {
-      // Vetores para inclinação real
+      float correctedSunLon = sunPosition.x - 180.0;
+
       vec3 sunDir = normalize(vec3(
-        -cos(toRad(sunPosition.y)) * cos(toRad(sunPosition.x)),
+        -cos(toRad(sunPosition.y)) * cos(toRad(correctedSunLon)),
         -sin(toRad(sunPosition.y)),
-        -cos(toRad(sunPosition.y)) * sin(toRad(sunPosition.x))
+        -cos(toRad(sunPosition.y)) * sin(toRad(correctedSunLon))
       ));
 
       vec3 surfaceDir = normalize(vWorldPos);
       float intensity = dot(surfaceDir, sunDir);
 
-      // Cálculo de longitude relativa ao sol
       float worldLon = getWorldLongitude(vWorldPos);
-      float delta = mod(sunPosition.x + worldLon + 180.0, 360.0) - 180.0;
+      float delta = mod(correctedSunLon + worldLon + 180.0, 360.0) - 180.0;
 
-      // Inclinação visual com base na latitude
       float worldLat = getWorldLatitude(vWorldPos);
       float inclinationFactor = cos(toRad(worldLat));
       delta += (worldLat - sunPosition.y) * 0.25 * inclinationFactor;
 
-      // Blending original com delta
       vec4 dayColor = texture2D(dayTexture, vUv);
       vec4 nightColor = texture2D(nightTexture, vUv);
       vec4 noLightsColor = texture2D(noLightsTexture, vUv);

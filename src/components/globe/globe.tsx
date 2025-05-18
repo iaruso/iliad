@@ -123,7 +123,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
       }
     }
   }, 500);
-  
 
   useEffect(() => {
     if (globeMaterial?.uniforms) {

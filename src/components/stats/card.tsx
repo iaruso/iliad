@@ -45,6 +45,17 @@ const StatsCard: FC<StatsCardProps> = ({
   tooltipAvg,
   chartType
 }) => {
+  const radarMedian =
+  chartType === 'radar' && Array.isArray(data) && data.length > 0
+    ? (() => {
+        const sorted = [...(data as number[])].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0
+          ? (sorted[mid - 1] + sorted[mid]) / 2
+          : sorted[mid];
+      })()
+    : 0;
+
   return (
     <div className={cn(`flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden`, className)}>
       <div className='flex flex-col absolute top-0 p-2 w-full pointer-events-none select-none z-[1]'>
@@ -58,7 +69,7 @@ const StatsCard: FC<StatsCardProps> = ({
               (() => {
                 switch (chartType) {
                   case 'radar':
-                    return <ChartRadar data={data as number[]} avg={avg} />;
+                    return <ChartRadar data={data as number[]} median={radarMedian} />;
                   case 'tree':
                     return <ChartTree data={data as number[]} />;
                   case 'circularity':
@@ -143,7 +154,7 @@ const StatsCard: FC<StatsCardProps> = ({
             trigger={
               <div className='flex items-center gap-0.5'>
                 { chartType === 'radar' ? (
-                  <ArrowUp className={`!size-3`} strokeWidth={2} style={{ transform: `rotate(${avg.toFixed(0)}deg)` }}/>
+                  <ArrowUp className={`!size-3`} strokeWidth={2} style={{ transform: `rotate(${radarMedian.toFixed(0)}deg)` }}/>
                 ) : chartType === 'circularity' ? (
                   <CircleDashed className='!size-3' strokeWidth={2}/>
                 ) : chartType === 'dots' ? (
@@ -151,7 +162,7 @@ const StatsCard: FC<StatsCardProps> = ({
                 ) : (
                   <CircleDot className='!size-3' strokeWidth={2}/>
                 )}
-                <span className='truncate pt-[1px]'>{avg}{chartType === 'radar' ? 'º' : ''}</span>
+                <span className='truncate pt-[1px]'>{chartType === 'radar' ? `${radarMedian.toFixed(2)}º` : avg}</span>
               </div>
             }
             triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-0.5 justify-center text-foreground font-medium w-full h-full rounded-md'
