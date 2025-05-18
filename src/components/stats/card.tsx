@@ -1,5 +1,4 @@
 import { FC, ReactNode } from 'react';
-import Chart from './chart';
 import {
   ArrowDown,
   EqualApproximately,
@@ -29,7 +28,7 @@ interface StatsCardProps {
   tooltipMax: string;
   avg: number;
   tooltipAvg: string;
-  chartType?: 'chart' | 'radar' | 'area' | 'tree' | 'circularity' | 'step' | 'dots' | 'banded';
+  chartType?: 'radar' | 'area' | 'tree' | 'circularity' | 'step' | 'dots' | 'banded';
 }
 
 const StatsCard: FC<StatsCardProps> = ({
@@ -44,7 +43,7 @@ const StatsCard: FC<StatsCardProps> = ({
   tooltipMax,
   avg,
   tooltipAvg,
-  chartType = 'chart'
+  chartType
 }) => {
   return (
     <div className={cn(`flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden`, className)}>
@@ -58,8 +57,6 @@ const StatsCard: FC<StatsCardProps> = ({
             trigger={
               (() => {
                 switch (chartType) {
-                  case 'chart':
-                    return <Chart data={data as number[]} min={min} max={max} avg={avg} />;
                   case 'radar':
                     return <ChartRadar data={data as number[]} avg={avg} />;
                   case 'tree':
@@ -89,7 +86,7 @@ const StatsCard: FC<StatsCardProps> = ({
           <span className='text-[10px] mt-8 text-muted-foreground'>No data</span>
         )}
       </div>
-      {chartType === 'chart' || chartType === 'tree' || chartType === 'step' || chartType === 'banded' ? (
+      { chartType === 'tree' || chartType === 'step' || chartType === 'banded' ? (
         <div className='absolute bottom-0 right-0 w-fit grid grid-cols-3 gap-1 h-8 p-1'>
           <div className='border border-border/80 rounded-md flex bg-background'>
             <TooltipWrapper
