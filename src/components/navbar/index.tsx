@@ -11,10 +11,10 @@ const Navbar = async () => {
   const t = await getTranslations('navbar')
 
   return (
-    <nav className='border-t h-12 flex items-center py-2 px-2 justify-between gap-2'>
+    <nav className='border-t h-12 flex items-center py-2 pr-2 pl-4 justify-between gap-2'>
       <div className='flex items-start gap-2'>
         <h1 className='font-[550] select-none line-clamp-1'>{t('app')}</h1>
-        <Badge variant='version' className='tabular-nums'>0.6.4</Badge>
+        <Badge variant='version' className='tabular-nums'>0.6.5</Badge>
       </div>
       <div className='flex items-center gap-1.5'>
         <ThemeToggle />

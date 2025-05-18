@@ -4,7 +4,7 @@ export type StatValue = {
   average: number
   minAbs?: number
   maxAbs?: number
-  data?: number[] // ordenado
+  data?: number[] | { value: [number, number, number] }[]
 }
 
 export type FormattedStats = {
@@ -43,6 +43,20 @@ function roundSmart(n: number): number {
   return Number.isInteger(rounded) ? Math.round(rounded) : rounded
 }
 
+function formatBandedPerEntryFromStats(
+  statsArray: { min: number; average: number; max: number }[]
+): { value: [number, number, number] }[] {
+  return statsArray
+    .map((s) => ({
+      value: [
+        roundSmart(s.min),
+        roundSmart(s.average),
+        roundSmart(s.max),
+      ] as [number, number, number],
+    }))
+    .sort((a, b) => a.value[0] - b.value[0])
+}
+
 export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
   const getSimpleField = (key: keyof OilspillMinEntry): StatValue => {
     const values = data.map(d => d[key]).filter((v): v is number => typeof v === 'number')
@@ -64,13 +78,15 @@ export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
     const merged = [...mins, ...maxs, ...avgs].filter(v => typeof v === 'number')
     const sorted = [...merged].sort((a, b) => a - b).map(roundSmart)
 
+    const isBanded = key === 'dispersionRadius' || key === 'dispersionDistance'
+
     return {
       min: roundSmart(Math.min(...mins)),
       max: roundSmart(Math.max(...maxs)),
       average: roundSmart(avg(avgs)),
       minAbs: roundSmart(Math.min(...merged)),
       maxAbs: roundSmart(Math.max(...merged)),
-      data: sorted
+      data: isBanded ? formatBandedPerEntryFromStats(all) : sorted,
     }
   }
 
@@ -84,7 +100,7 @@ export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
     compaction: getStatsWithAbs('compaction'),
     dispersionRadius: getStatsWithAbs('dispersionRadius'),
     dispersionDistance: getStatsWithAbs('dispersionDistance'),
-    bearing: getStatsWithAbs('bearing')
+    bearing: getStatsWithAbs('bearing'),
   }
 }
 
@@ -102,7 +118,6 @@ export function formatRadarData(data: number[]) {
 
   const propagated = counts.map((value, index) => {
     if (value !== 0) return value
-
     const previousIndex = (index - 1 + numBuckets) % numBuckets
     return counts[previousIndex]
   })

@@ -18,7 +18,6 @@ const chartConfig = {
 
 const ChartRadar: FC<ChartRadarProps> = ({ data, avg }) => {
   const dataG = data ? formatRadarData(data) : []
-  console.log(dataG)
 
   return (
     <div className={`
@@ -31,6 +30,7 @@ const ChartRadar: FC<ChartRadarProps> = ({ data, avg }) => {
           <PolarAngleAxis dataKey='a' tickLine={false} axisLine={false} tick={false} />
           <PolarRadiusAxis tick={false} angle={90-avg} stroke='var(--color-chart)' strokeWidth={1} strokeOpacity={0.7}/>
           <Radar
+            animationDuration={0}
             dataKey='A'
             stroke='var(--color-chart)'
             strokeWidth={1}

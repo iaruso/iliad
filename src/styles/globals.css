@@ -163,16 +163,16 @@
 html {
   overscroll-behavior: none;
   --scrollbar-color-thumb: hsl(var(--muted));
-  --scrollbar-color-track: hsl(var(--muted), 0.3);
+  --scrollbar-color-track: transparent;
   --scrollbar-width: 0.5rem;
   --scrollbar-width-legacy: 0.5rem;
 }
 
-*:not(th,tr,td) {
+*:not(th, tr, td) {
   @apply !shadow-none;
 }
 
-/* Modern browsers with `scrollbar-*` support */
+/* Modern browsers */
 @supports (scrollbar-width: auto) {
   * {
     scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track);
@@ -180,17 +180,17 @@ html {
   }
 }
 
-/* Legacy browsers with `::-webkit-scrollbar-*` support */
+/* Legacy browsers (WebKit) */
 @supports selector(::-webkit-scrollbar) {
   *::-webkit-scrollbar-thumb {
     background: var(--scrollbar-color-thumb);
   }
   *::-webkit-scrollbar-track {
-    background: var(--scrollbar-color-track);
+    background: transparent;
   }
   *::-webkit-scrollbar {
-    max-width: var(--scrollbar-width-legacy);
-    max-height: var(--scrollbar-width-legacy);
+    width: var(--scrollbar-width-legacy);
+    height: var(--scrollbar-width-legacy);
   }
 }
 

@@ -1,9 +1,18 @@
 'use client'
 import type { FC } from 'react'
-import { Area, AreaChart, YAxis, ReferenceLine  } from 'recharts'
-import { type ChartConfig, ChartContainer } from '@/components/ui-custom/chart'
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  ReferenceLine
+} from 'recharts'
+import {
+  ChartConfig,
+  ChartContainer
+} from '@/components/ui-custom/chart'
 
-interface ChartProps {
+interface ChartStepProps {
   data: number[]
   min: number
   max: number
@@ -17,34 +26,32 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const Chart: FC<ChartProps> = ({ data, min, max, avg }) => {
+const ChartStep: FC<ChartStepProps> = ({ data, min, max, avg }) => {
   const chartData = data.map((value, index) => ({
     index: index + 1,
     value,
   }))
-
   return (
-    <ChartContainer config={chartConfig} className='w-full'>
-      <AreaChart 
+    <ChartContainer config={chartConfig} className='w-full h-full [&_.recharts-cartesian-grid-horizontal>line]:!hidden'>
+      <AreaChart
         data={chartData}
         accessibilityLayer
         margin={{
-          top: 50,
-          right: -5,
-          left: -5,
-          bottom: 24,
+          top: 32,
+          bottom: 0,
         }}
         tabIndex={-1}
       >
-        <YAxis
+        <CartesianGrid vertical={false} />
+        <XAxis
           width={0}
           dataKey='value'
-          axisLine={false}
           tickLine={false}
+          axisLine={false}
           tick={false}
-          type='number'
+          tickFormatter={(value) => value.slice(0, 3)}
           domain={[
-            0,
+            min,
             max
           ]}
         />
@@ -64,7 +71,7 @@ const Chart: FC<ChartProps> = ({ data, min, max, avg }) => {
         <Area
           animationDuration={0}
           dataKey='value'
-          type='natural'
+          type='step'
           fill='url(#fillChart)'
           fillOpacity={0.35}
           stroke='var(--color-chart)'
@@ -77,4 +84,4 @@ const Chart: FC<ChartProps> = ({ data, min, max, avg }) => {
   )
 }
 
-export default Chart
+export default ChartStep

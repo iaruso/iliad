@@ -236,7 +236,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
             >
               <Settings2 className='h-4 w-4' />
               {t('filters.label')}
-              <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
+              <span className='text-[9.5px] pt-0.5 font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
                 {activeFilters}
               </span>
             </Button>
@@ -326,12 +326,12 @@ const Container: FC<ContainerProps> = ({ data }) => {
       </div>
       { data.data.length > 0 && !data.single ? (
         <>
-          <Table className='border-b border-border/50' divClassName='h-[440px] overflow-y-auto scrollbar-gutter-stable-both-edges -ml-2 w-[calc(100%+1rem)]'>
-            <TableHeader className='sticky top-0 z-10 bg-background'>
+          <Table className='border-b border-border/50' divClassName='h-[441px] overflow-y-auto w-[calc(100%)]'>
+            <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className='relative hover:bg-transparent border-border/50'
+                  className='relative hover:bg-transparent !border-none border-border/50'
                 >
                   <TableHead
                     className='p-0 h-10'
@@ -342,7 +342,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                     return (
                       <TableHead
                         key={header.id}
-                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''} ${index === 0 && 'sticky left-2 bg-background z-10'}`}
+                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''} ${index === 0 && 'sticky left-0 z-10 bg-background'}`}
                       >
                         {header.isPlaceholder
                           ? null
@@ -384,7 +384,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                         href={`?oilspill=${row.original._id}`}
                       />
                     </TableCell>
-                    {row.getVisibleCells().map((cell, index) =>
+                    {row.getVisibleCells().map((cell) =>
                       isPending ? (
                         <TableCell key={cell.id} className='p-0'>
                           <Skeleton className='m-2 h-5 min-w-16' />
@@ -393,7 +393,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                         <TableCell
                           className={`text-xs font-medium ${
                             orderableColumns.includes(cell.column.id) ? 'px-2' : ''
-                          } ${index === 0 && 'sticky left-2 bg-background z-10'}`}
+                          }`}
                           key={cell.id}
                           align={
                             (
