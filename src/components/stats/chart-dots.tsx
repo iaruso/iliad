@@ -51,9 +51,9 @@ const ChartDots: FC<ChartDotsProps> = ({ min, avg, max }) => {
 
   return (
     <div className='w-full h-full relative overflow-hidden'>
-      <DotLayer count={low} className='bg-chart-1/10' />
-      <DotLayer count={mid} className='bg-chart-1/15' />
-      <DotLayer count={high} className='bg-chart-1/20' />
+      <DotLayer count={low} className='bg-chart-1/20' />
+      <DotLayer count={mid} className='bg-chart-1/60' />
+      <DotLayer count={high} className='bg-chart-1' />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { useTranslations } from 'next-intl'
+import { formatMinutes } from '@/lib/formatters'
 import { formatOilspillStats, FormattedStats } from '@/lib/stats'
 import StatsCard from './card'
 
@@ -33,8 +34,8 @@ const Stats: FC<StatsProps> = ({ data }) => {
           tooltipAvg={t('area.tooltip.avg', { avg: stats.area.average })}
           chartType='tree'
         />
-        <div className='grid grid-rows-2 gap-2 flex-1'>
-          <div className='h-full grid grid-cols-3 gap-2'>
+        <div className='flex flex-col gap-2 flex-1'>
+          <div className='max-h-24 grid grid-cols-3 gap-2'>
             <StatsCard
               className=''
               label={t('density.label')}
@@ -81,6 +82,7 @@ const Stats: FC<StatsProps> = ({ data }) => {
             />
           </div>
           <StatsCard
+            className='h-full'
             label={t('points.label')}
             detail={t('points.detail')}
             tooltip={t('points.tooltip.info')}
@@ -117,12 +119,13 @@ const Stats: FC<StatsProps> = ({ data }) => {
             tooltip={t('duration.tooltip.info')}
             data={stats.duration.data}
             min={stats.duration.min}
-            tooltipMin={t('duration.tooltip.min', { min: stats.duration.min })}
+            tooltipMin={t('duration.tooltip.min', { min: formatMinutes(stats.duration.min) })}
             max={stats.duration.max}
-            tooltipMax={t('duration.tooltip.max', { max: stats.duration.max })}
+            tooltipMax={t('duration.tooltip.max', { max: formatMinutes(stats.duration.max) })}
             avg={stats.duration.average}
-            tooltipAvg={t('duration.tooltip.avg', { avg: stats.duration.average })}
+            tooltipAvg={t('duration.tooltip.avg', { avg: formatMinutes(stats.duration.average) })}
             chartType='step'
+            chartValueType='time'
           />
           <StatsCard
             className=''
@@ -131,12 +134,13 @@ const Stats: FC<StatsProps> = ({ data }) => {
             tooltip={t('frequency.tooltip.info')}
             data={stats.frequency.data}
             min={stats.frequency.min}
-            tooltipMin={t('frequency.tooltip.min', { min: stats.frequency.min })}
+            tooltipMin={t('frequency.tooltip.min', { min: formatMinutes(stats.frequency.min) })}
             max={stats.frequency.max}
-            tooltipMax={t('frequency.tooltip.max', { max: stats.frequency.max })}
+            tooltipMax={t('frequency.tooltip.max', { max: formatMinutes(stats.frequency.max) })}
             avg={stats.frequency.average}
-            tooltipAvg={t('frequency.tooltip.avg', { avg: stats.frequency.average })}
+            tooltipAvg={t('frequency.tooltip.avg', { avg: formatMinutes(stats.frequency.average) })}
             chartType='step'
+            chartValueType='time'
           />
         </div>
         <div className='flex-1 grid grid-cols-2 gap-2'>

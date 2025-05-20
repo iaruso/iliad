@@ -389,3 +389,12 @@ export async function loadGlobeMaterial({
     fragmentShader: dayNightShader.fragmentShader
   })
 }
+
+export function formatMinutes(minutes: number, withMinutes = true): string {
+  if (minutes < 60) {
+    return `${minutes}m`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h${withMinutes ? `${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}` : ''}`;
+}

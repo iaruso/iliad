@@ -25,9 +25,9 @@ class CustomizedContent extends PureComponent<CustomizedContentProps> {
           style={{
             fill: 'hsl(var(--chart-1))',
             fillOpacity: 0.01,
-            stroke: 'hsl(var(--border))',
-            strokeWidth: 0.2,
-            strokeOpacity: 1,
+            stroke: 'hsl(var(--chart-1))',
+            strokeWidth: 0.5,
+            strokeOpacity: 0.2,
           }}
         />
       </g>

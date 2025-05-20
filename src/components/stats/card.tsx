@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 import ChartCircularity from './chart-circularity';
 import ChartDots from './chart-dots';
 import ChartBanded from './chart-banded';
+import { formatMinutes } from '@/lib/formatters';
 interface StatsCardProps {
   className?: string;
   label: string;
@@ -29,6 +30,7 @@ interface StatsCardProps {
   avg: number;
   tooltipAvg: string;
   chartType?: 'radar' | 'area' | 'tree' | 'circularity' | 'step' | 'dots' | 'banded';
+  chartValueType?: 'time';
 }
 
 const StatsCard: FC<StatsCardProps> = ({
@@ -43,7 +45,8 @@ const StatsCard: FC<StatsCardProps> = ({
   tooltipMax,
   avg,
   tooltipAvg,
-  chartType
+  chartType,
+  chartValueType
 }) => {
   const radarMedian =
   chartType === 'radar' && Array.isArray(data) && data.length > 0
@@ -60,7 +63,7 @@ const StatsCard: FC<StatsCardProps> = ({
     <div className={cn(`flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden`, className)}>
       <div className='flex flex-col absolute top-0 p-2 w-full pointer-events-none select-none z-[1]'>
         <span className='text-xs text-foreground font-medium'>{label}</span>
-        <span className='text-[10px] text-muted-foreground -mt-0.5'>{detail}</span>
+        <span className='text-[10px] text-muted-foreground -mt-0.5 line-clamp-1 truncate'>{detail}</span>
       </div>
       <div className='flex w-full flex-1 justify-center items-center h-full'>
         {data ? (
@@ -102,10 +105,10 @@ const StatsCard: FC<StatsCardProps> = ({
           <div className='border border-border/80 rounded-md flex bg-background'>
             <TooltipWrapper
               trigger={
-                <>
-                  <ArrowDown className='!size-3' strokeWidth={2}/>
-                  <span className='truncate pt-[1px]'>{min}</span>
-                </>
+                <div className='flex items-center gap-0.5'>
+                  <ArrowDown className='!size-2.5' strokeWidth={2}/>
+                  <span className='truncate pt-[1px]'>{chartValueType === 'time' ? formatMinutes(min) : min}</span>
+                </div>
               }
               triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-0.5 justify-center text-muted-foreground w-full h-full'
               content={
@@ -118,10 +121,10 @@ const StatsCard: FC<StatsCardProps> = ({
           <div className='border border-border/80 rounded-md flex bg-background'>
             <TooltipWrapper
               trigger={
-                <>
-                  <EqualApproximately className='!size-3' strokeWidth={2}/>
-                  <span className='truncate pt-[1px]'>{avg}</span>
-                </>
+                <div className='flex items-center gap-0.5'>
+                  <EqualApproximately className='!size-2.5' strokeWidth={2}/>
+                  <span className='truncate pt-[1px]'>{chartValueType === 'time' ? formatMinutes(avg, false) : avg}</span>
+                </div>
               }
               triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-0.5 justify-center text-foreground font-medium w-full h-full'
               content={
@@ -135,8 +138,8 @@ const StatsCard: FC<StatsCardProps> = ({
             <TooltipWrapper
               trigger={
                 <div className='flex items-center gap-0.5'>
-                  <ArrowUp className='!size-3' strokeWidth={2}/>
-                  <span className='truncate pt-[1px]'>{max}</span>
+                  <ArrowUp className='!size-2.5' strokeWidth={2}/>
+                  <span className='truncate pt-[1px]'>{chartValueType === 'time' ? formatMinutes(max, false) : max}</span>
                 </div>
               }
               triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-0.5 justify-center text-muted-foreground w-full h-full'
@@ -154,13 +157,13 @@ const StatsCard: FC<StatsCardProps> = ({
             trigger={
               <div className='flex items-center gap-0.5'>
                 { chartType === 'radar' ? (
-                  <ArrowUp className={`!size-3`} strokeWidth={2} style={{ transform: `rotate(${radarMedian.toFixed(0)}deg)` }}/>
+                  <ArrowUp className={`!size-2.5`} strokeWidth={2} style={{ transform: `rotate(${radarMedian.toFixed(0)}deg)` }}/>
                 ) : chartType === 'circularity' ? (
-                  <CircleDashed className='!size-3' strokeWidth={2}/>
+                  <CircleDashed className='!size-2.5' strokeWidth={2}/>
                 ) : chartType === 'dots' ? (
-                  <Grip className='!size-3' strokeWidth={2}/>
+                  <Grip className='!size-2.5' strokeWidth={2}/>
                 ) : (
-                  <CircleDot className='!size-3' strokeWidth={2}/>
+                  <CircleDot className='!size-2.5' strokeWidth={2}/>
                 )}
                 <span className='truncate pt-[1px]'>{chartType === 'radar' ? `${radarMedian.toFixed(2)}º` : avg}</span>
               </div>

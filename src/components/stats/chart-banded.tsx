@@ -55,7 +55,7 @@ const ChartBanded: FC<ChartBandedProps> = ({ data }) => {
           animationDuration={0}
           dataKey='a'
           stroke='none'
-          fill='hsl(var(--chart-1) / 0.5)'
+          fill='hsl(var(--chart-1) / 0.35)'
           connectNulls
           dot={false}
           activeDot={false}
@@ -66,6 +66,7 @@ const ChartBanded: FC<ChartBandedProps> = ({ data }) => {
           dataKey='b'
           stroke='hsl(var(--chart-1))'
           strokeWidth={1}
+          strokeOpacity={0.7}
           dot={false}
           connectNulls
         />
