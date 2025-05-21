@@ -5,7 +5,8 @@ import {
   AreaChart,
   CartesianGrid,
   XAxis,
-  ReferenceLine
+  ReferenceLine,
+  YAxis
 } from 'recharts'
 import {
   ChartConfig,
@@ -38,22 +39,18 @@ const ChartStep: FC<ChartStepProps> = ({ data, min, max, avg }) => {
         accessibilityLayer
         margin={{
           top: 32,
-          bottom: 0,
+          bottom: 32,
         }}
         tabIndex={-1}
       >
         <CartesianGrid vertical={false} />
-        <XAxis
-          width={0}
-          dataKey='value'
+        <YAxis
+          domain={[min * 0.95, max * (1 / 0.95)]}
+          dataKey={'value'}
           tickLine={false}
           axisLine={false}
           tick={false}
-          tickFormatter={(value) => value.slice(0, 3)}
-          domain={[
-            min,
-            max
-          ]}
+          width={0}
         />
         <ReferenceLine
           y={avg}

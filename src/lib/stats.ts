@@ -1,3 +1,5 @@
+import { OilSpillData } from "@/@types/oilspills"
+
 export type StatValue = {
   min: number
   max: number

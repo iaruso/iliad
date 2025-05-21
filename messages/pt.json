@@ -165,8 +165,8 @@
         "tooltip": {
           "info": "Duração do derrame de óleo",
           "min": "Duração mínima - {min}",
-          "max": "Duração máxima - {max}",
-          "avg": "Duração média - {avg}"
+          "avg": "Duração média - {avg}",
+          "max": "Duração máxima - {max}"
         }
       },
       "frequency": {
@@ -175,8 +175,8 @@
         "tooltip": {
           "info": "Frequência de recolha de dados",
           "min": "Frequência mínima de dados - {min}",
-          "max": "Frequência máxima de dados - {max}",
-          "avg": "Frequência média de dados - {avg}"
+          "avg": "Frequência média de dados - {avg}",
+          "max": "Frequência máxima de dados - {max}"
         }
       },
       "points": {
@@ -200,9 +200,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Perímetro da área afetada (convex hull)",
-          "min": "Perímetro mínimo - {min}",
-          "max": "Perímetro máximo - {max}",
-          "avg": "Perímetro médio - {avg}"
+          "min": "Perímetro mínimo - {min} km",
+          "avg": "Perímetro médio - {avg} km",
+          "max": "Perímetro máximo - {max} km"
         }
       },
       "compaction": {
@@ -218,9 +218,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Distância entre os pontos e o centro do derrame de óleo",
-          "min": "Raio de dispersão mínimo - {min}",
-          "max": "Raio de dispersão máximo - {max}",
-          "avg": "Raio de dispersão médio - {avg}"
+          "min": "Raio de dispersão mínimo - {min} km",
+          "avg": "Raio de dispersão médio - {avg} km",
+          "max": "Raio de dispersão máximo - {max} km"
         }
       },
       "dispersionDistance": {
@@ -228,9 +228,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Distância entre os pontos e a localização do ator",
-          "min": "Distância de dispersão mínima - {min}",
-          "max": "Distância de dispersão máxima - {max}",
-          "avg": "Distância de dispersão média - {avg}"
+          "min": "Distância de dispersão mínima - {min} km",
+          "avg": "Distância de dispersão média - {avg} km",
+          "max": "Distância de dispersão máxima - {max} km"
         }
       },
       "bearing": {
@@ -255,15 +255,25 @@
   },
   "oilspillInfo": {
     "return": "Todos os derrames de óleo",
-    "details": "Detalhes do derrame",
-    "timestampsCollected": "Momentos recolhidos",
-    "interval": "Intervalo",
-    "averageInterval": "Intervalo médio",
-    "location": "Localização",
-    "totalPolygons": "Total de polígonos",
-    "totalDensity": "Densidade total",
-    "averageDensity": "Densidade média",
-    "densityDistribution": "Distribuição por densidade",
-    "spillsPerTimestamp": "Derrames por momento"
+    "title": "Detalhes do derrame de óleo",
+    "copy": {
+      "tooltip": "Copiar o url do derrame de óleo"
+    },
+    "timestampsCollected": {
+      "tooltip": "Número de registos recolhidos"
+    },
+    "duration": {
+      "tooltip": "Duração do derrame de óleo"
+    },
+    "frequency": {
+      "tooltip": "Frequência dos registos"
+    },
+    "location": {
+      "tooltip": "Localização do derrame de óleo"
+    },
+    "copyData": {
+      "label": "Copiar",
+      "tooltip": "Copiar dados"
+    }
   }
 }

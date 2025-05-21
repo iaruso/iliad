@@ -91,14 +91,14 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
         <ResizablePanel
           id='content-panel'
           className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
-          defaultSize={68}
+          defaultSize={72}
         >
           <Globe data={oilSpills} />
           <Controls />
           <Timeline isSingle={oilSpills.single} />
         </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel maxSize={40} minSize={32} defaultSize={32}>
+        <ResizableHandle className='pointer-events-none cursor-default' />
+        <ResizablePanel maxSize={32} minSize={28} defaultSize={28}>
           <div className='flex flex-col h-full'>
             <>
               {oilspill ? (

@@ -165,8 +165,8 @@
         "tooltip": {
           "info": "Duration of the oil spill",
           "min": "Minimum duration - {min}",
-          "max": "Maximum duration - {max}",
-          "avg": "Average duration - {avg}"
+          "avg": "Average duration - {avg}",
+          "max": "Maximum duration - {max}"
         }
       },
       "frequency": {
@@ -175,8 +175,8 @@
         "tooltip": {
           "info": "Frequency of data collection",
           "min": "Minimum data frequency - {min}",
-          "max": "Maximum data frequency - {max}",
-          "avg": "Average data frequency - {avg}"
+          "avg": "Average data frequency - {avg}",
+          "max": "Maximum data frequency - {max}"
         }
       },
       "points": {
@@ -200,9 +200,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Perimeter of the affected area (convex hull)",
-          "min": "Minimum perimeter - {min}",
-          "max": "Maximum perimeter - {max}",
-          "avg": "Average perimeter - {avg}"
+          "min": "Minimum perimeter - {min} km",
+          "avg": "Average perimeter - {avg} km",
+          "max": "Maximum perimeter - {max} km"
         }
       },
       "compaction": {
@@ -218,9 +218,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Distance between points and the center of the oil spill",
-          "min": "Minimum dispersion radius - {min}",
-          "max": "Maximum dispersion radius - {max}",
-          "avg": "Average dispersion radius - {avg}"
+          "min": "Minimum dispersion radius - {min} km",
+          "avg": "Average dispersion radius - {avg} km",
+          "max": "Maximum dispersion radius - {max} km"
         }
       },
       "dispersionDistance": {
@@ -228,9 +228,9 @@
         "detail": "km",
         "tooltip": {
           "info": "Distance between points and the actor location",
-          "min": "Minimum dispersion distance - {min}",
-          "max": "Maximum dispersion distance - {max}",
-          "avg": "Average dispersion distance - {avg}"
+          "min": "Minimum dispersion distance - {min} km",
+          "avg": "Average dispersion distance - {avg} km",
+          "max": "Maximum dispersion distance - {max} km"
         }
       },
       "bearing": {
@@ -255,15 +255,25 @@
   },
   "oilspillInfo": {
     "return": "All oilspills",
-    "details": "Spill details",
-    "timestampsCollected": "Timestamps collected",
-    "interval": "Interval",
-    "averageInterval": "Average interval",
-    "location": "Location",
-    "totalPolygons": "Total polygons",
-    "totalDensity": "Total density",
-    "averageDensity": "Average density",
-    "densityDistribution": "Density distribution",
-    "spillsPerTimestamp": "Spills per timestamp"
+    "title": "Oil spill details",
+    "copy": {
+      "tooltip": "Copy the oil spill URL"
+    },
+    "timestampsCollected": {
+      "tooltip": "Number of timestamps collected"
+    },
+    "duration": {
+      "tooltip": "Duration of the oil spill"
+    },
+    "frequency": {
+      "tooltip": "Frequency of timestamps"
+    },
+    "location": {
+      "tooltip": "Location of the oil spill"
+    },
+    "copyData": {
+      "label": "Copy",
+      "tooltip": "Copy raw data"
+    }
   }
 }

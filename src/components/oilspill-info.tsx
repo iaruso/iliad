@@ -1,6 +1,5 @@
 'use client';
-
-import { FC, useMemo } from 'react';
+import { FC, useMemo, ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { OilSpill } from '@/@types/oilspills';
 import { Link } from '@/i18n/navigation';
@@ -8,13 +7,22 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbPage
 } from '@/components/ui-custom/breadcrumb';
-import { formatDistance, format } from 'date-fns';
-import { enUS, pt } from 'date-fns/locale';
-import { useLocale } from 'next-intl';
-import Stats from './stats';
+import {
+  ChevronLeft,
+  Copy,
+  SquareStack,
+  MapPinned,
+  Clock,
+  CircleGauge
+} from 'lucide-react';
+import DataViewer from '@/components/data-viewer';
+import { TooltipWrapper } from '@/components/ui-custom/tooltip-wrapper';
+import { Button } from '@/components/ui-custom/button';
+import ButtonTooltip from '@/components/ui-custom/button-tooltip';
+import { formatMinutes } from '@/lib/formatters';
+import Stats from './stats/index-single';
 
 //import dynamic from 'next/dynamic';
 //const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
@@ -23,9 +31,29 @@ interface OilSpillInfoProps {
   data: OilSpill;
 }
 
+const OilSpillInfoCard = ({
+  value,
+  icon,
+  tooltip
+}: {
+  value: string | number;
+  icon: ReactNode;
+  tooltip: string;
+}) => (
+  <TooltipWrapper
+    trigger={
+      <div className='flex items-center gap-1 h-8 px-2 py-1 rounded-md text-xs font-medium border'>
+        {icon}
+        <span>{value}</span>
+      </div>
+    }
+    triggerClassName={`p-0.5 px-1 text-xs flex items-center gap-1 justify-center`}
+    content={<p className='text-xs w-full'>{tooltip}</p>}
+  />
+);
+
 const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
   const t = useTranslations('oilspillInfo');
-  const locale = useLocale() === 'en' ? enUS : pt;
   const stats = useMemo(() => {
     const timestamps = data.data && Array.isArray(data.data)
       ? data.data
@@ -43,63 +71,6 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
     
     timestamps.sort((a, b) => a.getTime() - b.getTime());
 
-    const start = timestamps.length > 0 ? timestamps[0] : new Date();
-    const end = timestamps.length > 0 ? timestamps[timestamps.length - 1] : new Date();
-
-    const intervals = timestamps.length > 1 
-      ? timestamps.slice(1).map((ts, i) => ts.getTime() - timestamps[i].getTime())
-      : [];
-    
-    const avgIntervalMs = intervals.length
-      ? intervals.reduce((a, b) => a + b, 0) / intervals.length
-      : 0;
-    
-    const avgIntervalStr = avgIntervalMs
-      ? formatDistance(0, avgIntervalMs, { locale: locale })
-      : '-';
-
-    let totalPolygons = 0;
-    let totalDensity = 0;
-    const densityGroups: Record<string, number> = {};
-    const spillsPerTimestamp: Record<string, number> = {};
-
-    if (data.data && Array.isArray(data.data)) {
-      for (const entry of data.data) {
-        if (!entry || !entry.timestamp) continue;
-        
-        const key = entry.timestamp;
-        spillsPerTimestamp[key] = 0;
-
-        if (entry.actors && Array.isArray(entry.actors)) {
-          for (const actor of entry.actors) {
-            if (!actor) continue;
-            
-            if (actor.geometry?.type === 'Polygon') {
-              
-              totalPolygons += 1;
-              spillsPerTimestamp[key] += 1;
-
-              if (actor.density != null) {
-                totalDensity += actor.density;
-
-                const range = actor.density >= 1
-                  ? '≥1'
-                  : actor.density >= 0.5
-                  ? '0.5–0.99'
-                  : actor.density >= 0.1
-                  ? '0.1–0.49'
-                  : actor.density >= 0.01
-                  ? '0.01–0.09'
-                  : '<0.01';
-
-                densityGroups[range] = (densityGroups[range] ?? 0) + 1;
-              }
-            }
-          }
-        }
-      }
-    }
-
     const coordinates = data.coordinates && 
                        Array.isArray(data.coordinates) && 
                        data.coordinates.length >= 2 
@@ -108,61 +79,94 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
 
     return {
       totalTimestamps: timestamps.length,
-      start,
-      end,
-      avgIntervalStr,
-      totalPolygons,
-      totalDensity,
-      averageDensity: totalPolygons ? totalDensity / totalPolygons : 0,
-      densityGroups,
-      spillsPerTimestamp,
       coordinates,
     };
-  }, [data, locale]);
+  }, [data]);
 
   return (
-    <div className='flex flex-col h-full'>
-      <Breadcrumb className='flex items-center gap-2 h-12 p-2 border-b w-full'>
+    <div className='flex flex-col flex-1 h-0'>
+      <Breadcrumb className='flex items-center justify-start gap-2 h-12 p-2 border-b w-full'>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <Link
-              href='/?page=1&size=10'
-              className='text-sm font-medium text-primary hover:bg-muted/50 px-2 rounded-md border bg-muted/20 h-8 flex items-center'
-            >
-              {t('return')}
-            </Link>
+            <ButtonTooltip
+              button={
+                <Button
+                  variant='outline'
+                  className='h-8 w-8 p-0 rounded-md gap-0 bg-muted/20 hover:bg-muted/50'
+                >
+                  <Link
+                    href='/?page=1&size=10'
+                  >
+                    <ChevronLeft className='!size-4 text-foreground' />
+                  </Link>
+                </Button>
+              }
+              tooltip={t('return')}
+            />
+            
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className='text-muted-foreground/80'>
-              {t('details')}
+            <BreadcrumbPage className='font-medium text-sm uppercase'>
+              {data._id?.toString().slice(-9).padStart(9, '0')}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
-
-      <div className='p-4 space-y-4'>
-        <h2 className='text-xl font-semibold uppercase'>{data._id?.toString().slice(-9).padStart(9, '0')}</h2>
-        <div className='grid grid-cols-1 gap-4 text-sm'>
-          <div><strong>{t('timestampsCollected')}:</strong> {stats.totalTimestamps}</div>
-          <div>
-            <strong>{t('interval')}:</strong>{' '}
-            {format(stats.start, 'PPPpp', { locale: locale })} → {format(stats.end, 'PPPpp', { locale: locale })}
-          </div>
-          <div><strong>{t('averageInterval')}:</strong> {stats.avgIntervalStr}</div>
-          <div>
-            <strong>{t('location')}:</strong>{' '}
-            {(stats.coordinates as [number, number])[1].toFixed(4)}° N, {(stats.coordinates as [number, number])[0].toFixed(4)}° E
-          </div>
-          <div><strong>{t('totalPolygons')}:</strong> {stats.totalPolygons}</div>
+        <div className='flex items-center justify-end gap-2 [&_button]:!p-0 ml-auto'>
+          <OilSpillInfoCard
+            value={stats.totalTimestamps}
+            icon={<SquareStack className='!size-3.5' strokeWidth={2} />}
+            tooltip={t('timestampsCollected.tooltip')}
+          />
+          <OilSpillInfoCard
+            value={formatMinutes(data.duration)}
+            icon={<Clock className='!size-3.5' strokeWidth={2} />}
+            tooltip={t('duration.tooltip')}
+          />
+          <OilSpillInfoCard
+            value={formatMinutes(data.frequency)}
+            icon={<CircleGauge className='!size-3.5' strokeWidth={2} />}
+            tooltip={t('frequency.tooltip')}
+          />
+          <OilSpillInfoCard
+            value={
+              (() => {
+                const [lat, lng] = stats.coordinates as [number, number];
+                return lat.toFixed(2) + '°N, ' + lng.toFixed(2) + '°E';
+              })()
+            }
+            icon={<MapPinned className='!size-3.5' strokeWidth={2} />}
+            tooltip={t('location.tooltip')}
+          />
         </div>
-        
+        <ButtonTooltip
+          button={
+            <Button
+              variant='outline'
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+              }}
+              className='h-8 w-8 p-0 rounded-md gap-0 bg-muted/20 hover:bg-muted/50'
+            >
+              <Copy className='!size-3.5' />
+            </Button>
+          }
+          tooltip={t('copy.tooltip')}
+        />
+      </Breadcrumb>
+      <div className='flex flex-col flex-1 h-0 overflow-y-auto'>
+        <Stats
+          className='border-none'
+          data={data as any}
+          type='single'
+        />
+        <div className='flex-1 h-0 grid p-2 pt-0 gap-2 grid-rows-2'>
+          <DataViewer data={data} />
+          <div className='w-full rounded-md border bg-muted/50'>
+
+          </div>
+        </div>
       </div>
-      <Stats
-        data={data}
-        type='single'
-      />
-      <div className='flex-1 border-t'></div>
+      
     </div>
   );
 };
