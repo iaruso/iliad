@@ -154,9 +154,9 @@
         "detail": "km<sup>2</sup>",
         "tooltip": {
           "info": "Área do derrame de óleo",
-          "min": "Área mínima - {min}",
-          "max": "Área máxima - {max}",
-          "avg": "Área média - {avg}"
+          "min": "Área mínima - {min} km<sup>2</sup>",
+          "avg": "Área média - {avg} km<sup>2</sup>",
+          "max": "Área máxima - {max} km<sup>2</sup>"
         }
       },
       "duration": {
@@ -184,8 +184,6 @@
         "detail": "por derrame de óleo",
         "tooltip": {
           "info": "Número de pontos por intervalo de tempo",
-          "min": "Mínimo de pontos - {min}",
-          "max": "Máximo de pontos - {max}",
           "avg": "Média de pontos - {avg}"
         }
       },
@@ -194,9 +192,7 @@
         "detail": "pontos por km<sup>2</sup>",
         "tooltip": {
           "info": "Densidade de pontos na área afetada",
-          "min": "Densidade mínima - {min}",
-          "max": "Densidade máxima - {max}",
-          "avg": "Densidade média - {avg}"
+          "avg": "Densidade média - {avg} pontos por km<sup>2</sup>"
         }
       },
       "perimeter": {
@@ -211,12 +207,10 @@
       },
       "compaction": {
         "label": "Circularidade",
-        "detail": "índice",
+        "detail": "percentagem",
         "tooltip": {
-          "info": "Índice de circularidade - 1 é um círculo perfeito enquanto 0 é irregular",
-          "min": "Circularidade mínima - {min}",
-          "max": "Circularidade máxima - {max}",
-          "avg": "Circularidade média - {avg}"
+          "info": "Circularidade do derrame de óleo",
+          "avg": "Circularidade média - {avg}%"
         }
       },
       "dispersionRadius": {
@@ -244,11 +238,10 @@
         "detail": "graus",
         "tooltip": {
           "info": "Direção do derrame de petróleo",
-          "min": "Direção mínima - {min}",
-          "max": "Direção máxima - {max}",
-          "avg": "Mediana da direção - {avg}"
+          "avg": "Mediana da direção - {avg}º"
         }
-      }
+      },
+      "noData": "Sem dados"
     }
   },
   "pagination": {
@@ -262,7 +255,7 @@
   },
   "oilspillInfo": {
     "return": "Todos os derrames de óleo",
-    "summary": "Resumo do derrame",
+    "details": "Detalhes do derrame",
     "timestampsCollected": "Momentos recolhidos",
     "interval": "Intervalo",
     "averageInterval": "Intervalo médio",

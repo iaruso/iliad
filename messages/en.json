@@ -154,9 +154,9 @@
         "detail": "km<sup>2</sup>",
         "tooltip": {
           "info": "Area of the oil spill",
-          "min": "Minimum area - {min}",
-          "max": "Maximum area - {max}",
-          "avg": "Average area - {avg}"
+          "min": "Minimum area - {min} km<sup>2</sup>",
+          "avg": "Average area - {avg} km<sup>2</sup>",
+          "max": "Maximum area - {max} km<sup>2</sup>"
         }
       },
       "duration": {
@@ -184,8 +184,6 @@
         "detail": "per oil spill",
         "tooltip": {
           "info": "Number of points per time interval",
-          "min": "Minimum points - {min}",
-          "max": "Maximum points - {max}",
           "avg": "Average points - {avg}"
         }
       },
@@ -194,9 +192,7 @@
         "detail": "points per km<sup>2</sup>",
         "tooltip": {
           "info": "Density of points in the affected area",
-          "min": "Minimum density - {min}",
-          "max": "Maximum density - {max}",
-          "avg": "Average density - {avg}"
+          "avg": "Average density - {avg} points per km<sup>2</sup>"
         }
       },
       "perimeter": {
@@ -211,12 +207,10 @@
       },
       "compaction": {
         "label": "Circularity",
-        "detail": "index",
+        "detail": "percentage",
         "tooltip": {
-          "info": "Circularity index - 1 is a perfect circle while 0 is irregular",
-          "min": "Minimum circularity - {min}",
-          "max": "Maximum circularity - {max}",
-          "avg": "Average circularity - {avg}"
+          "info": "Circularity of the oil spill",
+          "avg": "Average circularity - {avg}%"
         }
       },
       "dispersionRadius": {
@@ -244,11 +238,10 @@
         "detail": "degrees",
         "tooltip": {
           "info": "Bearing of the oil spill",
-          "min": "Minimum bearing - {min}",
-          "max": "Maximum bearing - {max}",
-          "avg": "Median bearing - {avg}"
+          "avg": "Median bearing - {avg}º"
         }
-      }
+      },
+      "noData": "No data"
     }
   },
   "pagination": {
@@ -262,7 +255,7 @@
   },
   "oilspillInfo": {
     "return": "All oilspills",
-    "summary": "Spill summary",
+    "details": "Spill details",
     "timestampsCollected": "Timestamps collected",
     "interval": "Interval",
     "averageInterval": "Average interval",

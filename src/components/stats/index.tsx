@@ -1,23 +1,25 @@
 import { FC } from 'react'
 import { useTranslations } from 'next-intl'
 import { formatMinutes } from '@/lib/formatters'
-import { formatOilspillStats, FormattedStats } from '@/lib/stats'
+import { formatOilspillStats, FormattedStats, formatSingleOilspillStats } from '@/lib/stats'
 import StatsCard from './card'
 
 interface StatsProps {
   data: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any[]
+    data?: any[]
+    stats?: any[]
   }
   type: 'single' | 'multiple'
 }
 
-const Stats: FC<StatsProps> = ({ data }) => {
+const Stats: FC<StatsProps> = ({ data, type }) => {
   const t = useTranslations('globe.stats')
-  const stats: FormattedStats = formatOilspillStats(data.data)
+  const stats: FormattedStats = type === 'multiple' ? formatOilspillStats(data.data ?? []) : formatSingleOilspillStats(data.stats ?? []);
+  console.log('Stats', stats)
   return (
-    <div className='p-2 border-t text-sm flex-1 h-0 grid grid-rows-2 gap-2 w-full'>
-      <div className='flex-1 flex gap-2'>
+    <div className={`p-2 border-t text-sm flex-1 h-0 gap-2 w-full min-h-96 overflow-auto ${type === 'multiple' ? 'grid grid-rows-2' : 'flex flex-col'}`}>
+      <div className={`flex gap-2 ${type === 'multiple' ? 'flex-1 ' : 'flex-2'}`}>
         <StatsCard
           className='w-2/5'
           label={t('area.label')}
@@ -27,17 +29,25 @@ const Stats: FC<StatsProps> = ({ data }) => {
           tooltip={t('area.tooltip.info')}
           data={stats.area.data}
           min={stats.area.min}
-          tooltipMin={t('area.tooltip.min', { min: stats.area.min })}
+          tooltipMin={t.rich('area.tooltip.min', { 
+            min: stats.area.min,
+            sup: (chunks) => <sup>{chunks}</sup>
+          })}
           max={stats.area.max}
-          tooltipMax={t('area.tooltip.max', { max: stats.area.max })}
+          tooltipMax={t.rich('area.tooltip.max', {
+            max: stats.area.max,
+            sup: (chunks) => <sup>{chunks}</sup>
+          })}
           avg={stats.area.average}
-          tooltipAvg={t('area.tooltip.avg', { avg: stats.area.average })}
+          tooltipAvg={t.rich('area.tooltip.avg', {
+            avg: stats.area.average,
+            sup: (chunks) => <sup>{chunks}</sup>
+          })}
           chartType='tree'
         />
         <div className='flex flex-col gap-2 flex-1'>
           <div className='max-h-24 grid grid-cols-3 gap-2'>
             <StatsCard
-              className=''
               label={t('density.label')}
               detail={t.rich('density.detail', {
                 sup: (chunks) => <sup>{chunks}</sup>
@@ -45,39 +55,31 @@ const Stats: FC<StatsProps> = ({ data }) => {
               tooltip={t('density.tooltip.info')}
               data={stats.density.data}
               min={stats.density.min}
-              tooltipMin={t('density.tooltip.min', { min: stats.density.min })}
-              max={stats.density.max}
-              tooltipMax={t('density.tooltip.max', { max: stats.density.max })}
               avg={stats.density.average}
-              tooltipAvg={t('density.tooltip.avg', { avg: stats.density.average })}
+              max={stats.density.max}
+              tooltipAvg={t.rich('density.tooltip.avg', { 
+                avg: stats.density.average,
+                sup: (chunks) => <sup>{chunks}</sup>
+              })}
               chartType='area'
             />
             <StatsCard
-              className=''
               label={t('bearing.label')}
               detail={t('bearing.detail')}
               tooltip={t('bearing.tooltip.info')}
               data={stats.bearing.data}
-              min={stats.bearing.min}
-              tooltipMin={t('bearing.tooltip.min', { min: stats.bearing.min })}
-              max={stats.bearing.max}
-              tooltipMax={t('bearing.tooltip.max', { max: stats.bearing.max })}
               avg={stats.bearing.average}
               tooltipAvg={t('bearing.tooltip.avg', { avg: stats.bearing.average })}
               chartType='radar'
             />
             <StatsCard
-              className=''
               label={t('compaction.label')}
               detail={t('compaction.detail')}
               tooltip={t('compaction.tooltip.info')}
-              data={stats.compaction.data}
-              min={stats.compaction.min}
-              tooltipMin={t('compaction.tooltip.min', { min: stats.compaction.min })}
-              max={stats.compaction.max}
-              tooltipMax={t('compaction.tooltip.max', { max: stats.compaction.max })}
-              avg={stats.compaction.average}
-              tooltipAvg={t('compaction.tooltip.avg', { avg: stats.compaction.average })}
+              min={stats.compaction.min * 100}
+              avg={stats.compaction.average * 100}
+              max={stats.compaction.max * 100}
+              tooltipAvg={t('compaction.tooltip.avg', { avg: stats.compaction.average * 100 })}
               chartType='circularity'
             />
           </div>
@@ -86,19 +88,16 @@ const Stats: FC<StatsProps> = ({ data }) => {
             label={t('points.label')}
             detail={t('points.detail')}
             tooltip={t('points.tooltip.info')}
-            data={stats.points.data}
             min={stats.points.min}
-            tooltipMin={t('points.tooltip.min', { min: stats.points.min })}
-            max={stats.points.max}
-            tooltipMax={t('points.tooltip.max', { max: stats.points.max })}
             avg={stats.points.average}
+            max={stats.points.max}
             tooltipAvg={t('points.tooltip.avg', { avg: stats.points.average })}
             chartType='dots'
           />
         </div>
       </div>
-      <div className='flex-1 grid grid-rows-2 gap-2'>
-        <div className='flex-1 grid grid-cols-3 gap-2'>
+      <div className={`grid gap-2 ${type === 'multiple' ? 'grid-rows-2' : 'grid-rows-1 grid-cols-3'}`}>
+        <div className={`flex-1 grid gap-2 ${type === 'multiple' ? 'grid-cols-3' : 'grid-cols-1 col-span-1'}`}>
           <StatsCard
             label={t('perimeter.label')}
             detail={t('perimeter.detail')}
@@ -112,38 +111,42 @@ const Stats: FC<StatsProps> = ({ data }) => {
             tooltipAvg={t('perimeter.tooltip.avg', { avg: stats.perimeter.average })}
             chartType='step'
           />
-          <StatsCard
-            className=''
-            label={t('duration.label')}
-            detail={t('duration.detail')}
-            tooltip={t('duration.tooltip.info')}
-            data={stats.duration.data}
-            min={stats.duration.min}
-            tooltipMin={t('duration.tooltip.min', { min: formatMinutes(stats.duration.min) })}
-            max={stats.duration.max}
-            tooltipMax={t('duration.tooltip.max', { max: formatMinutes(stats.duration.max) })}
-            avg={stats.duration.average}
-            tooltipAvg={t('duration.tooltip.avg', { avg: formatMinutes(stats.duration.average) })}
-            chartType='step'
-            chartValueType='time'
-          />
-          <StatsCard
-            className=''
-            label={t('frequency.label')}
-            detail={t('frequency.detail')}
-            tooltip={t('frequency.tooltip.info')}
-            data={stats.frequency.data}
-            min={stats.frequency.min}
-            tooltipMin={t('frequency.tooltip.min', { min: formatMinutes(stats.frequency.min) })}
-            max={stats.frequency.max}
-            tooltipMax={t('frequency.tooltip.max', { max: formatMinutes(stats.frequency.max) })}
-            avg={stats.frequency.average}
-            tooltipAvg={t('frequency.tooltip.avg', { avg: formatMinutes(stats.frequency.average) })}
-            chartType='step'
-            chartValueType='time'
-          />
+          { stats.duration && stats.frequency && type === 'multiple' && (
+            <>
+              <StatsCard
+                className=''
+                label={t('duration.label')}
+                detail={t('duration.detail')}
+                tooltip={t('duration.tooltip.info')}
+                data={stats.duration.data}
+                min={stats.duration.min}
+                tooltipMin={t('duration.tooltip.min', { min: formatMinutes(stats.duration.min) })}
+                max={stats.duration.max}
+                tooltipMax={t('duration.tooltip.max', { max: formatMinutes(stats.duration.max) })}
+                avg={stats.duration.average}
+                tooltipAvg={t('duration.tooltip.avg', { avg: formatMinutes(stats.duration.average) })}
+                chartType='step'
+                chartValueType='time'
+              />
+              <StatsCard
+                className=''
+                label={t('frequency.label')}
+                detail={t('frequency.detail')}
+                tooltip={t('frequency.tooltip.info')}
+                data={stats.frequency.data}
+                min={stats.frequency.min}
+                tooltipMin={t('frequency.tooltip.min', { min: formatMinutes(stats.frequency.min) })}
+                max={stats.frequency.max}
+                tooltipMax={t('frequency.tooltip.max', { max: formatMinutes(stats.frequency.max) })}
+                avg={stats.frequency.average}
+                tooltipAvg={t('frequency.tooltip.avg', { avg: formatMinutes(stats.frequency.average) })}
+                chartType='step'
+                chartValueType='time'
+              />
+            </>
+          )}
         </div>
-        <div className='flex-1 grid grid-cols-2 gap-2'>
+        <div className={`flex-1 grid grid-cols-2 gap-2 ${type === 'multiple' ? '' : 'col-span-2'}`}>
           <StatsCard
             label={t('dispersionRadius.label')}
             detail={t('dispersionRadius.detail')}
@@ -155,7 +158,7 @@ const Stats: FC<StatsProps> = ({ data }) => {
             tooltipMax={t('dispersionRadius.tooltip.max', { max: stats.dispersionRadius.max })}
             avg={stats.dispersionRadius.average}
             tooltipAvg={t('dispersionRadius.tooltip.avg', { avg: stats.dispersionRadius.average })}
-            chartType='banded'
+            chartType={type === 'multiple' ? 'banded' : 'step'}
           />
           <StatsCard
             label={t('dispersionDistance.label')}
@@ -168,12 +171,10 @@ const Stats: FC<StatsProps> = ({ data }) => {
             tooltipMax={t('dispersionDistance.tooltip.max', { max: stats.dispersionDistance.max })}
             avg={stats.dispersionDistance.average}
             tooltipAvg={t('dispersionDistance.tooltip.avg', { avg: stats.dispersionDistance.average })}
-            chartType='banded'
+            chartType={type === 'multiple' ? 'banded' : 'step'}
           />
         </div>
       </div>
-      
-      
     </div>
   )
 }

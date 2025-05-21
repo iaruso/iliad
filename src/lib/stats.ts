@@ -9,8 +9,8 @@ export type StatValue = {
 
 export type FormattedStats = {
   area: StatValue
-  duration: StatValue
-  frequency: StatValue
+  duration?: StatValue
+  frequency?: StatValue
   points: StatValue
   density: StatValue
   perimeter: StatValue
@@ -103,6 +103,31 @@ export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
     bearing: getStatsWithAbs('bearing'),
   }
 }
+
+export function formatSingleOilspillStats(stats: any[]): FormattedStats {
+  const getFieldStats = (key: keyof FormattedStats): StatValue => {
+    const values = stats.map(s => s[key]).filter((v): v is number => typeof v === 'number')
+
+    return {
+      min: roundSmart(Math.min(...values)),
+      max: roundSmart(Math.max(...values)),
+      average: roundSmart(avg(values)),
+      data: values.map(roundSmart)
+    }
+  }
+
+  return {
+    area: getFieldStats('area'),
+    points: getFieldStats('points'),
+    density: getFieldStats('density'),
+    perimeter: getFieldStats('perimeter'),
+    compaction: getFieldStats('compaction'),
+    dispersionRadius: getFieldStats('dispersionRadius'),
+    dispersionDistance: getFieldStats('dispersionDistance'),
+    bearing: getFieldStats('bearing'),
+  }
+}
+
 
 export function formatRadarData(data: number[]) {
   const step = 15

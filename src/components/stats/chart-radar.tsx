@@ -18,7 +18,6 @@ const chartConfig = {
 
 const ChartRadar: FC<ChartRadarProps> = ({ data, median }) => {
   const dataG = data ? formatRadarData(data) : []
-  console.log('dataG', dataG)
   return (
     <div className={`
       w-full h-full flex items-center justify-center relative overflow-hidden

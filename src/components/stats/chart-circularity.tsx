@@ -27,7 +27,7 @@ const getPoints = (sides: number, radius: number, centerX: number, centerY: numb
 const getSides = (value: number) =>
   Math.max(
     minPolygonSides,
-    Math.round(minPolygonSides + value * (maxPolygonSides - minPolygonSides))
+    Math.round(minPolygonSides + (value / 100) * (maxPolygonSides - minPolygonSides))
   )
 
 const ChartCircularity: FC<ChartCircularityProps> = ({ min, avg, max }) => {

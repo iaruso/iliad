@@ -14,6 +14,7 @@ import {
 import { formatDistance, format } from 'date-fns';
 import { enUS, pt } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
+import Stats from './stats';
 
 //import dynamic from 'next/dynamic';
 //const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
@@ -133,15 +134,15 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage className='uppercase text-muted-foreground/80'>
-              {data._id?.toString().slice(-9).padStart(9, '0')}
+            <BreadcrumbPage className='text-muted-foreground/80'>
+              {t('details')}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <div className='p-4 space-y-4'>
-        <h2 className='text-xl font-semibold'>{t('summary')}</h2>
+        <h2 className='text-xl font-semibold uppercase'>{data._id?.toString().slice(-9).padStart(9, '0')}</h2>
         <div className='grid grid-cols-1 gap-4 text-sm'>
           <div><strong>{t('timestampsCollected')}:</strong> {stats.totalTimestamps}</div>
           <div>
@@ -154,32 +155,14 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
             {(stats.coordinates as [number, number])[1].toFixed(4)}° N, {(stats.coordinates as [number, number])[0].toFixed(4)}° E
           </div>
           <div><strong>{t('totalPolygons')}:</strong> {stats.totalPolygons}</div>
-          {/* <div><strong>{t('totalDensity')}:</strong> {stats.totalDensity.toFixed(2)}</div>
-          <div><strong>{t('averageDensity')}:</strong> {stats.averageDensity.toFixed(3)}</div> */}
         </div>
-
-
-        {/* <div>
-          <h3 className='font-medium mt-4 mb-2'>Density distribution:</h3>
-          <ul className='list-disc list-inside text-sm'>
-            {Object.entries(stats.densityGroups).map(([range, count]) => (
-              <li key={range}><strong>{range}:</strong> {count} spill(s)</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h3 className='font-medium mt-4 mb-2'>Spills per timestamp:</h3>
-          <ul className='list-disc list-inside text-sm max-h-40 overflow-y-auto'>
-            {Object.entries(stats.spillsPerTimestamp).map(([ts, count]) => (
-              <li key={ts}><strong>{ts}:</strong> {count} spill(s)</li>
-            ))}
-          </ul>
-        </div> */}
+        
       </div>
-      {/* <div className='aspect-video' id='ocean-canvas'>
-        <OceanCanvas />
-      </div> */}
+      <Stats
+        data={data}
+        type='single'
+      />
+      <div className='flex-1 border-t'></div>
     </div>
   );
 };
