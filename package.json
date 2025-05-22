@@ -76,5 +76,8 @@
     "react-is": "^19.0.0-rc-69d4b800-20241021",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4"
+  },
+  "peerDependencies": {
+    "react": ">=15.5.4"
   }
 }
