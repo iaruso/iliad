@@ -6,8 +6,9 @@ export async function fetchOilspillData({
   page,
   size,
   id,
-  minArea,
-  maxArea,
+  areaRange,
+  durationRange,
+  frequencyRange,
   sortField,
   sortDirection
 }: {
@@ -15,8 +16,9 @@ export async function fetchOilspillData({
   page: number;
   size: number;
   id?: string;
-  minArea?: string;
-  maxArea?: string;
+  areaRange?: string;
+  durationRange?: string;
+  frequencyRange?: string;
   sortField?: 'latitude' | 'longitude' | 'area' | 'points';
   sortDirection?: 'asc' | 'desc';
 }): Promise<OilSpills> {
@@ -40,8 +42,9 @@ export async function fetchOilspillData({
     page,
     size,
     id: id?.toLowerCase(),
-    minArea,
-    maxArea,
+    areaRange,
+    durationRange,
+    frequencyRange,
     sortField,
     sortDirection,
   });

@@ -1,4 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+'use client';
 import { FC, ReactNode } from 'react';
 import {
   ArrowDown,
@@ -18,6 +19,7 @@ import ChartCircularity from './chart-circularity';
 import ChartDots from './chart-dots';
 import ChartBanded from './chart-banded';
 import { formatMinutes } from '@/lib/formatters';
+import { useTranslations } from 'next-intl';
 
 interface StatsCardProps {
   className?: string;
@@ -36,7 +38,7 @@ interface StatsCardProps {
 }
 
 const chartComponents = {
-  radar: (data: any) => <ChartRadar data={data as number[]} median={getMedian(data as number[])} />,
+  radar: (data: any, _min: number, _max: number, avg: number) => <ChartRadar data={data as number[]} avg={avg} />,
   tree: (data: any) => <ChartTree data={data as number[]} />,
   circularity: (_: any, min: number, max: number, avg: number) => <ChartCircularity min={min} max={max} avg={avg} />,
   step: (data: any, min: number, max: number, avg: number) => <ChartStep data={data as number[]} min={min} max={max} avg={avg} />,
@@ -44,15 +46,6 @@ const chartComponents = {
   banded: (data: any) => <ChartBanded data={data as { value: [number, number, number] }[]} />,
   area: (_: any, min: number, max: number, avg: number) => <ChartArea min={min} avg={avg} max={max} />
 };
-
-function getMedian(data: number[]) {
-  if (!Array.isArray(data) || data.length === 0) return 0;
-  const sorted = [...data].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
-}
 
 const StatsCard: FC<StatsCardProps> = ({
   className,
@@ -69,7 +62,7 @@ const StatsCard: FC<StatsCardProps> = ({
   chartType = 'area',
   chartValueType
 }) => {
-  const radarMedian = chartType === 'radar' ? getMedian(data as number[]) : 0;
+  const t = useTranslations('globe.stats');
   const showStatsRow = ['tree', 'step', 'banded'].includes(chartType);
 
   const renderChart = () => {
@@ -103,12 +96,12 @@ const StatsCard: FC<StatsCardProps> = ({
   );
 
   const renderSingleStat = () => (
-    <div className='absolute bottom-1 right-1 px-1 py-0.5 rounded-md bg-background border h-6'>
+    <div className='absolute bottom-1 right-1 rounded-md bg-background border h-6'>
       <TooltipWrapper
         trigger={
           <div className='flex items-center gap-1'>
             {chartType === 'radar' ? (
-              <ArrowUp className='!size-2.5' strokeWidth={2} style={{ transform: `rotate(${radarMedian.toFixed(0)}deg)` }} />
+              <ArrowUp className='!size-2.5' strokeWidth={2} style={{ transform: `rotate(${(avg ?? 0).toFixed(0)}deg)` }} />
             ) : chartType === 'circularity' ? (
               <Hexagon className='!size-2.5' strokeWidth={2} />
             ) : chartType === 'dots' ? (
@@ -117,7 +110,7 @@ const StatsCard: FC<StatsCardProps> = ({
               <CircleDot className='!size-2.5' strokeWidth={2} />
             )}
             <span className='truncate pt-[1px]'>
-              {chartType === 'radar' ? `${radarMedian.toFixed(2)}` : avg}
+              {avg}
             </span>
           </div>
         }
@@ -141,7 +134,7 @@ const StatsCard: FC<StatsCardProps> = ({
             content={<p className='text-xs w-full'>{tooltip}</p>}
           />
         ) : (
-          <span className='text-[10px] mt-8 text-muted-foreground'>No data</span>
+          <span className='text-[10px] mt-8 text-muted-foreground'>{t('noData')}</span>
         )}
       </div>
       {showStatsRow ? renderStatsRow() : renderSingleStat()}

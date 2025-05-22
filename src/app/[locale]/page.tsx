@@ -30,8 +30,9 @@ type SearchParams = Promise<{
   page?: string;
   size?: string;
   id?: string;
-  minArea?: string;
-  maxArea?: string;
+  areaRange?: string;
+  durationRange?: string;
+  frequencyRange?: string;
   sortField?: 'latitude' | 'longitude' | 'area' | 'points';
   sortDirection?: 'asc' | 'desc';
   oilspill?: string;
@@ -48,8 +49,9 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     page,
     size,
     id,
-    minArea,
-    maxArea,
+    areaRange,
+    durationRange,
+    frequencyRange,
     sortField,
     sortDirection,
     oilspill,
@@ -65,8 +67,9 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     params.set('page', PAGE.toString());
     params.set('size', SIZE.toString());
     if (id) params.set('id', id);
-    if (minArea) params.set('minArea', minArea);
-    if (maxArea) params.set('maxArea', maxArea);
+    if (areaRange) params.set('areaRange', areaRange);
+    if (durationRange) params.set('durationRange', durationRange);
+    if (frequencyRange) params.set('frequencyRange', frequencyRange);
     if (sortField) params.set('sortField', sortField);
     if (sortDirection) params.set('sortDirection', sortDirection);
     redirect({ href: `?${params.toString()}`, locale });
@@ -77,8 +80,9 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     page: PAGE,
     size: SIZE,
     id,
-    minArea,
-    maxArea,
+    areaRange,
+    durationRange,
+    frequencyRange,
     sortField,
     sortDirection,
   });

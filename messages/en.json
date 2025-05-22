@@ -114,6 +114,16 @@
             "min": "Min area",
             "max": "Max area"
           },
+          "durationRange": {
+            "label": "Duration range (minutes)",
+            "min": "Min duration",
+            "max": "Max duration"
+          },
+          "frequencyRange": {
+            "label": "Frequency range (minutes)",
+            "min": "Min frequency",
+            "max": "Max frequency"
+          },
           "columns": {
             "label": "Columns visibility",
             "placeholder": "Select columns"

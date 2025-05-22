@@ -13,8 +13,9 @@ export async function fetchOilSpills(
   page: number,
   size: number,
   id?: string,
-  minArea?: string,
-  maxArea?: string,
+  areaRange?: string,
+  durationRange?: string,
+  frequencyRange?: string,
   sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
   sortDirection?: 'asc' | 'desc'
 ) {
@@ -45,13 +46,37 @@ export async function fetchOilSpills(
     };
   }
 
-  const parsedMin = typeof minArea === 'string' ? parseFloat(minArea) : minArea;
-  const parsedMax = typeof maxArea === 'string' ? parseFloat(maxArea) : maxArea;
+  if (areaRange) {
+    const [minStr, maxStr] = areaRange.split('_');
+    const parsedMin = minStr ? parseFloat(minStr) : undefined;
+    const parsedMax = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
+      match.area = {};
+      if (!isNaN(parsedMin!)) match.area.$gte = parsedMin;
+      if (!isNaN(parsedMax!)) match.area.$lte = parsedMax;
+    }
+  }
 
-  if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
-    match.area = {};
-    if (!isNaN(parsedMin!)) match.area.$gte = parsedMin;
-    if (!isNaN(parsedMax!)) match.area.$lte = parsedMax;
+  if (durationRange) {
+    const [minStr, maxStr] = durationRange.split('_');
+    const parsedMin = minStr ? parseFloat(minStr) : undefined;
+    const parsedMax = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
+      match.duration = {};
+      if (!isNaN(parsedMin!)) match.duration.$gte = parsedMin;
+      if (!isNaN(parsedMax!)) match.duration.$lte = parsedMax;
+    }
+  }
+
+  if (frequencyRange) {
+    const [minStr, maxStr] = frequencyRange.split('_');
+    const parsedMin = minStr ? parseFloat(minStr) : undefined;
+    const parsedMax = maxStr ? parseFloat(maxStr) : undefined;
+    if (!isNaN(parsedMin!) || !isNaN(parsedMax!)) {
+      match.frequency = {};
+      if (!isNaN(parsedMin!)) match.frequency.$gte = parsedMin;
+      if (!isNaN(parsedMax!)) match.frequency.$lte = parsedMax;
+    }
   }
 
   const pipeline: any[] = [];

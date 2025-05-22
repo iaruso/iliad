@@ -5,16 +5,18 @@ export const getOilSpills = async ({
   page = 1,
   size = 10,
   id,
-  minArea,
-  maxArea,
+  areaRange,
+  durationRange,
+  frequencyRange,
   sortField,
   sortDirection
 }: { 
   page?: number,
   size?: number,
   id?: string,
-  minArea?: string,
-  maxArea?: string,
+  areaRange?: string,
+  durationRange?: string,
+  frequencyRange?: string,
   sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
   sortDirection?: 'asc' | 'desc'
 }) => {
@@ -22,8 +24,9 @@ export const getOilSpills = async ({
     page,
     size,
     id,
-    minArea,
-    maxArea,
+    areaRange,
+    durationRange,
+    frequencyRange,
     sortField,
     sortDirection
   );

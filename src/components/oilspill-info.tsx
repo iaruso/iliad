@@ -93,6 +93,7 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
                 <Button
                   variant='outline'
                   className='h-8 w-8 p-0 rounded-md gap-0 bg-muted/20 hover:bg-muted/50'
+                  asChild
                 >
                   <Link
                     href='/?page=1&size=10'

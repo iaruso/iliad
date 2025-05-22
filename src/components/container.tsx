@@ -77,25 +77,22 @@ const Container: FC<ContainerProps> = ({ data }) => {
   const searchParams = useSearchParams();
   const paramIdFilter = searchParams.get('id')?.toLowerCase() ?? '';
   const [idFilter, setIdFilter] = useState<string>(paramIdFilter);
-  const paramMinArea = searchParams.get('minArea');
-  const [minArea, setMinArea] = useState<string>(paramMinArea ?? '');
-  const paramMaxArea = searchParams.get('maxArea');
-  const [maxArea, setMaxArea] = useState<string>(paramMaxArea ?? '');
-  
+  const paramAreaRange = searchParams.get('areaRange');
+  const initialMinArea = paramAreaRange?.split('_')[0] || '';
+  const initialMaxArea = paramAreaRange?.split('_')[1] || '';
+  const [minArea, setMinArea] = useState<string>(initialMinArea);
+  const [maxArea, setMaxArea] = useState<string>(initialMaxArea);
+  const [areaRange, setAreaRange] = useState<string>(paramAreaRange ?? '');
+
   const activeFilters = [
     idFilter.trim().length >= 3 ? 1 : 0,
-    minArea !== '' ? 1 : 0,
-    maxArea !== '' ? 1 : 0
-  ].reduce(
-    (acc, curr) => acc + curr,
-    0
-  );
+    areaRange !== '' ? 1 : 0
+  ].reduce((acc, curr) => acc + curr, 0);
 
   const updateFilters = useCallback(
     (updates: {
       id?: string;
-      minArea?: string;
-      maxArea?: string;
+      areaRange?: string;
       field?: string;
       direction?: string;
     }) => {
@@ -103,8 +100,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
   
       const currentFilters = {
         id: paramIdFilter || undefined,
-        minArea: paramMinArea || undefined,
-        maxArea: paramMaxArea || undefined,
+        areaRange: paramAreaRange || undefined,
         field: params.get('sortField') || undefined,
         direction: params.get('sortDirection') || undefined,
       };
@@ -114,33 +110,24 @@ const Container: FC<ContainerProps> = ({ data }) => {
         ...updates,
       };
   
-      const parsedMin = mergedUpdates.minArea ? parseFloat(mergedUpdates.minArea) : undefined;
-      const parsedMax = mergedUpdates.maxArea ? parseFloat(mergedUpdates.maxArea) : undefined;
-  
       if (mergedUpdates.id !== undefined && mergedUpdates.id.trim().length >= 3) {
         params.set('id', mergedUpdates.id);
       } else {
         params.delete('id');
       }
   
-      if (!isNaN(parsedMin!)) {
-        params.set('minArea', parsedMin!.toString());
+      if (mergedUpdates.areaRange && mergedUpdates.areaRange.trim() !== '') {
+        params.set('areaRange', mergedUpdates.areaRange);
       } else {
-        params.delete('minArea');
+        params.delete('areaRange');
       }
   
-      if (!isNaN(parsedMax!)) {
-        params.set('maxArea', parsedMax!.toString());
-      } else {
-        params.delete('maxArea');
-      }
-
       if (mergedUpdates.field) {
         params.set('sortField', mergedUpdates.field);
       } else {
         params.delete('sortField');
       }
-
+  
       if (mergedUpdates.direction) {
         params.set('sortDirection', mergedUpdates.direction);
       } else {
@@ -153,38 +140,42 @@ const Container: FC<ContainerProps> = ({ data }) => {
         router.replace(`?${newParamsString}`, { scroll: false });
       }
     },
-    [searchParams, router, paramIdFilter, paramMinArea, paramMaxArea]
+    [searchParams, router, paramIdFilter, paramAreaRange]
   );
 
   const handleIdFilterChange = (value: string) => {
     setIdFilter(value);
     updateFilters({ id: value });
-  }
+  };
 
   const handleMinAreaChange = (value: string) => {
     setMinArea(value);
-    updateFilters({ minArea: value });
+    const newRange = value + '_' + (maxArea || '');
+    setAreaRange(newRange);
+    updateFilters({ areaRange: newRange });
   };
   
   const handleMaxAreaChange = (value: string) => {
     setMaxArea(value);
-    updateFilters({ maxArea: value });
+    const newRange = (minArea || '') + '_' + value;
+    setAreaRange(newRange);
+    updateFilters({ areaRange: newRange });
   };
 
   const handleOrderFilterChange = (field: string, direction: string) => {
     updateFilters({ field, direction });
-  }
+  };
 
   const resetFilters = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete('id');
-    params.delete('minArea');
-    params.delete('maxArea');
+    params.delete('areaRange');
     params.delete('sortField');
     params.delete('sortDirection');
     setIdFilter('');
     setMinArea('');
     setMaxArea('');
+    setAreaRange('');
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [router, searchParams]);
 
@@ -326,7 +317,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
       </div>
       { data.data.length > 0 && !data.single ? (
         <>
-          <Table className='border-b border-border/50' divClassName='h-[441px] overflow-y-auto w-[calc(100%)]'>
+          <Table className='border-b border-border/50' divClassName='h-[calc(440px+1rem)] overflow-y-auto w-[calc(100%)]'>
             <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
