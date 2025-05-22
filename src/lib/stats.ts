@@ -1,5 +1,3 @@
-import { OilSpillData } from "@/@types/oilspills"
-
 export type StatValue = {
   min: number
   max: number
@@ -106,6 +104,7 @@ export function formatOilspillStats(data: OilspillMinEntry[]): FormattedStats {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatSingleOilspillStats(stats: any[]): FormattedStats {
   const getFieldStats = (key: keyof FormattedStats): StatValue => {
     const values = stats.map(s => s[key]).filter((v): v is number => typeof v === 'number')

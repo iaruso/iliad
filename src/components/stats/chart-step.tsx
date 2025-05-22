@@ -4,7 +4,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  XAxis,
   ReferenceLine,
   YAxis
 } from 'recharts'

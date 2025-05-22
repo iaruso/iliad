@@ -156,6 +156,7 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
       <div className='flex flex-col flex-1 h-0 overflow-y-auto'>
         <Stats
           className='border-none'
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           data={data as any}
           type='single'
         />

@@ -1,15 +1,13 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import { FC } from 'react'
 import { useTranslations } from 'next-intl'
-import { formatMinutes } from '@/lib/formatters'
 import { formatOilspillStats, FormattedStats, formatSingleOilspillStats } from '@/lib/stats'
 import StatsCard from './card'
-import { OilSpillData } from '@/@types/oilspills'
 
 interface StatsProps {
   className?: string
   data: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: any[] 
+    data?: any[]
     stats?: any[]
   }
   type: 'single' | 'multiple'

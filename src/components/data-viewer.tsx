@@ -5,6 +5,7 @@ import { Button } from '@/components/ui-custom/button'
 import { useTranslations } from 'next-intl'
 
 type DataViewerProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 }
 
