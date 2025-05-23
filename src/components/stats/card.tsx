@@ -124,7 +124,7 @@ const StatsCard: FC<StatsCardProps> = ({
     <div className={cn('flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden', className)}>
       <div className='flex flex-col absolute top-0 p-2 w-full pointer-events-none select-none z-[1]'>
         <span className='text-xs text-foreground font-medium'>{label}</span>
-        <span className='text-[10px] text-muted-foreground -mt-0.5 line-clamp-1 truncate'>{detail}</span>
+        <span className='text-[10px] text-muted-foreground -mt-0.5 truncate text-ellipsis w-full'>{detail}</span>
       </div>
       <div className='flex w-full flex-1 justify-center items-center h-full'>
         {data || min || max || avg ? (

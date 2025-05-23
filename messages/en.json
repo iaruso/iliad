@@ -109,20 +109,17 @@
         "label": "Filters",
         "tooltip": "Filter locations",
         "options": {
+          "min": "Min duration",
+          "max": "Max duration",
           "areaRange": {
-            "label": "Area range (km<sup>2</sup>)",
-            "min": "Min area",
-            "max": "Max area"
+            "label": "Area range (km<sup>2</sup>)"
           },
           "durationRange": {
-            "label": "Duration range (minutes)",
-            "min": "Min duration",
-            "max": "Max duration"
+            "label": "Duration range (minutes)"
+            
           },
           "frequencyRange": {
-            "label": "Frequency range (minutes)",
-            "min": "Min frequency",
-            "max": "Max frequency"
+            "label": "Frequency range (minutes)"
           },
           "columns": {
             "label": "Columns visibility",

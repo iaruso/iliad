@@ -109,20 +109,16 @@
         "label": "Filtros",
         "tooltip": "Filtrar localizações",
         "options": {
+          "min": "Mínima",
+          "max": "Máxima",
           "areaRange": {
-            "label": "Intervalo de área (km<sup>2</sup>)",
-            "min": "Área mínima",
-            "max": "Área máxima"
+            "label": "Intervalo de área (km<sup>2</sup>)"
           },
           "durationRange": {
-            "label": "Intervalo de duração (minutos)",
-            "min": "Duração mínima",
-            "max": "Duração máxima"
+            "label": "Intervalo de duração (minutos)"
           },
           "frequencyRange": {
-            "label": "Intervalo de frequência (minutos)",
-            "min": "Frequência mínima",
-            "max": "Frequência máxima"
+            "label": "Intervalo de frequência (minutos)"
           },
           "columns": {
             "label": "Visibilidade das colunas",
