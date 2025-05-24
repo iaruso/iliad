@@ -355,9 +355,15 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
           width={dimensions.width}
           height={dimensions.height}
           backgroundColor='rgba(0,0,0,0)'
-          backgroundImageUrl={resolvedTheme === 'dark' ? '/sky.webp' : null}
+          backgroundImageUrl={
+            resolvedTheme === 'dark' ? 
+            textureQuality === 'high' ? '/sky-hq.webp' :
+            textureQuality === 'mid' ? '/sky.webp' : '/sky-lq.webp'
+            : 
+            null
+          }
           globeMaterial={globeMaterial as Material | undefined}
-          bumpImageUrl='/earth-bump.webp'
+          bumpImageUrl={textureQuality === 'high' ? '/earth-bump-hq.webp' : textureQuality === 'mid' ? '/earth-bump.webp' : '/earth-bump-lq.webp'}
           showAtmosphere={false}
           onZoom={handleGlobeRotation}
           {...(dataDetail === 'original' && {

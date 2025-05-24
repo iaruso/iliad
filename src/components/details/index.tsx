@@ -83,7 +83,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className='flex flex-col flex-1 h-0'>
+    <>
       <Breadcrumb className='flex items-center justify-start gap-2 h-12 p-2 border-b w-full'>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -93,6 +93,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
                   variant='outline'
                   className='h-8 w-8 p-0 rounded-md gap-0 bg-muted/20 hover:bg-muted/50'
                   asChild
+                  aria-label={t('return')}
                 >
                   <Link
                     href='/?page=1&size=10'
@@ -113,6 +114,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
                     navigator.clipboard.writeText(window.location.href);
                   }}
                   className='h-8 px-2 py-1 rounded-md gap-1.5 bg-muted/20 hover:bg-muted/50 font-medium text-xs uppercase text-foreground'
+                  aria-label={t('copy.tooltip')}
                 >
                   {data._id?.toString().slice(-9).padStart(9, '0')}
                   <Copy className='!size-3.5' />
@@ -167,7 +169,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
         </div>
       </div>
       
-    </div>
+    </>
   );
 };
 

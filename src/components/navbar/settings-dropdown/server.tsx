@@ -17,6 +17,7 @@ const SettingsDropdownServer = async () => {
         off: t('time.options.off'),
         low: t('textures.options.low'),
         high: t('textures.options.high'),
+        mid: t('textures.options.mid'),
       }}
     />
   )

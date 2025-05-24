@@ -28,7 +28,12 @@ const LocaleDropdownClient: FC<LocaleDropdownClientProps> = ({ tooltip, labels }
   return (
     <DropdownTooltip
       button={
-        <Button variant='secondary' size='icon' className='shadow-none h-6 w-6'>
+        <Button
+          variant='secondary'
+          size='icon'
+          className='shadow-none h-6 w-6'
+          aria-label={tooltip}
+        >
           <Globe className='h-4! w-4!' />
         </Button>
       }

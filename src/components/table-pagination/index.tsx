@@ -127,6 +127,7 @@ export default function DataTablePagination<TData>({
                 className='hidden h-8 w-8 p-0 lg:flex'
                 onClick={() => handlePageChange(0)}
                 disabled={!table.getCanPreviousPage()}
+                aria-label={t('goToFirst')}
               >
                 <ChevronsLeft className='h-4 w-4' />
               </Button>
@@ -140,6 +141,7 @@ export default function DataTablePagination<TData>({
                 className='h-8 w-8 p-0'
                 onClick={() => handlePageChange(table.getState().pagination.pageIndex - 1)}
                 disabled={!table.getCanPreviousPage()}
+                aria-label={t('goToPrevious')}
               >
                 <span className='sr-only'>{t('goToPrevious')}</span>
                 <ChevronLeft className='h-4 w-4' />
@@ -154,6 +156,7 @@ export default function DataTablePagination<TData>({
                 className='h-8 w-8 p-0'
                 onClick={() => handlePageChange(table.getState().pagination.pageIndex + 1)}
                 disabled={!table.getCanNextPage()}
+                aria-label={t('goToNext')}
               >
                 <span className='sr-only'>{t('goToNext')}</span>
                 <ChevronRight className='h-4 w-4' />
@@ -168,6 +171,7 @@ export default function DataTablePagination<TData>({
                 className='hidden h-8 w-8 p-0 lg:flex'
                 onClick={() => handlePageChange(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
+                aria-label={t('goToLast')}
               >
                 <ChevronsRight className='h-4 w-4' />
               </Button>

@@ -32,6 +32,7 @@
           "title": "Textures quality",
           "options": {
             "low": "Low",
+            "mid": "Medium",
             "high": "High"
           }
         },
@@ -50,8 +51,8 @@
           }
         }
       },
-      "info": {
-        "tooltip": "Check out source code"
+      "helper": {
+        "tooltip": "Helper"
       }
     }
   },

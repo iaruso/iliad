@@ -24,6 +24,7 @@ interface SettingsDropdownClientProps {
     off: string
     low: string
     high: string
+    mid: string
   }
 }
 
@@ -44,7 +45,12 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
     <DropdownTooltip
       className='absolute bottom-8 -right-6 w-80'
       button={
-        <Button variant='secondary' size='icon' className='shadow-none h-6 w-6'>
+        <Button
+          variant='secondary'
+          size='icon'
+          className='shadow-none h-6 w-6'
+          aria-label={tooltip}
+        >
           <Settings className='h-4! w-4!' />
         </Button>
       }
@@ -86,12 +92,15 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
             <div className='flex items-center justify-between'>
               <p>{labels.textures}</p>
               <CustomSwitch
-                checked={textureQuality === 'high'}
-                onChange={() =>
-                  setTextureQuality(textureQuality === 'high' ? 'low' : 'high')
+                value={textureQuality === 'high' ? 'true' : textureQuality === 'low' ? 'false' : 'extra'}
+                onChange={(value) =>
+                  setTextureQuality(
+                    value === 'true' ? 'high' : value === 'false' ? 'low' : 'mid'
+                  )
                 }
                 falseLabel={labels.low}
                 trueLabel={labels.high}
+                extraLabel={labels.mid}
               />
             </div>
           </DropdownMenuLabel>
@@ -100,7 +109,7 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
             <div className='flex items-center justify-between'>
               <p>{labels.time}</p>
               <CustomSwitch
-                checked={dayNight}
+                value={dayNight ? 'true' : 'false'}
                 onChange={() => setDayNight(!dayNight)}
                 falseLabel={labels.off}
                 trueLabel={labels.on}
@@ -112,7 +121,7 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
             <div className='flex items-center justify-between'>
               <p>{labels.labels}</p>
               <CustomSwitch
-                checked={labelsVisible}
+                value={labelsVisible ? 'true' : 'false'}
                 onChange={() => setLabelsVisible(!labelsVisible)}
                 falseLabel={labels.off}
                 trueLabel={labels.on}

@@ -23,7 +23,7 @@ export function TooltipWrapper({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger className={triggerClassName}>{trigger}</TooltipTrigger>
+        <TooltipTrigger className={triggerClassName} aria-label={'trigger'}>{trigger}</TooltipTrigger>
         <TooltipContent side={side} sideOffset={sideOffset} className={contentClassName}>
           {content}
         </TooltipContent>

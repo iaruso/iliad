@@ -56,7 +56,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Initialize filter states from URL parameters
   const paramIdFilter = searchParams.get('id')?.toLowerCase() ?? ''
   const [idFilter, setIdFilter] = useState<string>(paramIdFilter)
 
@@ -299,10 +298,14 @@ const Container: FC<ContainerProps> = ({ data }) => {
         />
         <PopoverTooltip
           button={
-            <Button variant='outline' className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'>
+            <Button
+              variant='outline'
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'
+              aria-label={t('filters.tooltip')}
+            >
               <Settings2 className='h-4 w-4' />
               {t('filters.label')}
-              <span className='text-[9.5px] pt-0.5 font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
+              <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
                 {activeFilters}
               </span>
             </Button>
@@ -379,7 +382,11 @@ const Container: FC<ContainerProps> = ({ data }) => {
               <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant='outline' className='w-full h-8'>
+                  <Button
+                    variant='outline'
+                    className='w-full h-8'
+                    aria-label={t('filters.options.columns.placeholder')}
+                  >
                     {t('filters.options.columns.placeholder')}
                   </Button>
                 </DropdownMenuTrigger>
@@ -410,6 +417,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
               onClick={resetFilters}
               disabled={activeFilters === 0}
               className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+              aria-label={t('reset.tooltip')}
             >
               <RotateCcw className='!size-4' />
             </Button>
@@ -418,7 +426,12 @@ const Container: FC<ContainerProps> = ({ data }) => {
         />
         <ButtonTooltip
           button={
-            <Button disabled variant='outline' className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'>
+            <Button
+              disabled
+              variant='outline'
+              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+              aria-label={t('add.tooltip')}
+            >
               <Plus className='!size-4' />
             </Button>
           }
@@ -470,6 +483,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                       <Link
                         className='cursor-pointer absolute inset-0 w-full h-full'
                         href={`?oilspill=${row.original._id}`}
+                        aria-label={row.original._id}
                       />
                     </TableCell>
                     {row.getVisibleCells().map((cell) =>

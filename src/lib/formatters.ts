@@ -334,7 +334,7 @@ export function createGlobeConvex(
 }
 
 type LoadGlobeMaterialOptions = {
-  textureQuality: 'low' | 'high'
+  textureQuality: 'low' | 'mid' | 'high'
   dayNight: boolean
   date?: Date
 }
@@ -348,7 +348,7 @@ export async function loadGlobeMaterial({
   loader.setCrossOrigin('anonymous')
 
   const tex = (name: string) =>
-    `/earth-${name}${textureQuality === 'low' ? '' : '-hq'}.webp`
+    `/earth-${name}${textureQuality === 'low' ? '-lq' : textureQuality === 'mid' ? '' : '-hq'}.webp`
 
   const sunPosition = getSunPosition(date)
 

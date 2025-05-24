@@ -32,6 +32,7 @@
           "title": "Qualidade das texturas",
           "options": {
             "low": "Baixa",
+            "mid": "Média",
             "high": "Alta"
           }
         },
@@ -50,8 +51,8 @@
           }
         }
       },
-      "info": {
-        "tooltip": "Ver o código fonte"
+      "helper": {
+        "tooltip": "Ajuda"
       }
     }
   },

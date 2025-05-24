@@ -46,6 +46,7 @@ const ZoomButtonsClient = ({
             variant='outline'
             className='!h-8 !w-8 cursor-pointer p-0'
             disabled={altitude <= 0.01}
+            aria-label={tooltipZoomIn}
           >
             <Plus className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5} />
           </Button>
@@ -59,6 +60,7 @@ const ZoomButtonsClient = ({
             variant='outline'
             className='!h-8 !w-8 cursor-pointer p-0'
             disabled={altitude >= 3.9}
+            aria-label={tooltipZoomOut}
           >
             <Minus className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5} />
           </Button>

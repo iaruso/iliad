@@ -106,16 +106,16 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
           <Controls />
           <Timeline isSingle={oilSpills.single} />
         </ResizablePanel>
-        <ResizableHandle className='pointer-events-none cursor-default' />
+        <ResizableHandle className='pointer-events-none cursor-default' role='separator' />
         <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>
           <div className='flex flex-col h-full'>
-            <>
+            <div className='flex flex-col flex-1 h-0'>
               {oilspill ? (
                 <Details data={oilSpills.data[0]} />
               ) : (
                 <Container data={oilSpills} />
               )}
-            </>
+            </div>
             <Navbar />
           </div>
         </ResizablePanel>

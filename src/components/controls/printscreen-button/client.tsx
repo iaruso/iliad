@@ -31,6 +31,7 @@ const PrintScreenButtonClient = ({ tooltipText }: PrintScreenButtonClientProps) 
           variant="outline"
           className="!h-8 !w-8 cursor-pointer p-0"
           onClick={downloadCanvas}
+          aria-label={tooltipText}
           disabled
         >
           <Camera className="!h-3.5 !w-3.5 stroke-primary" strokeWidth={2.5} />

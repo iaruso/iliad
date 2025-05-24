@@ -114,41 +114,55 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
                 const first = timestamps[0];
                 if (first) setDate(new Date(first));
               }}
+              aria-label={t('skipBack.tooltip')}
             >
               <SkipBack className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
             </Button>
           }
           tooltip={t('skipBack.tooltip')}
         />
-        <Button
-          variant={'outline'}
-          className='!h-8 !w-8 cursor-pointer p-0'
-          onClick={() => {
-            setPlaying(!playing);
-          }}
-        > 
-          {
-            playing
-              ? <Pause className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
-              : <Play className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
+        <ButtonTooltip
+          button={
+          <Button
+            variant={'outline'}
+            className='!h-8 !w-8 cursor-pointer p-0'
+            onClick={() => {
+              setPlaying(!playing);
+            }}
+            aria-label={playing ? t('pause.tooltip') : t('play.tooltip')}
+          > 
+            {
+              playing
+                ? <Pause className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
+                : <Play className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
+            }
+          </Button>
           }
-        </Button>
-        <Button
-          variant={'outline'}
-          className='!h-8 !w-8 cursor-pointer p-0'
-          onClick={() => {
-            setPlaying(false);
-            const last = timestamps[timestamps.length - 1];
-            if (last) setDate(new Date(last));
-          }}
-        >
-          <SkipForward className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
-        </Button>
+          tooltip={playing ? t('pause.tooltip') : t('play.tooltip')}
+        />
+        <ButtonTooltip
+          button={
+            <Button
+              variant={'outline'}
+              className='!h-8 !w-8 cursor-pointer p-0'
+              onClick={() => {
+                setPlaying(false);
+                const next = timestamps.find(ts => new Date(ts) > date);
+                if (next) setDate(new Date(next));
+              }}
+              aria-label={t('skipForward.tooltip')}
+            >
+              <SkipForward className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
+            </Button>
+          }
+          tooltip={t('skipForward.tooltip')}
+        />
         <DropdownTooltip
           button={
             <Button
               variant={'outline'}
               className='!h-8 !w-8 cursor-pointer p-0 text-xs'
+              aria-label={t('speed.tooltip')}
             >
               {t(`speed.options.${String(timelineSpeed).replace('.', '_')}`)}
             </Button>
@@ -180,6 +194,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
                 <Button
                   variant={'outline'}
                   className='!h-8 w-48 cursor-pointer px-2.5 text-xs'
+                  aria-label={t('calendar.tooltip')}
                 >
                   <Calendar className='!h-3.5 !w-3.5 stroke-primary'/>
                   {dateRange ? `${dateRange.start} - ${dateRange.end}` : t('calendar.tooltip')}

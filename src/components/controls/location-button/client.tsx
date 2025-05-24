@@ -25,7 +25,12 @@ const LocationButtonClient = ({ tooltipText }: LocationButtonClientProps) => {
   return (
     <ButtonTooltip
       button={
-        <Button onClick={getCurrentLocation} variant={'outline'} className='!h-8 !w-8 cursor-pointer p-0'>
+        <Button 
+          onClick={getCurrentLocation}
+          variant={'outline'}
+          className='!h-8 !w-8 cursor-pointer p-0'
+          aria-label={tooltipText}
+        >
           <Locate className='!h-3.5 !w-3.5 stroke-primary' strokeWidth={2.5} />
         </Button>
       }

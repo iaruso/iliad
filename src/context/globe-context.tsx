@@ -24,8 +24,8 @@ export interface GlobeContextProps {
   setZoomControl: (control: number) => void;
   currentLocation: { lat: number; lng: number; date: Date } | null;
   setCurrentLocation: (location: { lat: number; lng: number; date: Date } | null) => void;
-  textureQuality: 'low' | 'high';
-  setTextureQuality: (quality: 'low' | 'high') => void;
+  textureQuality: 'low' | 'mid' | 'high';
+  setTextureQuality: (quality: 'low' | 'mid' | 'high') => void;
   dayNight: boolean;
   setDayNight: (dayNight: boolean) => void;
   altitude: number;
@@ -59,7 +59,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }>
   const globeRef = useRef<any>(undefined);
   const [zoomControl, setZoomControl] = useState<number>(0);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number; date: Date } | null>(null);
-  const [textureQuality, setTextureQuality] = useState<'low' | 'high'>('low');
+  const [textureQuality, setTextureQuality] = useState<'low' | 'mid' | 'high'>('low');
   const [dayNight, setDayNight] = useState(true);
   const [altitude, setAltitude] = useState(2.5);
   const [dataDetail, setDataDetail] = useState<'single' | 'low' | 'medium' | 'high'>('single');
