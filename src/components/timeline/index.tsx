@@ -33,7 +33,10 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasOilspillParam = searchParams.has('oilspill');
-  const locale = useLocale() === 'en' ? enUS : pt;
+  const locale = useMemo(() => {
+    const currentLocale = useLocale();
+    return currentLocale === 'en' ? enUS : pt;
+  }, [useLocale()]);
   const t = useTranslations('globe.timeline');
   const [rangeFilter] = useState<'1d' | '7d' | '30d' | '3m' | '6m' | '1y'>('1y');
   const timestamps = useMemo(() => {

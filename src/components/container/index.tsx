@@ -291,6 +291,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
     <>
       <div className='flex items-center gap-2 h-12 p-2 border-b'>
         <Input
+          id='search-id'
           placeholder={t('placeholder')}
           value={idFilter}
           onChange={(e) => handleIdFilterChange(e.target.value)}
