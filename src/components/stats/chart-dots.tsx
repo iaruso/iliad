@@ -36,9 +36,9 @@ const ChartDots = ({ min, avg, max }: ChartDotsProps) => {
     drawDots(Math.max(0, avg - min), `rgba(${colorRGBA}, 0.6)`)
     drawDots(Math.max(0, max - avg), `rgba(${colorRGBA}, 1)`)
 
-  }, [min, avg, max])
+  }, [min, avg, max, theme])
 
-  return <canvas ref={canvasRef} className="w-full h-full" width={300} height={300} />
+  return <canvas ref={canvasRef} className='w-full h-full' width={300} height={300} />
 }
 
 export default ChartDots
