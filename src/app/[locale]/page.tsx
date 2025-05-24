@@ -8,7 +8,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui-custom/resizable';
-import { headers } from 'next/headers';
 import { validateAndSetParams } from '@/lib/pagination';
 import { fetchOilspillData } from '@/lib/helpers/oilspill';
 import type { Locale } from 'next-intl';
@@ -91,8 +90,6 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     startDate,
     endDate,
   });
-
-  const supportsWebGPU = (await headers()).get('X-Supports-WebGPU');
 
   return (
     <ResizablePanelGroup direction='horizontal'>

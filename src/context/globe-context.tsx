@@ -45,14 +45,13 @@ export interface GlobeContextProps {
   setViewType: (view: 'heatmap' | 'points') => void;
   labelsVisible: boolean;
   setLabelsVisible: (visible: boolean) => void;
-  dataToDisplay: any[]; // <-- nova propriedade
+  dataToDisplay: any[];
 }
 
 export const GlobeContext = createContext<GlobeContextProps | undefined>(undefined);
 
-export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU?: boolean }> = ({
+export const GlobeProvider: FC<{ children: ReactNode }> = ({
   children,
-  supportsWebGPU: _supportsWebGPU
 }) => {
   const [supportsWebGPU] = useState<boolean>(() => typeof window !== 'undefined' && 'gpu' in navigator);
   const [groupedGlobeData, setGroupedGlobeData] = useState<Record<string, any[]>>({});
@@ -115,7 +114,7 @@ export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU?: boolean }
         setViewType,
         labelsVisible,
         setLabelsVisible,
-        dataToDisplay // <-- incluído no context
+        dataToDisplay
       }}
     >
       {children}
