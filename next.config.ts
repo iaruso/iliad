@@ -3,7 +3,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
  
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  productionBrowserSourceMaps: true
 };
  
 const withNextIntl = createNextIntlPlugin();
