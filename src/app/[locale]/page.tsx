@@ -13,34 +13,31 @@ import { validateAndSetParams } from '@/lib/pagination';
 import { fetchOilspillData } from '@/lib/helpers/oilspill';
 import type { Locale } from 'next-intl';
 import type { OilSpills } from '@/@types/oilspills';
-import Globe from '@/components/globe/globe';
+import Globe from '@/components/globe';
 import Controls from '@/components/controls';
 import Timeline from '@/components/timeline';
 
-const OilSpillInfo = dynamic(() => import('@/components/oilspill-info'), {
-  loading: () => <div className='p-4'></div>,
+const Details = dynamic(() => import('@/components/details'), {
+  loading: () => <></>,
 });
 
 const Container = dynamic(() => import('@/components/container'), {
-  loading: () => <div className='p-4'></div>,
+  loading: () => <></>,
 });
 
-type Params = Promise<{ locale: Locale }>;
-type SearchParams = Promise<{
-  page?: string;
-  size?: string;
-  id?: string;
-  areaRange?: string;
-  durationRange?: string;
-  frequencyRange?: string;
-  sortField?: 'latitude' | 'longitude' | 'area' | 'points';
-  sortDirection?: 'asc' | 'desc';
-  oilspill?: string;
-}>;
-
 interface MainPageProps {
-  params: Params;
-  searchParams: SearchParams;
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{
+    page?: string
+    size?: string
+    id?: string
+    areaRange?: string
+    durationRange?: string
+    frequencyRange?: string
+    sortField?: 'latitude' | 'longitude' | 'area' | 'points'
+    sortDirection?: 'asc' | 'desc'
+    oilspill?: string
+  }>;
 }
 
 const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
@@ -102,11 +99,11 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
           <Timeline isSingle={oilSpills.single} />
         </ResizablePanel>
         <ResizableHandle className='pointer-events-none cursor-default' />
-        <ResizablePanel maxSize={32} minSize={28} defaultSize={28}>
+        <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>
           <div className='flex flex-col h-full'>
             <>
               {oilspill ? (
-                <OilSpillInfo data={oilSpills.data[0]} />
+                <Details data={oilSpills.data[0]} />
               ) : (
                 <Container data={oilSpills} />
               )}

@@ -10,7 +10,7 @@ type DataViewerProps = {
 }
 
 export default function DataViewer({ data }: DataViewerProps) {
-  const t = useTranslations('oilspillInfo')
+  const t = useTranslations('details')
 
   return (
     <div className='flex border rounded-md overflow-auto flex-1 bg-muted/20 relative'>

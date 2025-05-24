@@ -21,16 +21,16 @@ import { TooltipWrapper } from '@/components/ui-custom/tooltip-wrapper';
 import { Button } from '@/components/ui-custom/button';
 import ButtonTooltip from '@/components/ui-custom/button-tooltip';
 import { formatMinutes } from '@/lib/formatters';
-import Stats from './stats/index';
+import Stats from '@/components/stats/index';
 
 //import dynamic from 'next/dynamic';
 //const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
 
-interface OilSpillInfoProps {
+interface DetailsProps {
   data: OilSpill;
 }
 
-const OilSpillInfoCard = ({
+const DetailsCard = ({
   value,
   icon,
   tooltip
@@ -51,8 +51,8 @@ const OilSpillInfoCard = ({
   />
 );
 
-const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
-  const t = useTranslations('oilspillInfo');
+const Details: FC<DetailsProps> = ({ data }) => {
+  const t = useTranslations('details');
   const stats = useMemo(() => {
     const timestamps = data.data && Array.isArray(data.data)
       ? data.data
@@ -112,35 +112,33 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
                   }}
-                  className='h-8 px-2 py-1 rounded-md gap-1 bg-muted/20 hover:bg-muted/50 font-medium text-xs uppercase text-foreground'
+                  className='h-8 px-2 py-1 rounded-md gap-1.5 bg-muted/20 hover:bg-muted/50 font-medium text-xs uppercase text-foreground'
                 >
                   {data._id?.toString().slice(-9).padStart(9, '0')}
-                  <Copy className='!size-2.5' />
+                  <Copy className='!size-3.5' />
                 </Button>
               }
               tooltip={t('copy.tooltip')}
             />
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
-      <div className='flex flex-col flex-1 h-0 overflow-y-auto'>
-        <div className='flex items-center justify-end gap-2 [&_button]:!p-0 ml-auto pt-2 px-2'>
-          <OilSpillInfoCard
+        <div className='flex items-center justify-end gap-2 [&_button]:!p-0 ml-auto'>
+          <DetailsCard
             value={stats.totalTimestamps}
             icon={<SquareStack className='!size-3.5' strokeWidth={2} />}
             tooltip={t('timestampsCollected.tooltip')}
           />
-          <OilSpillInfoCard
+          <DetailsCard
             value={formatMinutes(data.duration)}
             icon={<Clock className='!size-3.5' strokeWidth={2} />}
             tooltip={t('duration.tooltip')}
           />
-          <OilSpillInfoCard
+          <DetailsCard
             value={formatMinutes(data.frequency)}
             icon={<CircleGauge className='!size-3.5' strokeWidth={2} />}
             tooltip={t('frequency.tooltip')}
           />
-          <OilSpillInfoCard
+          <DetailsCard
             value={
               (() => {
                 const [lat, lng] = stats.coordinates as [number, number];
@@ -151,6 +149,8 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
             tooltip={t('location.tooltip')}
           />
         </div>
+      </Breadcrumb>
+      <div className='flex flex-col flex-1 h-0 overflow-y-auto'>
         <Stats
           className='border-none'
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,4 +168,4 @@ const OilSpillInfo: FC<OilSpillInfoProps> = ({ data }) => {
   );
 };
 
-export default OilSpillInfo;
+export default Details;

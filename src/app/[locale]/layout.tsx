@@ -18,7 +18,7 @@ const kumbhSans = Kumbh_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Oil Spill Monitor - 0.7.2',
+  title: 'Oil Spill Monitor - 0.7.3',
   description: 'A web application to visualize oil spills on a globe',
 }
 
@@ -45,7 +45,7 @@ export default async function RootLayout(
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <ReactScan />
+      {/* <ReactScan /> */}
       <body className={`${kumbhSans.variable} antialiased p-0 m-0`} suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>

@@ -17,7 +17,6 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const ChartRadar: FC<ChartRadarProps> = ({ data, avg }) => {
-  console.log(avg)
   const dataG = data ? formatRadarData(data) : []
   return (
     <div className={`

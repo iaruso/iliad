@@ -26,7 +26,7 @@ class CustomizedContent extends PureComponent<CustomizedContentProps> {
             fill: 'hsl(var(--chart-1))',
             fillOpacity: 0.01,
             stroke: 'hsl(var(--chart-1))',
-            strokeWidth: 0.33,
+            strokeWidth: 0.2,
             strokeOpacity: 0.2,
           }}
         />
@@ -46,7 +46,7 @@ export default class ChartTree extends PureComponent<TreeNode> {
     }));
 
     return (
-      <ResponsiveContainer width='101%' height='101%' className='absolute inset-0 -m-[1px]'>
+      <ResponsiveContainer width='102%' height='102%' className='absolute inset-0 -m-[1px]'>
         <Treemap
           animationDuration={0}
           data={processedData}

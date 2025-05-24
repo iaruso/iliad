@@ -1,5 +1,6 @@
 'use client'
-import { FC, useMemo } from 'react'
+import { useEffect, useRef } from 'react'
+import { useTheme } from 'next-themes'
 
 interface ChartDotsProps {
   min: number
@@ -7,55 +8,37 @@ interface ChartDotsProps {
   max: number
 }
 
-const generatePoints = (count: number) => {
-  const points = []
-  for (let i = 0; i < count; i++) {
-    const x = Math.random() * 100
-    const y = Math.random() * 100
-    points.push({ x, y })
-  }
-  return points
-}
+const ChartDots = ({ min, avg, max }: ChartDotsProps) => {
+  const { theme } = useTheme()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
-const DotLayer = ({
-  count,
-  className,
-}: {
-  count: number
-  className: string
-}) => {
-  const points = useMemo(() => generatePoints(count), [count])
-  return (
-    <>
-      {points.map((point, i) => (
-        <div
-          key={i}
-          className={`absolute rounded-full ${className}`}
-          style={{
-            left: `${point.x}%`,
-            top: `${point.y}%`,
-            width: '2px',
-            height: '2px',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-      ))}
-    </>
-  )
-}
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-const ChartDots: FC<ChartDotsProps> = ({ min, avg, max }) => {
-  const low = Math.max(0, min)
-  const mid = Math.max(0, avg - min)
-  const high = Math.max(0, max - avg)
+    const drawDots = (count: number, color: string) => {
+      for (let i = 0; i < count; i++) {
+        const x = Math.random() * canvas.width
+        const y = Math.random() * canvas.height
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.arc(x, y, 1, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
 
-  return (
-    <div className='w-full h-full relative overflow-hidden'>
-      <DotLayer count={low} className='bg-chart-1/20' />
-      <DotLayer count={mid} className='bg-chart-1/60' />
-      <DotLayer count={high} className='bg-chart-1' />
-    </div>
-  )
+    const colorRGBA = theme === 'dark' ? '162, 164, 177' : '92, 110, 128'
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    drawDots(Math.max(0, min), `rgba(${colorRGBA}, 0.2)`)
+    drawDots(Math.max(0, avg - min), `rgba(${colorRGBA}, 0.6)`)
+    drawDots(Math.max(0, max - avg), `rgba(${colorRGBA}, 1)`)
+
+  }, [min, avg, max])
+
+  return <canvas ref={canvasRef} className="w-full h-full" width={300} height={300} />
 }
 
 export default ChartDots

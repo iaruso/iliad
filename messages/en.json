@@ -260,7 +260,7 @@
     "goToNext": "Go to the next page",
     "goToLast": "Go to the last page"
   },
-  "oilspillInfo": {
+  "details": {
     "return": "All oilspills",
     "title": "Oil spill details",
     "copy": {

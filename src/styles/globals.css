@@ -153,6 +153,7 @@
   }
   html {
     @apply bg-background;
+    font-size: calc(13px + (16 - 14) * (100vw - 1024px) / (1920 - 1024));
     overscroll-behavior: none;
   }
   body {
