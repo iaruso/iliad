@@ -96,7 +96,7 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
 
   return (
     <ResizablePanelGroup direction='horizontal'>
-      <GlobeProvider supportsWebGPU={supportsWebGPU === 'true'}>
+      <GlobeProvider>
         <ResizablePanel
           id='content-panel'
           className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'

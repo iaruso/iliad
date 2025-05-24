@@ -50,10 +50,11 @@ export interface GlobeContextProps {
 
 export const GlobeContext = createContext<GlobeContextProps | undefined>(undefined);
 
-export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU: boolean }> = ({
+export const GlobeProvider: FC<{ children: ReactNode; supportsWebGPU?: boolean }> = ({
   children,
-  supportsWebGPU
+  supportsWebGPU: _supportsWebGPU
 }) => {
+  const [supportsWebGPU] = useState<boolean>(() => typeof window !== 'undefined' && 'gpu' in navigator);
   const [groupedGlobeData, setGroupedGlobeData] = useState<Record<string, any[]>>({});
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const globeRef = useRef<any>(undefined);
