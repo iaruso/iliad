@@ -36,6 +36,8 @@ interface MainPageProps {
     frequencyRange?: string
     sortField?: 'latitude' | 'longitude' | 'area' | 'points'
     sortDirection?: 'asc' | 'desc'
+    startDate?: string
+    endDate?: string
     oilspill?: string
   }>;
 }
@@ -51,6 +53,8 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     frequencyRange,
     sortField,
     sortDirection,
+    startDate,
+    endDate,
     oilspill,
   } = await searchParams;
 
@@ -69,6 +73,8 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     if (frequencyRange) params.set('frequencyRange', frequencyRange);
     if (sortField) params.set('sortField', sortField);
     if (sortDirection) params.set('sortDirection', sortDirection);
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
     redirect({ href: `?${params.toString()}`, locale });
   }
 
@@ -82,6 +88,8 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
     frequencyRange,
     sortField,
     sortDirection,
+    startDate,
+    endDate,
   });
 
   const supportsWebGPU = (await headers()).get('X-Supports-WebGPU');

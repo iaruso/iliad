@@ -17,7 +17,9 @@ export async function fetchOilSpills(
   durationRange?: string,
   frequencyRange?: string,
   sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
-  sortDirection?: 'asc' | 'desc'
+  sortDirection?: 'asc' | 'desc',
+  startDate?: string,
+  endDate?: string
 ) {
   const skip = (page - 1) * size;
 
@@ -85,20 +87,41 @@ export async function fetchOilSpills(
     pipeline.push({ $match: match });
   }
 
+  if (startDate || endDate) {
+    const timestampFilter: any = {};
+
+    if (startDate) timestampFilter.$gte = startDate;
+    if (endDate) timestampFilter.$lte = endDate;
+
+    pipeline.push({
+      $match: {
+        data: {
+          $elemMatch: {
+            timestamp: timestampFilter,
+          },
+        },
+      },
+    });
+  }
+
   if (sortField && ['latitude', 'longitude', 'area', 'points', 'duration', 'frequency'].includes(sortField)) {
     const direction = sortDirection === 'desc' ? -1 : 1;
-  
     const sortKey = sortField === 'latitude' ? 'coordinates.1' : sortField === 'longitude' ? 'coordinates.0' : sortField;
-  
     pipeline.push({ $sort: { [sortKey]: direction } });
-  }  
+  }
 
   pipeline.push({ $skip: skip }, { $limit: size });
 
   const data = await collection.aggregate(pipeline).toArray();
   const serialized = data.map(serializeOilSpill);
 
-  const totalItems = await collection.countDocuments(match);
+  const totalItemsPipeline = [...pipeline];
+  totalItemsPipeline.splice(totalItemsPipeline.findIndex((s) => '$skip' in s), 2);
+
+  const totalItems = await collection.aggregate([
+    ...totalItemsPipeline,
+    { $count: 'count' },
+  ]).toArray().then(res => res[0]?.count ?? 0);
 
   return {
     page,

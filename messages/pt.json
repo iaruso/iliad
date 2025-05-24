@@ -99,7 +99,7 @@
         }
       },
       "calendar": {
-        "tooltip": "Selecionar data"
+        "tooltip": "Selecione o intervalo de tempo"
       }
     },
     "search": {
@@ -280,6 +280,9 @@
     "copyData": {
       "label": "Copiar",
       "tooltip": "Copiar dados"
+    },
+    "oceanViewer": {
+      "wip": "Visualizador de oceano em desenvolvimento"
     }
   }
 }

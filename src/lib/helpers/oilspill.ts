@@ -10,7 +10,9 @@ export async function fetchOilspillData({
   durationRange,
   frequencyRange,
   sortField,
-  sortDirection
+  sortDirection,
+  startDate,
+  endDate
 }: {
   oilspill?: string;
   page: number;
@@ -21,6 +23,8 @@ export async function fetchOilspillData({
   frequencyRange?: string;
   sortField?: 'latitude' | 'longitude' | 'area' | 'points';
   sortDirection?: 'asc' | 'desc';
+  startDate?: string;
+  endDate?: string;
 }): Promise<OilSpills> {
   if (oilspill) {
     const single = await getOilSpillByID({ oilspill: oilspill.toLowerCase() });
@@ -47,6 +51,8 @@ export async function fetchOilspillData({
     frequencyRange,
     sortField,
     sortDirection,
+    startDate,
+    endDate,
   });
 }
 

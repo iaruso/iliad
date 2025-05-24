@@ -99,7 +99,7 @@
         }
       },
       "calendar": {
-        "tooltip": "Select date"
+        "tooltip": "Select date range"
       }
     },
     "search": {
@@ -281,6 +281,9 @@
     "copyData": {
       "label": "Copy",
       "tooltip": "Copy raw data"
+    },
+    "oceanViewer": {
+      "wip": "Ocean Viewer is under development"
     }
   }
 }

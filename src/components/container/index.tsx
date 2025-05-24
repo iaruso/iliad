@@ -81,7 +81,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
   const [maxFrequency, setMaxFrequency] = useState<string>(initialMaxFrequency)
   const [frequencyRange, setFrequencyRange] = useState<string>(paramFrequencyRange ?? '')
 
-  // Calculate active filters count
   const activeFilters = useMemo(() => {
     let count = 0
     if (idFilter.trim().length >= 3) count++
@@ -91,7 +90,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
     return count
   }, [idFilter, areaRange, durationRange, frequencyRange])
 
-  // Update URL parameters function
   const updateFilters = useCallback(
     (updates: {
       id?: string
@@ -103,7 +101,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
     }) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      // Only update the parameters that are explicitly provided in the updates object
       if (updates.id !== undefined) {
         if (updates.id.trim().length >= 3) {
           params.set('id', updates.id)
@@ -161,7 +158,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
     [searchParams, router],
   )
 
-  // Filter handlers - directly update state and URL
   const debouncedUpdateFilters = useDebounceCallback(updateFilters, 350)
 
   const handleIdFilterChange = useCallback(
@@ -239,7 +235,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
     [updateFilters],
   )
 
-  // Reset all filters
   const resetFilters = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString())
     params.delete('id')
@@ -249,7 +244,6 @@ const Container: FC<ContainerProps> = ({ data }) => {
     params.delete('sortField')
     params.delete('sortDirection')
 
-    // Reset all state variables
     setIdFilter('')
     setMinArea('')
     setMaxArea('')
@@ -441,10 +435,10 @@ const Container: FC<ContainerProps> = ({ data }) => {
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className='relative hover:bg-transparent !border-none border-border/50'>
                   <TableHead className='p-0 h-10' key={'link-head'} aria-label='Search Engine Link' />
-                  {headerGroup.headers.map((header, index) => (
+                  {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''} ${index === 0 && 'sticky left-0 z-10 bg-background'}`}
+                      className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
                     >
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>

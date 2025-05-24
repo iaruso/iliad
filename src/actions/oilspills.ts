@@ -9,7 +9,9 @@ export const getOilSpills = async ({
   durationRange,
   frequencyRange,
   sortField,
-  sortDirection
+  sortDirection,
+  startDate,
+  endDate
 }: { 
   page?: number,
   size?: number,
@@ -18,7 +20,9 @@ export const getOilSpills = async ({
   durationRange?: string,
   frequencyRange?: string,
   sortField?: 'latitude' | 'longitude' | 'area' | 'points' | 'duration' | 'frequency',
-  sortDirection?: 'asc' | 'desc'
+  sortDirection?: 'asc' | 'desc',
+  startDate?: string,
+  endDate?: string
 }) => {
   return await fetchOilSpills(
     page,
@@ -28,7 +32,9 @@ export const getOilSpills = async ({
     durationRange,
     frequencyRange,
     sortField,
-    sortDirection
+    sortDirection,
+    startDate,
+    endDate
   );
 };
 

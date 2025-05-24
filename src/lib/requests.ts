@@ -11,61 +11,29 @@ type ConstructUrlProps = {
   minArea?: string | number;
   maxArea?: string | number;
   oilspill?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 export async function getSession(): Promise<string | null> {
   return null;
 }
 
-export function constructUrl(urlParams: ConstructUrlProps): string {
-  const { 
-    endpoint,
-    page,
-    size,
-    sortField,
-    sortDirection,
-    id,
-    minArea,
-    maxArea,
-    oilspill
-  } = urlParams;
-  const finalUrl: string = `${endpoint}`;
+export function constructUrl({
+  endpoint, page, size, sortField, sortDirection, id, minArea, maxArea, oilspill, startDate, endDate
+}: ConstructUrlProps): string {
   const params = new URLSearchParams();
-
-  if (page !== undefined && !isNaN(page)) {
-    params.append('page', page.toString());
-  }
-
-  if (size !== undefined && !isNaN(size)) {
-    params.append('size', size.toString());
-  }
-
-  if (sortField !== undefined) {
-    params.append('sortField', sortField);
-  }
-
-  if (sortDirection !== undefined) {
-    params.append('sortDirection', sortDirection);
-  }
-
-  if (id !== undefined) {
-    params.append('id', id.toString());
-  }
-
-  if (minArea !== undefined) {
-    params.append('minArea', minArea.toString());
-  }
-
-  if (maxArea !== undefined) {
-    params.append('maxArea', maxArea.toString());
-  }
-
-  if (oilspill !== undefined) {
-    params.append('oilspill', oilspill.toString());
-  }
-
-  const url = `${finalUrl}?${params.toString()}`;
-  return url;
+  if (page !== undefined && !isNaN(page)) params.append('page', page.toString());
+  if (size !== undefined && !isNaN(size)) params.append('size', size.toString());
+  if (sortField) params.append('sortField', sortField);
+  if (sortDirection) params.append('sortDirection', sortDirection);
+  if (id) params.append('id', id.toString());
+  if (minArea !== undefined) params.append('minArea', minArea.toString());
+  if (maxArea !== undefined) params.append('maxArea', maxArea.toString());
+  if (oilspill !== undefined) params.append('oilspill', oilspill.toString());
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+  return `${endpoint}?${params.toString()}`;
 }
 
 export const constructHeaders = (): HeadersInit => ({
@@ -78,57 +46,26 @@ export const requestKy = ky.create({
     beforeRequest: [
       async (request) => {
         const token = await getSession();
-        if (!token) {
-          throw new Error('401');
-        }
-
-        const headers = constructHeaders();
-
-        Object.entries(headers).forEach(([key, value]) => {
-          if (value) {
-            request.headers.set(key, String(value));
-          }
-        });
+        if (!token) throw new Error('401');
+        Object.entries(constructHeaders()).forEach(([k, v]) => v && request.headers.set(k, String(v)));
       },
     ],
     afterResponse: [
       async (request, _options, response) => {
-        const path = new URL(request.url).pathname;
+        const path = new URL(request.url).pathname || '/';
+        const { method } = request;
         if (
-          request.method === 'PUT' ||
-          request.method === 'POST' ||
-          request.method === 'PATCH' ||
-          request.method === 'DELETE'
-        ) {
-          if (response.status === 201 || response.status === 200) {
-            revalidatePath(path || '/');
-          }
-        }
+          ['PUT', 'POST', 'PATCH', 'DELETE'].includes(method) &&
+          [200, 201].includes(response.status)
+        ) revalidatePath(path);
         if (
-          request.method === 'PUT' ||
-          request.method === 'POST' ||
-          request.method === 'PATCH'
-        ) {
-          if (
-            response.status === 409 ||
-            response.status === 400 ||
-            response.status === 405
-          ) {
-            revalidatePath(path || '/');
-          }
-        }
-
-        if (request.method === 'GET') {
-          if (response.status === 401) {
-            throw new Error('401');
-          }
-          if (
-            response.status === 500 ||
-            response.status === 404 ||
-            response.status === 400
-          ) {
+          ['PUT', 'POST', 'PATCH'].includes(method) &&
+          [400, 405, 409].includes(response.status)
+        ) revalidatePath(path);
+        if (method === 'GET') {
+          if (response.status === 401) throw new Error('401');
+          if ([400, 404, 500].includes(response.status))
             throw new Error(`Server Error: ${await response.text()}`);
-          }
         }
       },
     ],

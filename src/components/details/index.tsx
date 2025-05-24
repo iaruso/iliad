@@ -159,7 +159,10 @@ const Details: FC<DetailsProps> = ({ data }) => {
         />
         <div className='flex-1 h-0 grid p-2 pt-0 gap-2 grid-rows-2'>
           <DataViewer data={data} />
-          <div className='w-full rounded-md border bg-muted/50'>
+          <div className='w-full rounded-md border bg-muted/50 flex items-center justify-center p-4'>
+            <span className='text-xs font-medium text-muted-foreground'>
+              {t('oceanViewer.wip')}
+            </span>
           </div>
         </div>
       </div>

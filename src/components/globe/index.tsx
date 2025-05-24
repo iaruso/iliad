@@ -46,7 +46,8 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     setDate,
     playing,
     setPlaying,
-    labelsVisible
+    labelsVisible,
+    timelineSpeed
   } = useContext(GlobeContext) as GlobeContextProps
   const { resolvedTheme } = useTheme()
   const router = useRouter()
@@ -122,7 +123,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         setPlaying(false);
       }
     }
-  }, 500);
+  }, 500 / timelineSpeed);
 
   useEffect(() => {
     if (globeMaterial?.uniforms) {
