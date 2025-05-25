@@ -43,8 +43,8 @@ export default async function RootLayout(
   const messages = await getMessages()
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={`${kumbhSans.variable} antialiased p-0 m-0`} suppressHydrationWarning>
+    <html lang={locale}>
+      <body className={`${kumbhSans.variable} antialiased p-0 m-0`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
             <main className='flex h-screen w-screen p-4 justify-center items-center'>
