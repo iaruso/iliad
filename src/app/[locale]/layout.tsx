@@ -48,7 +48,7 @@ export default async function RootLayout(
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
             <main className='flex h-screen w-screen p-4 justify-center items-center'>
-              <div className='h-full w-full max-container border rounded-lg overflow-hidden bg-background'>
+              <div className='h-full w-full max-container border rounded-lg overflow-hidden bg-background max-h-[1080px]'>
                 {children}
               </div>
             </main>

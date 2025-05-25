@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
 import { FC, useContext, useState, useMemo } from 'react';
@@ -11,8 +12,8 @@ import { DropdownMenuItem } from '@/components/ui-custom/dropdown-menu';
 import { RangeCalendar } from '@/components/ui-custom/calendar-rac';
 import { Button } from '@/components/ui-custom/button';
 import { SkipBack, Play, Pause, SkipForward, Calendar } from 'lucide-react';
-import { enUS, pt } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
+const DateDisplay = dynamic(() => import('./date-display'), { ssr: true });
 
 interface TimelineProps {
   isSingle?: boolean;
@@ -34,9 +35,6 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
   const searchParams = useSearchParams();
   const hasOilspillParam = searchParams.has('oilspill');
   const currentLocale = useLocale();
-  const locale = useMemo(() => {
-    return currentLocale === 'en' ? enUS : pt;
-  }, [currentLocale]);
   const t = useTranslations('globe.timeline');
   const [rangeFilter] = useState<'1d' | '7d' | '30d' | '3m' | '6m' | '1y'>('1y');
   const timestamps = useMemo(() => {
@@ -288,7 +286,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
             })()}
           </div>
           <div className='relative z-20 flex items-center justify-center max-w-40 w-full border-l bg-chart-1/10 text-xs font-medium px-1 text-center'>
-            {format(date, 'yyyy-MM-dd HH:mm', { locale })}
+            <DateDisplay date={date} localeCode={currentLocale as 'pt' | 'en'} />
           </div>
         </div>
       </div>
