@@ -15,11 +15,7 @@ import { SkipBack, Play, Pause, SkipForward, Calendar } from 'lucide-react';
 import { useLocale } from 'next-intl';
 const DateDisplay = dynamic(() => import('./date-display'), { ssr: true });
 
-interface TimelineProps {
-  isSingle?: boolean;
-}
-
-const Timeline: FC<TimelineProps> = ({ isSingle }) => {
+const Timeline: FC = () => {
   const {
     date,
     setDate,
@@ -224,7 +220,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
               const start = parseDate(filteredTimestamps[0]);
               const end = parseDate(filteredTimestamps[filteredTimestamps.length - 1]);
 
-              const stepSize = isSingle ? 15 : 60;
+              const stepSize = 60;
               const steps: Date[] = [];
               const cursor = new Date(start);
               cursor.setMinutes(Math.floor(cursor.getMinutes() / stepSize) * stepSize, 0, 0);
@@ -240,7 +236,7 @@ const Timeline: FC<TimelineProps> = ({ isSingle }) => {
                 const d = parseDate(timestamp);
                 const block = new Date(d);
                 block.setMinutes(Math.floor(block.getMinutes() / stepSize) * stepSize, 0, 0);
-                const key = block.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+                const key = block.toISOString().slice(0, 16);
 
                 for (const spill of spills) {
                   timeMap[key] ||= new Set();

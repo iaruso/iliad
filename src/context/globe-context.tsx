@@ -15,6 +15,8 @@ import { DateRange } from 'react-aria-components';
 export interface GlobeContextProps {
   groupedGlobeData: Record<string, any[]>;
   setGroupedGlobeData: (data: Record<string, any[]>) => void;
+  actorGlobeData: Record<string, any[]>;
+  setActorGlobeData: (data: Record<string, any[]>) => void;
   isGlobeReady: boolean;
   setIsGlobeReady: (isReady: boolean) => void;
   globeRef: React.MutableRefObject<any>;
@@ -40,12 +42,12 @@ export interface GlobeContextProps {
   setTimelineSpeed: (speed: number) => void;
   dateRange: DateRange | null;
   setDateRange: (range: DateRange | null) => void;
-  supportsWebGPU: boolean;
-  viewType: 'heatmap' | 'points';
-  setViewType: (view: 'heatmap' | 'points') => void;
+  viewType: 'smudge' | 'points' | 'convex';
+  setViewType: (view: 'smudge' | 'points' | 'convex') => void;
   labelsVisible: boolean;
   setLabelsVisible: (visible: boolean) => void;
   dataToDisplay: any[];
+  actorToDisplay: any[];
 }
 
 export const GlobeContext = createContext<GlobeContextProps | undefined>(undefined);
@@ -53,8 +55,8 @@ export const GlobeContext = createContext<GlobeContextProps | undefined>(undefin
 export const GlobeProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [supportsWebGPU] = useState<boolean>(() => typeof window !== 'undefined' && 'gpu' in navigator);
   const [groupedGlobeData, setGroupedGlobeData] = useState<Record<string, any[]>>({});
+  const [actorGlobeData, setActorGlobeData] = useState<Record<string, any[]>>({});
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const globeRef = useRef<any>(undefined);
   const [zoomControl, setZoomControl] = useState<number>(0);
@@ -68,7 +70,7 @@ export const GlobeProvider: FC<{ children: ReactNode }> = ({
   const [timelineSpeed, setTimelineSpeed] = useState(1);
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [globeMaterial, setGlobeMaterial] = useState<ShaderMaterial | null>(null);
-  const [viewType, setViewType] = useState<'heatmap' | 'points'>('points');
+  const [viewType, setViewType] = useState<'smudge' | 'points' | 'convex'>('points');
   const [labelsVisible, setLabelsVisible] = useState(true);
 
   const dataToDisplay = useMemo(() => {
@@ -79,11 +81,20 @@ export const GlobeProvider: FC<{ children: ReactNode }> = ({
     return groupedGlobeData[currentTimestamp ?? ''] ?? [];
   }, [groupedGlobeData, date]);
 
+  const actorToDisplay = useMemo(() => {
+    const timestamps = Object.keys(actorGlobeData);
+    if (timestamps.length === 0 || !date) return [];
+    const currentTimestamp = timestamps.find(ts => new Date(ts).getTime() === date.getTime());
+    return actorGlobeData[currentTimestamp ?? ''] ?? [];
+  }, [actorGlobeData, date]);
+
   return (
     <GlobeContext.Provider
       value={{
         groupedGlobeData,
         setGroupedGlobeData,
+        actorGlobeData,
+        setActorGlobeData,
         isGlobeReady,
         setIsGlobeReady,
         globeRef,
@@ -109,12 +120,12 @@ export const GlobeProvider: FC<{ children: ReactNode }> = ({
         setTimelineSpeed,
         dateRange,
         setDateRange,
-        supportsWebGPU,
         viewType,
         setViewType,
         labelsVisible,
         setLabelsVisible,
-        dataToDisplay
+        dataToDisplay,
+        actorToDisplay
       }}
     >
       {children}

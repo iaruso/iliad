@@ -8,8 +8,13 @@ const SettingsDropdownServer = async () => {
     <SettingsDropdownClient
       tooltip={t('tooltip')}
       labels={{
+        representation: t('data.title'),
         points: t('data.options.points.title'),
-        heatmap: t('data.options.heatmaps.title'),
+        pointsDescription: t('data.options.points.description'),
+        smudge: t('data.options.smudge.title'),
+        smudgeDescription: t('data.options.smudge.description'),
+        convex: t('data.options.convex.title'),
+        convexDescription: t('data.options.convex.description'),
         labels: t('labels.title'),
         time: t('time.title'),
         textures: t('textures.title'),

@@ -11,12 +11,18 @@ import {
 import { Button } from '@/components/ui-custom/button'
 import { Settings } from 'lucide-react'
 import CustomSwitch from '@/components/ui-custom/custom-switch'
+import { Badge } from '@/components/ui-custom/badge'
 
 interface SettingsDropdownClientProps {
   tooltip: string
   labels: {
+    representation: string
     points: string
-    heatmap: string
+    pointsDescription: string
+    smudge: string
+    smudgeDescription: string
+    convex: string
+    convexDescription: string
     labels: string
     time: string
     textures: string
@@ -37,8 +43,7 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
     dayNight,
     setDayNight,
     labelsVisible,
-    setLabelsVisible,
-    supportsWebGPU
+    setLabelsVisible
   } = useContext(GlobeContext) as GlobeContextProps
 
   return (
@@ -59,35 +64,60 @@ const SettingsDropdownClient: FC<SettingsDropdownClientProps> = ({ tooltip, labe
       side='bottom'
       content={
         <>
-          {supportsWebGPU && (
-            <>
-              <DropdownMenuLabel className='h-10 flex items-center px-2 py-1'>{tooltip}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setViewType('points')}
-                className='h-fit border-b -mx-1 -mt-1 rounded-none'
-                disabled={viewType === 'points'}
-              >
-                <div className='h-16 w-full flex gap-2 px-1 pt-1'>
-                  <div className='flex flex-col gap-1'>
-                    <p className='text-sm font-medium'>{labels.points}</p>
-                  </div>
+          <>
+            <DropdownMenuLabel className='h-10 flex items-center justify-between px-2 py-1'>
+              {labels.representation}
+              <Badge variant='minimal' className='text-xs px-1 py-0.5 h-auto'>
+                {viewType === 'points' && labels.points}
+                {viewType === 'convex' && labels.convex}
+                {viewType === 'smudge' && labels.smudge}
+              </Badge>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setViewType('points')}
+              className='h-fit border-b -mx-1 -mt-1 rounded-none'
+              disabled={viewType === 'points'}
+            >
+              <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+                <div className='flex flex-col gap-1'>
+                  <p className='text-sm font-medium'>{labels.points}</p>
+                  <span className='text-xs text-muted-foreground'>
+                    {labels.pointsDescription}
+                  </span>
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setViewType('heatmap')}
-                className='h-fit border-border/50 -mx-1 -mb-1 rounded-none'
-                disabled={viewType === 'heatmap'}
-              >
-                <div className='h-16 w-full flex gap-2 px-1 pt-1'>
-                  <div className='flex flex-col gap-1'>
-                    <p className='text-sm font-medium'>{labels.heatmap}</p>
-                  </div>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setViewType('convex')}
+              className='h-fit border-b -mx-1 -mt-1 rounded-none'
+              disabled={viewType === 'convex'}
+            >
+              <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+                <div className='flex flex-col gap-1'>
+                  <p className='text-sm font-medium'>{labels.convex}</p>
+                  <span className='text-xs text-muted-foreground'>
+                    {labels.convexDescription}
+                  </span>
                 </div>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
-          )}
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setViewType('smudge')}
+              className='h-fit border-border/50 -mx-1 -mb-1 rounded-none'
+              disabled={viewType === 'smudge'}
+            >
+              <div className='h-16 w-full flex gap-2 px-1 pt-1'>
+                <div className='flex flex-col gap-1'>
+                  <p className='text-sm font-medium'>{labels.smudge}</p>
+                  <span className='text-xs text-muted-foreground'>
+                    {labels.smudgeDescription}
+                  </span>
+                </div>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>    
           <DropdownMenuLabel className='px-2 py-1'>
             <div className='flex items-center justify-between'>
               <p>{labels.textures}</p>

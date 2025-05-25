@@ -17,16 +17,20 @@
         "tooltip": "Definições",
         "data": {
           "title": "Representação de dados",
-          "options": {
-            "heatmaps": {
-              "title": "Mapas de calor",
-              "description": "Visualize dados com mapas de calor baseados na densidade do fluido."
+            "options": {
+            "smudge": {
+              "title": "Manchas",
+              "description": "Visualize os dados usando a representação de manchas baseada na densidade do fluido"
+            },
+            "convex": {
+              "title": "Casco convexo",
+              "description": "Visualize os dados usando cascos convexos que representam a área afetada"
             },
             "points": {
-              "title": "Pontos e cascos convexos",
-              "description": "Visualize dados usando pontos e cascos convexos que representam locais de recolha de dados"
+              "title": "Pontos",
+              "description": "Visualize os dados usando pontos que representam os locais de recolha de dados"
             }
-          }
+            }
         },
         "textures": {
           "title": "Qualidade das texturas",

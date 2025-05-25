@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { OilSpillData, OilSpills } from '@/@types/oilspills';
+import { OilSpills } from '@/@types/oilspills';
 import { GlobePoint } from '@/@types/globe';
 import * as THREE from 'three';
 import { TextureLoader, Vector2, ShaderMaterial } from 'three'
@@ -28,217 +28,9 @@ function toDate(ts: string): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-function interpolateValue(a: number, b: number, factor: number): number {
-  return a + (b - a) * factor;
-}
-
-function interpolatePoints(p1: GlobePoint, p2: GlobePoint, factor: number): GlobePoint {
-  return {
-    latitude: interpolateValue(p1.latitude, p2.latitude, factor),
-    longitude: interpolateValue(p1.longitude, p2.longitude, factor),
-    density: interpolateValue(p1.density ?? 1, p2.density ?? 1, factor),
-    type: p1.type,
-    color: p1.color ?? p2.color,
-  };
-}
-
-type StructuredRing = {
-  ringIndex: number;
-  points: GlobePoint[];
-};
-
-function getStructuredRings(entry: any): StructuredRing[] {
-  const rings: StructuredRing[] = [];
-
-  for (const actor of entry.actors ?? []) {
-    const { geometry, type, color, density } = actor;
-    if (!geometry) continue;
-
-    if (geometry.type === 'Polygon') {
-      geometry.coordinates.forEach((ringCoords: any[], ringIndex: number) => {
-        const points: GlobePoint[] = [];
-
-        for (const [lon, lat] of ringCoords) {
-          if (typeof lat === 'number' && typeof lon === 'number') {
-            points.push({ latitude: lat, longitude: lon, density, type, color });
-          }
-        }
-
-        rings.push({ ringIndex, points });
-      });
-    }
-
-    if (geometry.type === 'Point') {
-      const [lon, lat] = geometry.coordinates;
-      if (typeof lat === 'number' && typeof lon === 'number') {
-        rings.push({ ringIndex: 0, points: [{ latitude: lat, longitude: lon, density, type, color }] });
-      }
-    }
-  }
-
-  return rings;
-}
-
-function centroid(points: GlobePoint[]): { lat: number; lon: number } {
-  const { length } = points;
-  let lat = 0;
-  let lon = 0;
-
-  for (const p of points) {
-    lat += p.latitude;
-    lon += p.longitude;
-  }
-
-  return {
-    lat: lat / length,
-    lon: lon / length,
-  };
-}
-
-function sortByAngle(points: GlobePoint[]): GlobePoint[] {
-  if (points.length < 3) return points;
-  const { lat, lon } = centroid(points);
-
-  return [...points].sort((a, b) => {
-    const angleA = Math.atan2(a.latitude - lat, a.longitude - lon);
-    const angleB = Math.atan2(b.latitude - lat, b.longitude - lon);
-    return angleA - angleB;
-  });
-}
-
-function resampleRing(points: GlobePoint[], targetCount: number): GlobePoint[] {
-  if (points.length === 0) return [];
-
-  const closed =
-    points.length > 2 &&
-    points[0].latitude === points[points.length - 1].latitude &&
-    points[0].longitude === points[points.length - 1].longitude;
-
-  const ring = closed ? points.slice(0, -1) : points;
-  const sorted = sortByAngle(ring);
-  const resampled: GlobePoint[] = [];
-  const total = sorted.length;
-
-  for (let i = 0; i < targetCount; i++) {
-    const t = (i / targetCount) * total;
-    const idx = Math.floor(t) % total;
-    const nextIdx = (idx + 1) % total;
-    const factor = t - idx;
-
-    const p = interpolatePoints(sorted[idx], sorted[nextIdx], factor);
-    resampled.push(p);
-  }
-
-  if (closed) {
-    resampled.push({ ...resampled[0] });
-  }
-
-  return resampled;
-}
-
-export function interpolateOilspillData(dataset: OilSpills): OilSpills {
-  const newData: OilSpills = { 
-    ...dataset, 
-    data: [] 
-  };
-
-  for (const spill of dataset.data ?? []) {
-    const entries = Array.isArray(spill.data) ? spill.data : spill.data ? [spill.data] : [];
-    const sorted = [...entries]
-      .map(e => ({ entry: e, date: toDate(e.timestamp) }))
-      .filter(e => e.date !== null)
-      .sort((a, b) => (a.date as Date).getTime() - (b.date as Date).getTime())
-      .map(e => e.entry);
-
-    const existingTimestamps = new Set(sorted.map(e => e.timestamp));
-    const interpolated: any[] = [];
-
-    for (let i = 0; i < sorted.length - 1; i++) {
-      const a = sorted[i];
-      const b = sorted[i + 1];
-      const ta = toDate(a.timestamp);
-      const tb = toDate(b.timestamp);
-
-      if (!ta || !tb) continue;
-
-      const steps = Math.floor((tb.getTime() - ta.getTime()) / (15 * 60 * 1000));
-      if (steps < 1) continue;
-
-      const ringsA = getStructuredRings(a);
-      const ringsB = getStructuredRings(b);
-
-      interpolated.push(a);
-
-      for (let step = 1; step < steps; step++) {
-        const factor = step / steps;
-        const midTimestamp = new Date(ta.getTime() + step * 15 * 60 * 1000);
-        const tsString = midTimestamp.toISOString().replace('T', ' ').slice(0, 19);
-
-        if (existingTimestamps.has(tsString)) continue;
-
-        const interpolatedActors = ringsA.map((ringA, index) => {
-          const ringB = ringsB[index] ?? ringA;
-          const pointsA = ringA.points;
-          const pointsB = ringB.points;
-
-          if (pointsA.length < 2 || pointsB.length < 2) return null;
-
-          const maxPoints = Math.max(pointsA.length, pointsB.length);
-          const resampledA = resampleRing(pointsA, maxPoints);
-          const resampledB = resampleRing(pointsB, maxPoints);
-
-          const interpolatedPoints: GlobePoint[] = [];
-
-          for (let i = 0; i < maxPoints; i++) {
-            const pA = resampledA[i];
-            const pB = resampledB[i];
-
-            if (!pA || !pB || pA.latitude === undefined || pB.latitude === undefined) continue;
-
-            interpolatedPoints.push(interpolatePoints(pA, pB, factor));
-          }
-
-          if (interpolatedPoints.length < 3) return null;
-
-          return {
-            type: 'Oil',
-            density: interpolatedPoints.reduce((a, b) => a + (b.density ?? 1), 0) / interpolatedPoints.length,
-            color: interpolatedPoints[0]?.color ?? '#ff6600',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [interpolatedPoints.map(p => [p.longitude, p.latitude])],
-            },
-          };
-        }).filter(Boolean);
-
-        interpolated.push({
-          timestamp: tsString,
-          actors: interpolatedActors,
-        });
-      }
-    }
-
-    if (sorted.length > 0) {
-      interpolated.push(sorted[sorted.length - 1]);
-    }
-
-    newData.data?.push({
-      ...spill,
-      data: interpolated.map(entry => ({
-        timestamp: entry.timestamp as string,
-        actors: entry.actors as any[],
-      })) as unknown as OilSpillData,
-    });
-  }
-
-  return newData;
-}
-
 export function prepareGlobeData(dataset: OilSpills, detail: Density = 'original'): GlobePrepared {
   const result: GlobePrepared = {};
-  const interpolatedDataset = interpolateOilspillData(dataset);
-
-  for (const spill of interpolatedDataset.data ?? []) {
+  for (const spill of dataset.data ?? []) {
     const _id = spill._id?.toString?.() || 'unknown';
     const entries = Array.isArray(spill?.data) ? spill.data : spill?.data ? [spill.data] : [];
 
@@ -310,6 +102,69 @@ export function prepareGlobeData(dataset: OilSpills, detail: Density = 'original
   return result;
 }
 
+export function prepareActorData(dataset: OilSpills): Record<string, { id: string; actor: any; coordinates: [number, number][] }[]> {
+  const result: Record<string, { id: string; actor: any; coordinates: [number, number][] }[]> = {};
+  for (const spill of dataset.data ?? []) {
+    const _id = spill._id?.toString?.() || 'unknown';
+    const entries = Array.isArray(spill?.data) ? spill.data : spill?.data ? [spill.data] : [];
+
+    for (const entry of entries) {
+      const timestamp = entry.timestamp ?? '';
+      if (!toDate(timestamp)) continue;
+      result[timestamp] ||= [];
+
+      const firstActor = Array.isArray(entry.actors) && entry.actors.length > 0 ? entry.actors[0] : null;
+      if (!firstActor) continue;
+
+      let coordinates: [number, number][] = [];
+      let actorForOutput: any = firstActor;
+
+      if (firstActor.geometry?.type === 'Point' && Array.isArray(firstActor.geometry.coordinates)) {
+        const [lng, lat] = firstActor.geometry.coordinates;
+        if (typeof lat === 'number' && typeof lng === 'number') {
+          coordinates = [[lng, lat]];
+        }
+      } else if (firstActor.geometry?.type === 'Polygon' && Array.isArray(firstActor.geometry.coordinates)) {
+        const ring = firstActor.geometry.coordinates[0];
+        if (Array.isArray(ring) && ring.length > 0) {
+          const validCoords = ring.filter(
+            (coord: any) => Array.isArray(coord) && coord.length >= 2 && typeof coord[0] === 'number' && typeof coord[1] === 'number'
+          );
+          if (validCoords.length > 0) {
+            const centroid = validCoords.reduce(
+              (acc, [lng, lat]) => {
+                acc.lng += lng;
+                acc.lat += lat;
+                return acc;
+              },
+              { lng: 0, lat: 0 }
+            );
+            const count = validCoords.length;
+            const centroidLng = centroid.lng / count;
+            const centroidLat = centroid.lat / count;
+            coordinates = [[centroidLng, centroidLat]];
+            actorForOutput = {
+              ...firstActor,
+              geometry: {
+                type: 'Point',
+                coordinates: [centroidLng, centroidLat]
+              }
+            };
+          }
+        }
+      }
+
+      result[timestamp].push({
+        id: _id,
+        actor: actorForOutput,
+        coordinates,
+      });
+    }
+  }
+
+  return result;
+}
+
 function computeConvexHull(points: THREE.Vector2[]): THREE.Vector2[] {
   const hull = [];
   const leftMost = points.reduce((left, p) => (p.x < left.x ? p : left), points[0]);
@@ -341,80 +196,82 @@ function computeConvexHull(points: THREE.Vector2[]): THREE.Vector2[] {
 export function createGlobeConvex(
   globeRef: any,
   group: { id: string; points: GlobePoint[] },
-  dataWeightMultiplier: number
+  dataWeightMultiplier: number,
+  mode: 'points' | 'convex' = 'convex'
 ): THREE.Object3D {
-  const flatPoints = group.points.map(p => new THREE.Vector2(p.longitude, p.latitude));
-  const hull2D = computeConvexHull(flatPoints);
-  if (hull2D.length < 3) return new THREE.Object3D();
-
-  const center = hull2D.reduce((acc, pt) => acc.add(pt), new THREE.Vector2(0, 0)).divideScalar(hull2D.length);
-  const relativePoints = hull2D.map(p => new THREE.Vector2(p.x - center.x, p.y - center.y));
-  const shape = new THREE.Shape(relativePoints);
-  const shapeGeometry2D = new THREE.ShapeGeometry(shape);
-  const positionAttr = shapeGeometry2D.getAttribute('position');
-
-  const positions3D: THREE.Vector3[] = [];
-  for (let i = 0; i < positionAttr.count; i++) {
-    const x = positionAttr.getX(i);
-    const y = positionAttr.getY(i);
-    const lng = center.x + x;
-    const lat = center.y + y;
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
-
-    const vec3 = globeRef.current.getCoords(lat, lng, 0.000001);
-    if (!vec3 || !Number.isFinite(vec3.x) || !Number.isFinite(vec3.y) || !Number.isFinite(vec3.z)) continue;
-    positions3D.push(vec3);
-  }
-
-  if (positions3D.length < 3) return new THREE.Object3D();
-
-  const geometry = new THREE.BufferGeometry();
-  const vertices = new Float32Array(positions3D.length * 3);
-  for (let i = 0; i < positions3D.length; i++) {
-    vertices[i * 3] = positions3D[i].x;
-    vertices[i * 3 + 1] = positions3D[i].y;
-    vertices[i * 3 + 2] = positions3D[i].z;
-  }
-  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-  geometry.setIndex(shapeGeometry2D.getIndex());
-  geometry.computeVertexNormals();
-
-  const color = group.points[0].color || '#ff0000';
-  const fillMaterial = new THREE.MeshLambertMaterial({
-    color,
-    transparent: true,
-    opacity: 0,
-    side: THREE.FrontSide,
-  });
-  const mesh = new THREE.Mesh(geometry, fillMaterial);
-
-  const contourPoints = hull2D.map(p => globeRef.current.getCoords(p.y, p.x, 0.0000011));
-  contourPoints.push(contourPoints[0]);
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(contourPoints);
-  const lineMaterial = new THREE.LineBasicMaterial({
-    color,
-    transparent: true,
-    opacity: Math.max(group.points[0].density, 0.1),
-  });
-  const line = new THREE.LineLoop(lineGeometry, lineMaterial);
-
   const groupObj = new THREE.Group();
-  groupObj.add(mesh);
-  groupObj.add(line);
+  const color = group.points[0]?.color || '#ff0000';
 
-  for (const point of group.points) {
-    const { latitude, longitude, density, color } = point;
-    const position = globeRef.current.getCoords(latitude, longitude, 0.0000012);
-    const radius = Math.min(Math.sqrt(Math.min(density ?? 1, 1)) * 0.01, 0.2) * dataWeightMultiplier * 0.1;
-    const dotGeometry = new THREE.SphereGeometry(radius, 8, 8);
-    const dotMaterial = new THREE.MeshBasicMaterial({
-      color: color || '#ff0000',
-      transparent: true,
-      opacity: 1,
-    });
-    const dot = new THREE.Mesh(dotGeometry, dotMaterial);
-    dot.position.copy(position);
-    groupObj.add(dot);
+  if (mode === 'convex') {
+    const flatPoints = group.points.map(p => new THREE.Vector2(p.longitude, p.latitude));
+    const hull2D = computeConvexHull(flatPoints);
+    if (hull2D.length >= 3) {
+      const center = hull2D.reduce((acc, pt) => acc.add(pt), new THREE.Vector2(0, 0)).divideScalar(hull2D.length);
+      const relativePoints = hull2D.map(p => new THREE.Vector2(p.x - center.x, p.y - center.y));
+      const shape = new THREE.Shape(relativePoints);
+      const shapeGeometry2D = new THREE.ShapeGeometry(shape);
+      const positionAttr = shapeGeometry2D.getAttribute('position');
+      const positions3D: THREE.Vector3[] = [];
+      for (let i = 0; i < positionAttr.count; i++) {
+        const x = positionAttr.getX(i);
+        const y = positionAttr.getY(i);
+        const lng = center.x + x;
+        const lat = center.y + y;
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+        const vec3 = globeRef.current.getCoords(lat, lng, 0.000001);
+        if (!vec3 || !Number.isFinite(vec3.x) || !Number.isFinite(vec3.y) || !Number.isFinite(vec3.z)) continue;
+        positions3D.push(vec3);
+      }
+      if (positions3D.length >= 3) {
+        const geometry = new THREE.BufferGeometry();
+        const vertices = new Float32Array(positions3D.length * 3);
+        for (let i = 0; i < positions3D.length; i++) {
+          vertices[i * 3] = positions3D[i].x;
+          vertices[i * 3 + 1] = positions3D[i].y;
+          vertices[i * 3 + 2] = positions3D[i].z;
+        }
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setIndex(shapeGeometry2D.getIndex());
+        geometry.computeVertexNormals();
+
+        const fillMaterial = new THREE.MeshLambertMaterial({
+          color,
+          transparent: true,
+          opacity: 0.25,
+          side: THREE.FrontSide,
+        });
+        const mesh = new THREE.Mesh(geometry, fillMaterial);
+        groupObj.add(mesh);
+      }
+
+      const contourPoints = hull2D.map(p => globeRef.current.getCoords(p.y, p.x, 0.0000011));
+      contourPoints.push(contourPoints[0]);
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints(contourPoints);
+      const lineMaterial = new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity: Math.max(group.points[0].density ?? 1, 0.3),
+      });
+      const line = new THREE.LineLoop(lineGeometry, lineMaterial);
+      groupObj.add(line);
+    }
+  }
+
+  if (mode === 'points') {
+    for (const point of group.points) {
+      const { latitude, longitude, density, color } = point;
+      const position = globeRef.current.getCoords(latitude, longitude, 0.0000012);
+      const radius = Math.min(Math.sqrt(Math.min(density ?? 1, 1)) * 0.01, 0.2) * dataWeightMultiplier * 0.1;
+      const dotGeometry = new THREE.SphereGeometry(radius, 8, 8);
+      const dotMaterial = new THREE.MeshBasicMaterial({
+        color: color || '#ff0000',
+        transparent: true,
+        opacity: 1,
+      });
+      const dot = new THREE.Mesh(dotGeometry, dotMaterial);
+      dot.position.copy(position);
+      groupObj.add(dot);
+    }
   }
 
   return groupObj;

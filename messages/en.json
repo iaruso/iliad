@@ -18,13 +18,17 @@
         "data": {
           "title": "Data representation",
           "options": {
-            "heatmaps": {
-              "title": "Heatmaps",
-              "description": "Visualize data using heat maps based on fluid density"
+            "smudge": {
+              "title": "Smudge",
+              "description": "Visualize data using smudge representation based on fluid density"
+            },
+            "convex": {
+              "title": "Convex hulls",
+              "description": "Visualize data using convex hulls representing the affected area"
             },
             "points": {
-              "title": "Points and convex hulls",
-              "description": "Visualize data using points and convex hulls representing data collection locations"
+              "title": "Points",
+              "description": "Visualize data using points representing data collection locations"
             }
           }
         },

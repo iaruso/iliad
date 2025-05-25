@@ -10,11 +10,11 @@ import { getPanelElement } from 'react-resizable-panels'
 import { type Material } from 'three'
 import { GlobePoint, GlobeLocation } from '@/@types/globe'
 import { sunPositionAt } from '@/lib/solar'
-import { getColor } from '@/lib/colors'
 import { Loader2 } from 'lucide-react'
 import { OilSpills } from '@/@types/oilspills'
-import { prepareGlobeData, createGlobeConvex, loadGlobeMaterial } from '@/lib/formatters'
+import { prepareGlobeData, createGlobeConvex, loadGlobeMaterial, prepareActorData } from '@/lib/formatters'
 import { useRouter } from '@/i18n/navigation'
+import { createCustomSmudge } from '@/lib/smudge';
 
 const Globe = dynamic(() => import('react-globe.gl'), {
   ssr: false,
@@ -28,7 +28,9 @@ const Globe = dynamic(() => import('react-globe.gl'), {
 const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const {
     dataToDisplay,
+    actorToDisplay,
     setGroupedGlobeData,
+    setActorGlobeData,
     groupedGlobeData,
     globeRef,
     isGlobeReady,
@@ -40,7 +42,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     viewType,
     textureQuality,
     dayNight,
-    altitude,
     setAltitude,
     date,
     setDate,
@@ -55,7 +56,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const rotationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
   const [dataDetail, setDataDetail] = useState<'single' | 'original'>('single')
-  const [dataWeightMultiplier, setDataWeightMultiplier] = useState(3)
   const lastAnimatedPositionRef = useRef<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
@@ -88,9 +88,14 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     if (!data.data) return {};
     return prepareGlobeData(data, dataDetail);
   }, [data, dataDetail]);
+
+  const actorData = useMemo(() => {
+    return prepareActorData(data);
+  }, [data, dataDetail]);
   
   useEffect(() => {
     setGroupedGlobeData(globeData);
+    setActorGlobeData(actorData);
   }, [globeData]);
   
   useEffect(() => {
@@ -186,7 +191,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         globeMaterial.uniforms.globeRotation.value.set(lng, lat)
       }
       rotationTimeoutRef.current = setTimeout(() => {
-        if (globeRef.current && viewType === 'points') {
+        if (globeRef.current && (viewType === 'points' || viewType === 'convex')) {
           const newAltitude = globeRef.current.pointOfView().altitude
           globeRef.current.controls({ maxDistance: 500 })
           setDataDetail((prevDetail) => {
@@ -194,16 +199,9 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             else if (prevDetail !== 'single') return 'single'
             return prevDetail
           })
-          setDataWeightMultiplier((prevMultiplier) => {
-            if (newAltitude > 0.1 && prevMultiplier !== 1) return 2.5
-            if (newAltitude > 0.02 && newAltitude <= 0.1 && prevMultiplier !== 0.5) return 1.75
-            if (newAltitude > 0.01 && newAltitude <= 0.02 && prevMultiplier !== 0.25) return 1.25
-            if (newAltitude <= 0.01 && prevMultiplier !== 0.1) return 1
-            return prevMultiplier
-          })
           setAltitude(newAltitude)
         }
-      }, 200)
+      }, 100)
     },
     [globeMaterial, viewType, data.single]
   )
@@ -297,22 +295,19 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
 
     lastAnimatedPositionRef.current = { lat, lng };
     animateToLocation(lat, lng, 1, 2000);
-  }, [isGlobeReady, data.single, dataToDisplay]);
+  }, [isGlobeReady, data.single, dataToDisplay, viewType]);
   
   const labelsData = useDeepCompareMemo(() => {
-    return dataToDisplay.flatMap(spill =>
-      Object.values(spill.densities).flatMap(d =>
-        (d as { points: GlobePoint[] }).points.filter(p =>
-          typeof p.latitude === 'number' &&
-          typeof p.longitude === 'number' &&
-          typeof p.density === 'number' &&
-          Number.isFinite(p.latitude) &&
-          Number.isFinite(p.longitude) &&
-          Number.isFinite(p.density)
-        )
-      )
-    );
-  }, [dataToDisplay]);
+    return actorToDisplay.flatMap(actor => {
+      if (!actor.coordinates || !Array.isArray(actor.coordinates)) return [];
+      return actor.coordinates.map(([lng, lat]: [number, number]) => ({
+        _id: actor.id,
+        latitude: lat,
+        longitude: lng,
+        color: '#CCCCCC'
+      }));
+    });
+  }, [actorToDisplay]);
   
   const htmlIndicators = useDeepCompareMemo(() => {
     return dataToDisplay.map(spill => {
@@ -327,18 +322,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
       };
     });
   }, [dataToDisplay, data.data]);
-
-  const heatmapsData = useDeepCompareMemo(() => {
-    return dataToDisplay.flatMap(spill =>
-      Object.values(spill.densities).flatMap(d =>
-        (d as { points: GlobePoint[] }).points.map(p => ({
-          latitude: p.latitude,
-          longitude: p.longitude,
-          density: p.density ?? 1,
-        }))
-      )
-    );
-  }, [dataToDisplay]);
   
   return (
     <>
@@ -366,43 +349,34 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
           bumpImageUrl={textureQuality === 'high' ? '/earth-bump-hq.webp' : textureQuality === 'mid' ? '/earth-bump.webp' : '/earth-bump-lq.webp'}
           showAtmosphere={false}
           onZoom={handleGlobeRotation}
-          {...(dataDetail === 'original' && {
+          {...(viewType === 'convex' && {
             customLayerData: groupedGData,
-            customThreeObject: (d) => createGlobeConvex(globeRef, d as { id: string; points: GlobePoint[] }, dataWeightMultiplier),
+            customThreeObject: (d) =>
+              createGlobeConvex(globeRef, d as { id: string; points: GlobePoint[] }, 1, 'convex'),
             customThreeObjectUpdate: () => {}
-          })}          
-          {...(viewType === 'heatmap' && {
-            heatmapsData: [heatmapsData],
-            heatmapPointLat: (d) => (d as GlobePoint).latitude,
-            heatmapPointLng: (d) => (d as GlobePoint).longitude,
-            heatmapPointWeight: 1,
-            heatmapBandwidth: 0.6,
-            heatmapColorSaturation: 2.8,
-            heatmapTopAltitude: 0.01,
-            heatmapBaseAltitude: 0.005,
-            heatmapColorFn: () => getColor,
-            enablePointerInteraction: false
           })}
-          {...(dataDetail === 'single' && !data.single ? {
+          {...(viewType === 'points'&& {
+            customLayerData: groupedGData,
+            customThreeObject: (d) =>
+              createGlobeConvex(globeRef, d as { id: string; points: GlobePoint[] }, 1, 'points'),
+            customThreeObjectUpdate: () => {}
+          })}        
+          {...(viewType === 'smudge' && {
+            customLayerData: groupedGData,
+            customThreeObject: (d) =>
+              createCustomSmudge(globeRef, d as { id: string; points: GlobePoint[] }, 0.3),
+            customThreeObjectUpdate: () => {},
+          })}
+          {...(actorToDisplay && {
             labelsData: labelsData,
             labelsTransitionDuration: 0,
             labelLat: (d) => (d as GlobePoint).latitude,
             labelLng: (d) => (d as GlobePoint).longitude,
             labelText: (d) => (d as GlobePoint)._id || 'Unknown',
             labelSize: 4e-10,
-            labelDotRadius: (d) => {
-              const density = Number.isFinite((d as GlobePoint).density) ? (d as GlobePoint).density : 1;
-              return Math.min(Math.sqrt(Math.min(density, 1)) * Math.max(altitude, 0.004) * 0.2, 1) * dataWeightMultiplier * 0.2;
-            },
-            labelColor: (d) => (d as GlobePoint).color || '#ff0000',
-          } : {
-            labelsData: [],
-            labelLat: () => 0,
-            labelLng: () => 0,
-            labelText: () => '',
-            labelSize: () => 0,
-            labelDotRadius: () => 0,
-            labelColor: () => '#ff0000'
+            labelDotRadius: viewType === 'smudge' ? 0.002 : 0.001,
+            labelAltitude: 0.000011,
+            labelColor: (d) => (d as GlobePoint).color || '#AAAAAA',
           })}
           {...(!data.single && labelsVisible ? {
             htmlElementsData: htmlIndicators,

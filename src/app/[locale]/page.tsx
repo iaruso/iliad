@@ -101,7 +101,7 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
         >
           <Globe data={oilSpills} />
           <Controls />
-          <Timeline isSingle={oilSpills.single} />
+          <Timeline />
         </ResizablePanel>
         <ResizableHandle className='pointer-events-none cursor-default' role='separator' />
         <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>

@@ -1,6 +1,6 @@
 {
   "name": "iliad",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -47,6 +47,7 @@
     "react-day-picker": "^9.6.1",
     "react-dom": "19.0.0",
     "react-globe.gl": "^2.33.1",
+    "react-joyride": "^2.9.3",
     "react-json-view": "^1.21.3",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.3",
