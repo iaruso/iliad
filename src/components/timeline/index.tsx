@@ -277,41 +277,62 @@ const Timeline: FC = () => {
                 }
               });
 
-              return steps.map((time) => {
+              const timelineBlocks = [];
+              let gapStart: Date | null = null;
+              let gapCount = 0;
+
+              for (let i = 0; i < steps.length; i++) {
+                const time = steps[i];
                 const timeStr = time.toISOString();
                 const key = timeStr.slice(0, 16);
                 const count = timeMap[key]?.size ?? 0;
                 const exists = count > 0;
                 const isActive = date >= time && date < new Date(time.getTime() + stepSize * 60 * 1000);
-
                 const bg = isActive
                   ? 'bg-primary/60'
                   : exists
                   ? 'bg-muted/40'
                   : 'bg-background';
 
-                return (
+                if (!exists) {
+                  if (gapStart === null) gapStart = time;
+                  gapCount++;
+                  if (i === steps.length - 1 || (steps[i + 1] && (timeMap[steps[i + 1].toISOString().slice(0, 16)]?.size ?? 0) > 0)) {
+                    timelineBlocks.push(
+                      <div
+                        key={`gap-${gapStart.toISOString()}`}
+                        className={`flex-shrink-0 flex items-end h-full bg-background`}
+                        style={{ flex: gapCount, minWidth: 2 }}
+                        aria-hidden="true"
+                      />
+                    );
+                    gapStart = null;
+                    gapCount = 0;
+                  }
+                  continue;
+                }
+
+                timelineBlocks.push(
                   <div
                     key={timeStr}
-                    className={`flex-1 flex items-end h-full ${exists ? 'cursor-pointer hover:bg-primary/20 min-w-[2px]' : 'cursor-default hover:bg-red-600/10'}`}
-                    onClick={() => exists && setDate(time)}
-                    role='button'
+                    className={`flex-1 flex items-end h-full cursor-pointer hover:bg-primary/20 min-w-[2px]`}
+                    onClick={() => setDate(time)}
+                    role="button"
                     aria-pressed={isActive}
                     aria-label={`${key}: ${count} unique oilspill(s)`}
-                    tabIndex={exists ? 0 : -1}
-                    onKeyDown={(e) => {
-                      if (exists && (e.key === 'Enter' || e.key === ' ')) {
-                        setDate(time);
-                      }
+                    tabIndex={0}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') setDate(time);
                     }}
                   >
                     <div
-                      className={`w-full ${bg} ${exists && 'h-full'}`}
+                      className={`w-full ${bg} h-full`}
                       title={`${key}: ${count} unique oilspill(s)`}
                     />
                   </div>
                 );
-              });
+              }
+              return timelineBlocks;
             })()}
           </div>
           <div className='relative z-20 flex items-center justify-center max-w-40 w-full border-l bg-chart-1/10 text-xs font-medium px-1 text-center'>
