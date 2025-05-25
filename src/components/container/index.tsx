@@ -80,14 +80,18 @@ const Container: FC<ContainerProps> = ({ data }) => {
   const [maxFrequency, setMaxFrequency] = useState<string>(initialMaxFrequency)
   const [frequencyRange, setFrequencyRange] = useState<string>(paramFrequencyRange ?? '')
 
+  const paramStartDate = searchParams.get('startDate')
+  const paramEndDate = searchParams.get('endDate')
+
   const activeFilters = useMemo(() => {
     let count = 0
     if (idFilter.trim().length >= 3) count++
     if (areaRange !== '') count++
     if (durationRange !== '') count++
     if (frequencyRange !== '') count++
+    if (paramStartDate || paramEndDate) count++
     return count
-  }, [idFilter, areaRange, durationRange, frequencyRange])
+  }, [idFilter, areaRange, durationRange, frequencyRange, paramStartDate, paramEndDate])
 
   const updateFilters = useCallback(
     (updates: {
@@ -242,6 +246,8 @@ const Container: FC<ContainerProps> = ({ data }) => {
     params.delete('frequencyRange')
     params.delete('sortField')
     params.delete('sortDirection')
+    params.delete('startDate')
+    params.delete('endDate')
 
     setIdFilter('')
     setMinArea('')
@@ -253,8 +259,9 @@ const Container: FC<ContainerProps> = ({ data }) => {
     setMinFrequency('')
     setMaxFrequency('')
     setFrequencyRange('')
-
+    
     router.replace(`?${params.toString()}`, { scroll: false })
+  // eslint-disable-line react-hooks/exhaustive-deps
   }, [router, searchParams])
 
   const { pagination, setPagination, handlePageTransition, isPending } = usePagination({
@@ -446,85 +453,86 @@ const Container: FC<ContainerProps> = ({ data }) => {
       </div>
       {data.data.length > 0 && !data.single ? (
         <>
-          <Table
-            className='border-b border-border/50'
-            divClassName='h-[calc(440px+1rem)] overflow-y-auto w-[calc(100%)]'
-            data-joyride='data-table'
-          >
-            <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className='relative hover:bg-transparent !border-none border-border/50'>
-                  <TableHead className='p-0 h-10' key={'link-head'} aria-label='Search Engine Link' />
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
-                    >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody
-              className={`${table.getRowModel().rows?.length > 9 && '[&>tr:last-child]:!border-transparent'} [&>tr:last-child]:border-b-1`}
+          <div className='flex flex-col' data-joyride='data-table'>
+            <Table
+              className='border-b border-border/50'
+              divClassName='h-[calc(27.5rem+11px)] overflow-y-auto w-[calc(100%)]'
             >
-              {table.getRowModel().rows?.length &&
-                table.getRowModel().rows.map((row, index) => (
-                  <TableRow
-                    key={row.id}
-                    className={`border-border/50 !h-10 relative ${
-                      Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
-                        const ts = new Date(timestamp.replace(' ', 'T')).getTime()
-                        const hourStart = date.getTime()
-                        const hourEnd = hourStart + 60 * 60 * 1000
-
-                        return ts >= hourStart && ts < hourEnd && spills.some((spill) => spill.id === row.original._id)
-                      })
-                        ? 'bg-muted/20 text-foreground'
-                        : ''
-                    }`}
-                    data-state={row.getIsSelected() && 'selected'}
-                    data-joyride={index === 0 ? 'data-row' : 'none'}
-                  >
-                    <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
-                      <Link
-                        className='cursor-pointer absolute inset-0 w-full h-full'
-                        href={`?oilspill=${row.original._id}`}
-                        aria-label={row.original._id}
-                      />
-                    </TableCell>
-                    {row.getVisibleCells().map((cell) =>
-                      isPending ? (
-                        <TableCell key={cell.id} className='p-0'>
-                          <Skeleton className='m-2 h-5 min-w-16' />
-                        </TableCell>
-                      ) : (
-                        <TableCell
-                          className={`text-xs font-medium ${orderableColumns.includes(cell.column.id) ? 'px-2' : ''}`}
-                          key={cell.id}
-                          align={
-                            (
-                              cell.column.columnDef.meta as {
-                                align: AlignCellProps
-                              }
-                            )?.align
-                          }
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      ),
-                    )}
+              <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className='relative hover:bg-transparent !border-none border-border/50'>
+                    <TableHead className='p-0 h-10' key={'link-head'} aria-label='Search Engine Link' />
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className={`!h-10 ${orderableColumns.includes(header.id) ? 'p-0' : ''}`}
+                      >
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
                   </TableRow>
                 ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            className={`${(data.items ?? 0) < 10 && 'border-t border-border/50'}`}
-            table={table}
-            onPaginationChange={handlePageTransition}
-            items={data.items || 0}
-          />
+              </TableHeader>
+              <TableBody
+                className={`${table.getRowModel().rows?.length > 9 && '[&>tr:last-child]:!border-transparent'} [&>tr:last-child]:border-b-1`}
+              >
+                {table.getRowModel().rows?.length &&
+                  table.getRowModel().rows.map((row, index) => (
+                    <TableRow
+                      key={row.id}
+                      className={`border-border/50 !h-10 relative ${
+                        Object.entries(groupedGlobeData).some(([timestamp, spills]) => {
+                          const ts = new Date(timestamp.replace(' ', 'T')).getTime()
+                          const hourStart = date.getTime()
+                          const hourEnd = hourStart + 60 * 60 * 1000
+
+                          return ts >= hourStart && ts < hourEnd && spills.some((spill) => spill.id === row.original._id)
+                        })
+                          ? 'bg-muted/20 text-foreground'
+                          : ''
+                      }`}
+                      data-state={row.getIsSelected() && 'selected'}
+                      data-joyride={index === 0 ? 'data-row' : 'none'}
+                    >
+                      <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
+                        <Link
+                          className='cursor-pointer absolute inset-0 w-full h-full'
+                          href={`?oilspill=${row.original._id}`}
+                          aria-label={row.original._id}
+                        />
+                      </TableCell>
+                      {row.getVisibleCells().map((cell) =>
+                        isPending ? (
+                          <TableCell key={cell.id} className='p-0'>
+                            <Skeleton className='m-2 h-5 min-w-16' />
+                          </TableCell>
+                        ) : (
+                          <TableCell
+                            className={`text-xs font-medium ${orderableColumns.includes(cell.column.id) ? 'px-2' : ''}`}
+                            key={cell.id}
+                            align={
+                              (
+                                cell.column.columnDef.meta as {
+                                  align: AlignCellProps
+                                }
+                              )?.align
+                            }
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ),
+                      )}
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            <TablePagination
+              className={`${(data.items ?? 0) < 10 && 'border-t border-border/50'}`}
+              table={table}
+              onPaginationChange={handlePageTransition}
+              items={data.items || 0}
+            />
+          </div>
           <>
             { data.data.length > 1 ? (
               <>

@@ -17,7 +17,6 @@ interface HelperDropdownClientProps {
 const HelperDropdownClient: FC<HelperDropdownClientProps> = ({ tooltip, labels }) => {
   const searchParams = useSearchParams()
   const oilspill = searchParams.get('oilspill')
-  console.log(oilspill)
   const { startTour } = useJoyride();
   return (
     <div className='flex' data-joyride='helper'>

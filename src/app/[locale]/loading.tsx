@@ -42,7 +42,7 @@ export default function Loading() {
         <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>
           <div className='flex flex-col h-full'>
             {hasOilspill ? <DetailsLoading /> : <ContainerLoading />}
-            <div className='border-t h-12 flex items-center py-2 pr-2 pl-4 justify-between gap-2'>
+            <div className='border-t h-12 flex items-center py-2 px-2 justify-between gap-2'>
               <div className='flex items-start gap-2'>
                 <Skeleton className='h-6 w-32' />
                 <Skeleton className='h-4 w-7' />

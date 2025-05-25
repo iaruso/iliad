@@ -25,14 +25,14 @@ export function constructUrl({
   const params = new URLSearchParams();
   if (page !== undefined && !isNaN(page)) params.append('page', page.toString());
   if (size !== undefined && !isNaN(size)) params.append('size', size.toString());
-  if (sortField) params.append('sortField', sortField);
-  if (sortDirection) params.append('sortDirection', sortDirection);
-  if (id) params.append('id', id.toString());
+  if (sortField !== undefined) params.append('sortField', sortField);
+  if (sortDirection !== undefined) params.append('sortDirection', sortDirection);
+  if (id !== undefined) params.append('id', id.toString());
   if (minArea !== undefined) params.append('minArea', minArea.toString());
   if (maxArea !== undefined) params.append('maxArea', maxArea.toString());
   if (oilspill !== undefined) params.append('oilspill', oilspill.toString());
-  if (startDate) params.append('startDate', startDate);
-  if (endDate) params.append('endDate', endDate);
+  if (startDate !== undefined) params.append('startDate', startDate);
+  if (endDate !== undefined) params.append('endDate', endDate);
   return `${endpoint}?${params.toString()}`;
 }
 

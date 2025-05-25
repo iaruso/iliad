@@ -151,7 +151,7 @@
         }
       },
       "calendar": {
-        "tooltip": "Selecione o intervalo de tempo"
+        "tooltip": "Intervalo de tempo"
       }
     },
     "search": {

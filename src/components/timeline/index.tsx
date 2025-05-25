@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
-import { FC, useContext, useState, useMemo } from 'react';
+import { FC, useContext, useState, useMemo, useEffect } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
 import ButtonTooltip from '@/components/ui-custom/button-tooltip';
@@ -38,6 +38,34 @@ const Timeline: FC = () => {
       new Date(a).getTime() - new Date(b).getTime()
     );
   }, [groupedGlobeData]);
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
+
+  useEffect(() => {
+    if (startDate && endDate && (!dateRange?.start || !dateRange?.end)) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { parseDate, toZoned } = require('@internationalized/date');
+      const timeZone = 'UTC';
+      try {
+        const startStr = startDate.split('T')[0];
+        const endStr = endDate.split('T')[0];
+        const startParsed = parseDate(startStr);
+        const endParsed = parseDate(endStr);
+        const startZdt = toZoned(startParsed, timeZone);
+        const endZdt = toZoned(endParsed, timeZone);
+        setDateRange({ start: startZdt, end: endZdt });
+      } catch {
+
+      }
+    }
+  }, [startDate, endDate, dateRange, setDateRange]);
+  
+  useEffect(() => {
+    if (!startDate && !endDate) {
+      setDateRange(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDate, endDate])
 
   const [minDate, maxDate] = useMemo(() => {
     const dates = timestamps.map(ts => new Date(ts.replace(' ', 'T')));
@@ -79,7 +107,6 @@ const Timeline: FC = () => {
 
    const handleDateRangeChange = (newRange: typeof dateRange) => {
     setDateRange(newRange);
-
     if (newRange?.start && newRange?.end) {
       const params = new URLSearchParams(searchParams.toString());
       params.set('startDate', format(
@@ -100,7 +127,7 @@ const Timeline: FC = () => {
   
   return (
     <div className='w-full h-12 border-t bg-background' data-joyride='timeline'>
-      <div className='flex items-center p-2 h-12'>
+      <div className='flex items-center p-2 h-12 gap-2'>
         <div className='flex items-center gap-2 h-full' data-joyride='timeline-controls'>
           <ButtonTooltip
             button={
@@ -191,11 +218,15 @@ const Timeline: FC = () => {
                 button={
                   <Button
                     variant={'outline'}
-                    className='!h-8 w-48 cursor-pointer px-2.5 text-xs'
+                    className='!h-8 w-48 cursor-pointer px-2.5 text-xs flex items-center justify-start'
                     aria-label={t('calendar.tooltip')}
                   >
                     <Calendar className='!h-3.5 !w-3.5 stroke-primary'/>
-                    {dateRange ? `${dateRange.start} - ${dateRange.end}` : t('calendar.tooltip')}
+                    <span className='mx-auto w-full'>
+                    {dateRange
+                      ? `${dateRange.start && 'toString' in dateRange.start ? dateRange.start.toString().split('T')[0] : String(dateRange.start)} - ${dateRange.end && 'toString' in dateRange.end ? dateRange.end.toString().split('T')[0] : String(dateRange.end)}`
+                      : t('calendar.tooltip')}
+                    </span>
                   </Button>
                 }
                 tooltip={t('calendar.tooltip')}
