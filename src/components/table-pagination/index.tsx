@@ -82,7 +82,7 @@ export default function DataTablePagination<TData>({
               <TooltipContent>
                 <p className='text-xs font-medium'>
                   {t('itemsOutOf', {
-                    items: `${table.getState().pagination.pageSize}`,
+                    items: `${table.getState().pagination.pageSize > items ? items : table.getState().pagination.pageSize}`,
                     total: `${items}`
                   })}
                 </p>
