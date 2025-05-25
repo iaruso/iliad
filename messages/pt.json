@@ -56,7 +56,54 @@
         }
       },
       "helper": {
-        "tooltip": "Ajuda"
+        "tooltip": "Ajuda",
+        "options": {
+          "default": {
+            "title": "Visita guiada",
+            "steps": {
+              "default": "Inicie a visita guiada para aprender a usar o monitor de derrames de óleo",
+              "globe": "Explore o globo para ver os derrames de óleo em todo o mundo",
+              "timeline": "Use a linha do tempo para controlar o tempo e ver como os derrames de óleo evoluem",
+              "data": "Explore os dados para ver as estatísticas dos derrames de óleo",
+              "more": "Para mais ajuda, clique no botão de ajuda e selecione a opção de visita guiada"
+            }
+          },
+          "globe": {
+            "title": "Visita guiada ao globo",
+            "steps": {
+              "default": "Explore o globo para analisar os derrames de óleo",
+              "controls": "Use os controlos para aproximar, afastar, maximizar e minimizar o ecrã, localizar a sua localização atual e tirar uma captura de ecrã",
+              "settings": "Ajuste as definições para personalizar a visualização dos derrames de óleo"
+            }
+          },
+          "timeline": {
+            "title": "Visita guiada à linha do tempo",
+            "steps": {
+              "default": "Use a linha do tempo para controlar o tempo e ver como os derrames de óleo evoluem",
+              "controls": "Use os controlos para voltar, reproduzir, pausar e avançar no tempo, ajustar a velocidade de reprodução e selecionar um intervalo de tempo",
+              "moment": "Selecione um momento específico para ver os derrames de óleo nesse momento"
+            }
+          },
+          "data": {
+            "title": "Visita guiada aos dados",
+            "steps": {
+              "default": "Explore os dados para ver as estatísticas dos derrames de óleo",
+              "table": "Veja os dados dos derrames de óleo em formato de tabela, com a possibilidade de ordenar e filtrar",
+              "filters": "Use os filtros para pesquisar e filtrar os derrames de óleo com base em critérios como área, duração e frequência",
+              "add": "Adicione novos derrames de óleo na base de dados",
+              "metrics": "Veja as métricas dos derrames de óleo, como número de momentos, duração, frequência e localização",
+              "stats": "Veja as estatísticas dos derrames de óleo, como área, duração, frequência, pontos, entre outros",
+              "select": "Selecione um derrame de óleo específico para ver os detalhes e as estatísticas desse derrame",
+              "raw": "Veja os dados brutos do derrame de óleo fornecidos"
+            }
+          }
+        },
+        "back": "Voltar",
+        "close": "Fechar",
+        "last": "Último",
+        "next": "Próximo",
+        "nextProgress": "Próximo ({step} em {steps})",
+        "skip": "Saltar"
       }
     }
   },

@@ -56,7 +56,54 @@
         }
       },
       "helper": {
-        "tooltip": "Helper"
+        "tooltip": "Help",
+        "options": {
+          "default": {
+            "title": "Guided tour",
+            "steps": {
+              "default": "Start the guided tour to learn how to use the oil spill monitor",
+              "globe": "Explore the globe to see oil spills around the world",
+              "timeline": "Use the timeline to control time and see how oil spills evolve",
+              "data": "Explore the data to see oil spill statistics",
+              "more": "For more help, click the help button and select an option"
+            }
+          },
+          "globe": {
+            "title": "Globe guided tour",
+            "steps": {
+              "default": "Explore the globe to analyze oil spills",
+              "controls": "Use the controls to zoom in, zoom out, maximize and minimize the screen, locate your current location, and take a screenshot",
+              "settings": "Adjust the settings to customize the oil spill visualization"
+            }
+          },
+          "timeline": {
+            "title": "Timeline guided tour",
+            "steps": {
+              "default": "Use the timeline to control time and see how oil spills evolve",
+              "controls": "Use the controls to go back, play, pause, and go forward in time, adjust playback speed, and select a time range",
+              "moment": "Select a specific moment to see oil spills at that time"
+            }
+          },
+          "data": {
+            "title": "Data guided tour",
+            "steps": {
+              "default": "Explore the data to see oil spill statistics",
+              "table": "View oil spill data in a table format, with the ability to sort and filter",
+              "filters": "Use filters to search and filter oil spills based on criteria such as area, duration, and frequency",
+              "add": "Add new oil spills to the monitor",
+              "metrics": "View oil spill metrics such as number of moments, duration, frequency, and location",
+              "stats": "View oil spill statistics such as area, duration, frequency, points, and more",
+              "select": "Select a specific oil spill to see its details and statistics",
+              "raw": "View the raw data provided for the oil spill"
+            }
+          }
+        },
+        "back": "Back",
+        "close": "Close",
+        "last": "Last",
+        "next": "Next",
+        "nextProgress": "Next ({step} in {steps})",
+        "skip": "Skip"
       }
     }
   },

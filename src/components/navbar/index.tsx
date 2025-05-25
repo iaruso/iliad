@@ -3,9 +3,8 @@ import { getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui-custom/badge'
 import ThemeToggle from './theme-dropdown'
 import LocaleToggle from './locale-dropdown'
+import HelperDropdown from './helper-dropdown'
 import SettingsDropdown from './settings-dropdown'
-import { CircleHelp } from 'lucide-react'
-import { Button } from '@/components/ui-custom/button'
 
 const Navbar = async () => {
   const t = await getTranslations('navbar')
@@ -14,20 +13,12 @@ const Navbar = async () => {
     <nav className='border-t h-12 flex items-center py-2 pr-2 pl-4 justify-between gap-2'>
       <div className='flex items-start gap-2'>
         <h1 className='font-[550] select-none line-clamp-1'>{t('app')}</h1>
-        <Badge variant='minimal' className='tabular-nums'>0.7.7</Badge>
+        <Badge variant='minimal' className='tabular-nums'>0.8.0</Badge>
       </div>
       <div className='flex items-center gap-1.5'>
         <ThemeToggle />
         <LocaleToggle />
-        <Button
-          variant='secondary'
-          size='icon'
-          className='shadow-none h-6 w-6'
-          disabled
-          aria-label={t('options.helper.tooltip')}
-        >
-          <CircleHelp className='h-4! w-4!' />
-        </Button>
+        <HelperDropdown />
         <SettingsDropdown />
       </div>
     </nav>

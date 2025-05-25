@@ -297,120 +297,123 @@ const Container: FC<ContainerProps> = ({ data }) => {
           onChange={(e) => handleIdFilterChange(e.target.value)}
           className='flex-1 h-8 px-2'
         />
-        <PopoverTooltip
-          button={
-            <Button
-              variant='outline'
-              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'
-              aria-label={t('filters.tooltip')}
-            >
-              <Settings2 className='h-4 w-4' />
-              {t('filters.label')}
-              <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
-                {activeFilters}
-              </span>
-            </Button>
-          }
-          tooltip={t('filters.tooltip')}
-          content={
-            <>
-              <Label className='text-sm font-medium'>
-                {t.rich('filters.options.areaRange.label', {
-                  sup: (chunks) => <sup>{chunks}</sup>,
-                })}
-              </Label>
-              <div className='flex items-center gap-2'>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.min')}
-                  value={minArea}
-                  onChange={(e) => handleMinAreaChange(e.target.value)}
-                  type='number'
-                />
-                <span className='text-sm font-medium text-muted-foreground'>-</span>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.max')}
-                  value={maxArea}
-                  onChange={(e) => handleMaxAreaChange(e.target.value)}
-                  type='number'
-                />
-              </div>
-              <Label className='text-sm font-medium'>
-                {t.rich('filters.options.durationRange.label', {
-                  sup: (chunks) => <sup>{chunks}</sup>,
-                })}
-              </Label>
-              <div className='flex items-center gap-2'>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.min')}
-                  value={minDuration}
-                  onChange={(e) => handleMinDurationChange(e.target.value)}
-                  type='number'
-                />
-                <span className='text-sm font-medium text-muted-foreground'>-</span>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.max')}
-                  value={maxDuration}
-                  onChange={(e) => handleMaxDurationChange(e.target.value)}
-                  type='number'
-                />
-              </div>
-              <Label className='text-sm font-medium'>
-                {t.rich('filters.options.frequencyRange.label', {
-                  sup: (chunks) => <sup>{chunks}</sup>,
-                })}
-              </Label>
-              <div className='flex items-center gap-2'>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.min')}
-                  value={minFrequency}
-                  onChange={(e) => handleMinFrequencyChange(e.target.value)}
-                  type='number'
-                />
-                <span className='text-sm font-medium text-muted-foreground'>-</span>
-                <Input
-                  className='input-number h-8 px-2'
-                  placeholder={t('filters.options.max')}
-                  value={maxFrequency}
-                  onChange={(e) => handleMaxFrequencyChange(e.target.value)}
-                  type='number'
-                />
-              </div>
-              <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant='outline'
-                    className='w-full h-8'
-                    aria-label={t('filters.options.columns.placeholder')}
-                  >
-                    {t('filters.options.columns.placeholder')}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => (
-                      <DropdownMenuItem
-                        key={column.id}
-                        className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
-                        onClick={() => column.toggleVisibility()}
-                        onSelect={(event) => event.preventDefault()}
-                      >
-                        {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
-                      </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          }
-          className='w-64 flex flex-col gap-2'
-        />
+        <div className='flex' data-joyride='data-filters'>
+          <PopoverTooltip
+            button={
+              <Button
+                variant='outline'
+                className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1.5 group'
+                aria-label={t('filters.tooltip')}
+              >
+                <Settings2 className='h-4 w-4' />
+                {t('filters.label')}
+                <span className='text-[9.5px] font-semibold rounded-sm h-4.5 w-4.5 border flex items-center justify-center bg-muted/50 group-hover:bg-background'>
+                  {activeFilters}
+                </span>
+              </Button>
+            }
+            tooltip={t('filters.tooltip')}
+            content={
+              <>
+                <Label className='text-sm font-medium'>
+                  {t.rich('filters.options.areaRange.label', {
+                    sup: (chunks) => <sup>{chunks}</sup>,
+                  })}
+                </Label>
+                <div className='flex items-center gap-2'>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.min')}
+                    value={minArea}
+                    onChange={(e) => handleMinAreaChange(e.target.value)}
+                    type='number'
+                  />
+                  <span className='text-sm font-medium text-muted-foreground'>-</span>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.max')}
+                    value={maxArea}
+                    onChange={(e) => handleMaxAreaChange(e.target.value)}
+                    type='number'
+                  />
+                </div>
+                <Label className='text-sm font-medium'>
+                  {t.rich('filters.options.durationRange.label', {
+                    sup: (chunks) => <sup>{chunks}</sup>,
+                  })}
+                </Label>
+                <div className='flex items-center gap-2'>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.min')}
+                    value={minDuration}
+                    onChange={(e) => handleMinDurationChange(e.target.value)}
+                    type='number'
+                  />
+                  <span className='text-sm font-medium text-muted-foreground'>-</span>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.max')}
+                    value={maxDuration}
+                    onChange={(e) => handleMaxDurationChange(e.target.value)}
+                    type='number'
+                  />
+                </div>
+                <Label className='text-sm font-medium'>
+                  {t.rich('filters.options.frequencyRange.label', {
+                    sup: (chunks) => <sup>{chunks}</sup>,
+                  })}
+                </Label>
+                <div className='flex items-center gap-2'>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.min')}
+                    value={minFrequency}
+                    onChange={(e) => handleMinFrequencyChange(e.target.value)}
+                    type='number'
+                  />
+                  <span className='text-sm font-medium text-muted-foreground'>-</span>
+                  <Input
+                    className='input-number h-8 px-2'
+                    placeholder={t('filters.options.max')}
+                    value={maxFrequency}
+                    onChange={(e) => handleMaxFrequencyChange(e.target.value)}
+                    type='number'
+                  />
+                </div>
+                <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='outline'
+                      className='w-full h-8'
+                      aria-label={t('filters.options.columns.placeholder')}
+                    >
+                      {t('filters.options.columns.placeholder')}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {table
+                      .getAllColumns()
+                      .filter((column) => column.getCanHide())
+                      .map((column) => (
+                        <DropdownMenuItem
+                          key={column.id}
+                          className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
+                          onClick={() => column.toggleVisibility()}
+                          onSelect={(event) => event.preventDefault()}
+                        >
+                          {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
+                        </DropdownMenuItem>
+                      ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            }
+            className='w-64 flex flex-col gap-2'
+            
+          />
+        </div>
         <ButtonTooltip
           button={
             <Button
@@ -425,25 +428,28 @@ const Container: FC<ContainerProps> = ({ data }) => {
           }
           tooltip={t('reset.tooltip')}
         />
-        <ButtonTooltip
-          button={
-            <Button
-              disabled
-              variant='outline'
-              className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
-              aria-label={t('add.tooltip')}
-            >
-              <Plus className='!size-4' />
-            </Button>
-          }
-          tooltip={t('add.tooltip')}
-        />
+        <div className='flex' data-joyride='data-add'>
+          <ButtonTooltip
+            button={
+              <Button
+                disabled
+                variant='outline'
+                className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
+                aria-label={t('add.tooltip')}
+              >
+                <Plus className='!size-4' />
+              </Button>
+            }
+            tooltip={t('add.tooltip')}
+          />
+        </div>
       </div>
       {data.data.length > 0 && !data.single ? (
         <>
           <Table
             className='border-b border-border/50'
             divClassName='h-[calc(440px+1rem)] overflow-y-auto w-[calc(100%)]'
+            data-joyride='data-table'
           >
             <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -464,7 +470,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
               className={`${table.getRowModel().rows?.length > 9 && '[&>tr:last-child]:!border-transparent'} [&>tr:last-child]:border-b-1`}
             >
               {table.getRowModel().rows?.length &&
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map((row, index) => (
                   <TableRow
                     key={row.id}
                     className={`border-border/50 !h-10 relative ${
@@ -479,6 +485,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
                         : ''
                     }`}
                     data-state={row.getIsSelected() && 'selected'}
+                    data-joyride={index === 0 ? 'data-row' : 'none'}
                   >
                     <TableCell key={`linkCell${row.id}`} className='p-0 !h-10 absolute inset-0'>
                       <Link
@@ -518,15 +525,17 @@ const Container: FC<ContainerProps> = ({ data }) => {
             onPaginationChange={handlePageTransition}
             items={data.items || 0}
           />
-          { data.data.length > 1 ? (
-            <>
-              <Stats data={data} type='multiple' />
-            </>
-          ) : (
-            <div className='flex-1 flex justify-center items-center border-t'>
-              <span className='text-muted-foreground text-sm'>{t('noStats')}</span>
-            </div>
-          )}
+          <>
+            { data.data.length > 1 ? (
+              <>
+                <Stats data={data} type='multiple' />
+              </>
+            ) : (
+              <div className='flex-1 flex justify-center items-center border-t' data-joyride='data-stats'>
+                <span className='text-muted-foreground text-sm'>{t('noStats')}</span>
+              </div>
+            )}
+          </>
         </>
       ) : (
         <div className='flex flex-col items-center justify-center h-0 flex-1'>

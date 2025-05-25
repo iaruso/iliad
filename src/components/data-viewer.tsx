@@ -13,7 +13,7 @@ export default function DataViewer({ data }: DataViewerProps) {
   const t = useTranslations('details')
 
   return (
-    <div className='flex border rounded-md overflow-auto flex-1 bg-muted/20 relative'>
+    <div className='flex border rounded-md overflow-auto flex-1 bg-muted/20 relative' data-joyride='data-raw'>
       <ReactJson
         style={{
           height: '0px',

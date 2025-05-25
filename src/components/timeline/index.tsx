@@ -99,117 +99,119 @@ const Timeline: FC = () => {
   };
   
   return (
-    <div className='w-full h-12 border-t bg-background'>
-      <div className='flex items-center p-2 h-12 gap-2'>
-        <ButtonTooltip
-          button={
-            <Button
-              variant={'outline'}
-              className='!h-8 !w-8 cursor-pointer p-0'
-              onClick={() => {
-                setPlaying(false);
-                const first = timestamps[0];
-                if (first) setDate(new Date(first));
-              }}
-              aria-label={t('skipBack.tooltip')}
-            >
-              <SkipBack className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
-            </Button>
-          }
-          tooltip={t('skipBack.tooltip')}
-        />
-        <ButtonTooltip
-          button={
-          <Button
-            variant={'outline'}
-            className='!h-8 !w-8 cursor-pointer p-0'
-            onClick={() => {
-              setPlaying(!playing);
-            }}
-            aria-label={playing ? t('pause.tooltip') : t('play.tooltip')}
-          > 
-            {
-              playing
-                ? <Pause className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
-                : <Play className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
-            }
-          </Button>
-          }
-          tooltip={playing ? t('pause.tooltip') : t('play.tooltip')}
-        />
-        <ButtonTooltip
-          button={
-            <Button
-              variant={'outline'}
-              className='!h-8 !w-8 cursor-pointer p-0'
-              onClick={() => {
-                setPlaying(false);
-                const next = timestamps.find(ts => new Date(ts) > date);
-                if (next) setDate(new Date(next));
-              }}
-              aria-label={t('skipForward.tooltip')}
-            >
-              <SkipForward className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
-            </Button>
-          }
-          tooltip={t('skipForward.tooltip')}
-        />
-        <DropdownTooltip
-          button={
-            <Button
-              variant={'outline'}
-              className='!h-8 !w-8 cursor-pointer p-0 text-xs'
-              aria-label={t('speed.tooltip')}
-            >
-              {t(`speed.options.${String(timelineSpeed).replace('.', '_')}`)}
-            </Button>
-          }
-          tooltip={t('speed.tooltip')}
-          content={
-            [0.5, 1, 2].map((speed) => (
-              <DropdownMenuItem
-                className='text-right'
-                key={speed}
-                onClick={() => setTimelineSpeed(speed)}
+    <div className='w-full h-12 border-t bg-background' data-joyride='timeline'>
+      <div className='flex items-center p-2 h-12'>
+        <div className='flex items-center gap-2 h-full' data-joyride='timeline-controls'>
+          <ButtonTooltip
+            button={
+              <Button
+                variant={'outline'}
+                className='!h-8 !w-8 cursor-pointer p-0'
+                onClick={() => {
+                  setPlaying(false);
+                  const first = timestamps[0];
+                  if (first) setDate(new Date(first));
+                }}
+                aria-label={t('skipBack.tooltip')}
               >
-                {t(`speed.options.${String(speed).replace('.', '_')}`)}
-              </DropdownMenuItem>
-            ))
-          }
-        />
-        {
-          hasOilspillParam ? (
-            <div className='flex w-48 px-2.5 text-xs gap-2 text-foreground !h-8 border rounded-md justify-center items-center'>
-              <Calendar className='!h-3.5 !w-3.5 stroke-foreground' />
-              {minDate && maxDate
-                ? `${format(minDate, 'yyyy-MM-dd')} - ${format(maxDate, 'yyyy-MM-dd')}`
-                : '—'}
-            </div>
-          ) : (
-          <PopoverTooltip
-              button={
-                <Button
-                  variant={'outline'}
-                  className='!h-8 w-48 cursor-pointer px-2.5 text-xs'
-                  aria-label={t('calendar.tooltip')}
+                <SkipBack className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
+              </Button>
+            }
+            tooltip={t('skipBack.tooltip')}
+          />
+          <ButtonTooltip
+            button={
+            <Button
+              variant={'outline'}
+              className='!h-8 !w-8 cursor-pointer p-0'
+              onClick={() => {
+                setPlaying(!playing);
+              }}
+              aria-label={playing ? t('pause.tooltip') : t('play.tooltip')}
+            > 
+              {
+                playing
+                  ? <Pause className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
+                  : <Play className='!h-3.5 !w-3.5 fill-primary stroke-primary'/>
+              }
+            </Button>
+            }
+            tooltip={playing ? t('pause.tooltip') : t('play.tooltip')}
+          />
+          <ButtonTooltip
+            button={
+              <Button
+                variant={'outline'}
+                className='!h-8 !w-8 cursor-pointer p-0'
+                onClick={() => {
+                  setPlaying(false);
+                  const next = timestamps.find(ts => new Date(ts) > date);
+                  if (next) setDate(new Date(next));
+                }}
+                aria-label={t('skipForward.tooltip')}
+              >
+                <SkipForward className='!h-3.5 !w-3.5 fill-primary stroke-primary' strokeWidth={2.5}/>
+              </Button>
+            }
+            tooltip={t('skipForward.tooltip')}
+          />
+          <DropdownTooltip
+            button={
+              <Button
+                variant={'outline'}
+                className='!h-8 !w-8 cursor-pointer p-0 text-xs'
+                aria-label={t('speed.tooltip')}
+              >
+                {t(`speed.options.${String(timelineSpeed).replace('.', '_')}`)}
+              </Button>
+            }
+            tooltip={t('speed.tooltip')}
+            content={
+              [0.5, 1, 2].map((speed) => (
+                <DropdownMenuItem
+                  className='text-right'
+                  key={speed}
+                  onClick={() => setTimelineSpeed(speed)}
                 >
-                  <Calendar className='!h-3.5 !w-3.5 stroke-primary'/>
-                  {dateRange ? `${dateRange.start} - ${dateRange.end}` : t('calendar.tooltip')}
-                </Button>
-              }
-              tooltip={t('calendar.tooltip')}
-              content={
-                <RangeCalendar
-                  className='rounded-md border p-2 bg-background'
-                  value={dateRange}
-                  onChange={handleDateRangeChange}
-                />
-              }
-              className='border-none p-0 w-fit'
-            />
-          )
-        }
-        <div className='flex flex-1 rounded-md border !h-8 overflow-hidden relative'>
+                  {t(`speed.options.${String(speed).replace('.', '_')}`)}
+                </DropdownMenuItem>
+              ))
+            }
+          />
+          {
+            hasOilspillParam ? (
+              <div className='flex w-48 px-2.5 text-xs gap-2 text-foreground !h-8 border rounded-md justify-center items-center'>
+                <Calendar className='!h-3.5 !w-3.5 stroke-foreground' />
+                {minDate && maxDate
+                  ? `${format(minDate, 'yyyy-MM-dd')} - ${format(maxDate, 'yyyy-MM-dd')}`
+                  : '—'}
+              </div>
+            ) : (
+            <PopoverTooltip
+                button={
+                  <Button
+                    variant={'outline'}
+                    className='!h-8 w-48 cursor-pointer px-2.5 text-xs'
+                    aria-label={t('calendar.tooltip')}
+                  >
+                    <Calendar className='!h-3.5 !w-3.5 stroke-primary'/>
+                    {dateRange ? `${dateRange.start} - ${dateRange.end}` : t('calendar.tooltip')}
+                  </Button>
+                }
+                tooltip={t('calendar.tooltip')}
+                content={
+                  <RangeCalendar
+                    className='rounded-md border p-2 bg-background'
+                    value={dateRange}
+                    onChange={handleDateRangeChange}
+                  />
+                }
+                className='border-none p-0 w-fit'
+              />
+            )
+          }
+        </div>
+        <div className='flex flex-1 rounded-md border !h-8 overflow-hidden relative' data-joyride='timeline-bar'>
           <div className='flex-1 flex items-center'>
             {(() => {
               if (timestamps.length === 0) return (

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { FC, useMemo, ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { OilSpill } from '@/@types/oilspills';
@@ -124,7 +125,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
             />
           </BreadcrumbItem>
         </BreadcrumbList>
-        <div className='flex items-center justify-end gap-2 [&_button]:!p-0 ml-auto'>
+        <div className='flex items-center justify-end gap-2 [&_button]:!p-0 ml-auto' data-joyride='data-metrics'>
           <DetailsCard
             value={stats.totalTimestamps}
             icon={<SquareStack className='!size-3.5' strokeWidth={2} />}
@@ -161,8 +162,15 @@ const Details: FC<DetailsProps> = ({ data }) => {
         />
         <div className='flex-1 h-0 grid p-2 pt-0 gap-2 grid-rows-2'>
           <DataViewer data={data} />
-          <div className='w-full rounded-md border bg-muted/50 flex items-center justify-center p-4'>
-            <span className='text-xs font-medium text-muted-foreground'>
+          <div className='select-none pointer-events-none w-full rounded-md border bg-muted/50 flex items-center justify-center p-4 relative overflow-hidden'>
+            <Image
+              src='/ocean-viewer-preview.webp'
+              alt={t('oceanViewer.wip')}
+              width={366}
+              height={247}
+              className='object-cover absolute inset-0 w-full blur opacity-40'
+            />
+            <span className='text-xs font-medium text-accent-foreground/80 dark:text-muted-foreground z-[1]'>
               {t('oceanViewer.wip')}
             </span>
           </div>

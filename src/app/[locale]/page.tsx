@@ -92,7 +92,7 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
   });
 
   return (
-    <ResizablePanelGroup direction='horizontal'>
+    <ResizablePanelGroup direction='horizontal' data-joyride='default'>
       <GlobeProvider>
         <ResizablePanel
           id='content-panel'
@@ -106,7 +106,7 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
         <ResizableHandle className='pointer-events-none cursor-default' role='separator' />
         <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>
           <div className='flex flex-col h-full'>
-            <div className='flex flex-col flex-1 h-0'>
+            <div className='flex flex-col flex-1 h-0' data-joyride='data'>
               {oilspill ? (
                 <Details data={oilSpills.data[0]} />
               ) : (

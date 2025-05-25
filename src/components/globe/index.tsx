@@ -148,7 +148,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     if (globeRef.current && currentLocation) {
       const { lat, lng } = currentLocation
       const currentView = globeRef.current.pointOfView()
-      const targetView = { lat, lng, altitude: 0.5 }
+      const targetView = { lat, lng, altitude: 0.01 }
       const duration = 2000
 
       let animationFrameId: number | null = null
@@ -263,7 +263,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         lat: Array.isArray(latitude) ? latitude[0] : latitude, 
         lng: Array.isArray(longitude) ? longitude[0] : longitude 
       };
-      animateToLocation(latitude as number, longitude as number, 0.01, 2000);
+      animateToLocation(latitude as number, longitude as number, 0.01, 1);
       return;
     }
 
@@ -294,7 +294,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     if (distance < 0.01) return;
 
     lastAnimatedPositionRef.current = { lat, lng };
-    animateToLocation(lat, lng, 1, 2000);
+    animateToLocation(lat, lng, 1, 400);
   }, [isGlobeReady, data.single, dataToDisplay, viewType]);
   
   const labelsData = useDeepCompareMemo(() => {
@@ -325,7 +325,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   
   return (
     <>
-      <div className='w-full flex-1 flex overflow-hidden relative'>
+      <div className='w-full flex-1 flex overflow-hidden relative' data-joyride='globe'>
         <Globe
           key={viewType}
           ref={globeRef}

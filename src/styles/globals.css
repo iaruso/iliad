@@ -95,6 +95,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
+    --background-rgb: 255, 255, 255;
     --foreground: 222.2 47.4% 11.2%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
@@ -119,6 +120,7 @@
 
   .dark {
     --background: 240 10% 3.9%;
+    --background-rgb: 24, 24, 24;
     --foreground: 0 0% 98%;
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -157,8 +159,12 @@
     overscroll-behavior: none;
   }
   body {
-    @apply bg-accent dark:bg-accent/10 text-foreground;
+    @apply bg-accent dark:bg-accent/10 text-foreground overflow-hidden w-screen h-screen;
   }
+}
+
+.pretty-json-container span {
+  @apply !text-foreground;
 }
 
 html {
@@ -233,4 +239,37 @@ html {
 
 .scrollbar-gutter-stable-both-edges {
   scrollbar-gutter: stable both-edges;
+}
+
+/* React Joyride styles */
+.__floater {
+  @apply !filter-none;
+}
+.react-joyride__tooltip {
+  @apply p-4 rounded-md text-sm;
+  border-width: 1px !important;
+}
+
+.react-joyride__tooltip > div:first-child > div {
+  @apply !pr-6 !pl-0 !py-0 text-start;
+}
+
+.react-joyride__tooltip > div:nth-child(2) {
+  @apply !mt-4;
+}
+
+.react-joyride__tooltip > div:nth-child(2) > div > button {
+  @apply !rounded-md !bg-muted/20 hover:bg-muted/30 !text-muted-foreground;
+}
+
+.react-joyride__tooltip > button:last-child {
+  @apply !p-2 !m-3;
+}
+
+.react-joyride__tooltip button[data-action='back'] {
+  @apply !text-accent-foreground;
+}
+
+.react-joyride__tooltip button[data-action='primary'] {
+  @apply !text-foreground;
 }

@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import '@/styles/globals.css'
 import type { Locale } from '@/@types/locale'
+import { JoyrideProvider } from '@/providers/joyride-provider'
 
 const kumbhSans = Kumbh_Sans({
   weight: ['400', '500', '600', '700'],
@@ -17,7 +18,7 @@ const kumbhSans = Kumbh_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Oil Spill Monitor - 0.7.7',
+  title: 'Oil Spill Monitor - 0.8.0',
   description: 'A web application to visualize oil spills on a globe',
 }
 
@@ -47,11 +48,13 @@ export default async function RootLayout(
       <body className={`${kumbhSans.variable} antialiased p-0 m-0`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
-            <main className='flex h-screen w-screen p-4 justify-center items-center'>
-              <div className='h-full w-full max-container border rounded-lg overflow-hidden bg-background max-h-[1080px]'>
-                {children}
-              </div>
-            </main>
+            <JoyrideProvider>
+              <main className='flex h-screen w-screen p-4 justify-center items-center'>
+                <div className='h-full w-full max-container border rounded-lg overflow-hidden bg-background max-h-[1080px]'>
+                  {children}
+                </div>
+              </main>
+            </JoyrideProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
