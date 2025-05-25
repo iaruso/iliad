@@ -80,7 +80,7 @@ const StatsCard: FC<StatsCardProps> = ({
         <div key={i} className='border border-border/80 rounded-md flex bg-background'>
           <TooltipWrapper
             trigger={
-              <div className='flex items-center gap-1'>
+              <div className='flex items-center gap-0.5'>
                 <Icon className='!size-2.5' strokeWidth={2} />
                 <span className='truncate pt-[1px]'>
                   {chartValueType === 'time' ? formatMinutes(value ?? 0, false) : value}
@@ -99,7 +99,7 @@ const StatsCard: FC<StatsCardProps> = ({
     <div className='absolute bottom-1 right-1 rounded-md bg-background border h-6'>
       <TooltipWrapper
         trigger={
-          <div className='flex items-center gap-1'>
+          <div className='flex items-center gap-0.5'>
             {chartType === 'radar' ? (
               <ArrowUp className='!size-2.5' strokeWidth={2} style={{ transform: `rotate(${(avg ?? 0).toFixed(0)}deg)` }} />
             ) : chartType === 'circularity' ? (
@@ -114,7 +114,7 @@ const StatsCard: FC<StatsCardProps> = ({
             </span>
           </div>
         }
-        triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-1 justify-center text-foreground font-medium w-full h-full rounded-md'
+        triggerClassName='p-0.5 px-1 text-[10px] flex items-center gap-0.5 justify-center text-foreground font-medium w-full h-full rounded-md'
         content={<p className='text-xs w-full'>{tooltipAvg}</p>}
       />
     </div>

@@ -9,7 +9,7 @@ import { getSunPosition } from '@/lib/solar'
 type Density = 'single' | 'original';
 
 export type GlobePrepared = Record<
-  string, // timestamp
+  string,
   {
     id: string;
     densities: Record<
@@ -42,35 +42,101 @@ function interpolatePoints(p1: GlobePoint, p2: GlobePoint, factor: number): Glob
   };
 }
 
-function getFlatPoints(entry: any): GlobePoint[] {
-  const points: GlobePoint[] = [];
+type StructuredRing = {
+  ringIndex: number;
+  points: GlobePoint[];
+};
+
+function getStructuredRings(entry: any): StructuredRing[] {
+  const rings: StructuredRing[] = [];
 
   for (const actor of entry.actors ?? []) {
-    const { type, density, geometry, color } = actor;
+    const { geometry, type, color, density } = actor;
     if (!geometry) continue;
 
-    if (geometry.type === 'Point') {
-      const [lon, lat] = geometry.coordinates;
-      if (typeof lat === 'number' && typeof lon === 'number') {
-        points.push({ latitude: lat, longitude: lon, density, type, color });
-      }
-    }
-
     if (geometry.type === 'Polygon') {
-      for (const ring of geometry.coordinates) {
-        for (const [lon, lat] of ring) {
+      geometry.coordinates.forEach((ringCoords: any[], ringIndex: number) => {
+        const points: GlobePoint[] = [];
+
+        for (const [lon, lat] of ringCoords) {
           if (typeof lat === 'number' && typeof lon === 'number') {
             points.push({ latitude: lat, longitude: lon, density, type, color });
           }
         }
+
+        rings.push({ ringIndex, points });
+      });
+    }
+
+    if (geometry.type === 'Point') {
+      const [lon, lat] = geometry.coordinates;
+      if (typeof lat === 'number' && typeof lon === 'number') {
+        rings.push({ ringIndex: 0, points: [{ latitude: lat, longitude: lon, density, type, color }] });
       }
     }
   }
 
-  return points;
+  return rings;
 }
 
-function interpolateOilspillData(dataset: OilSpills): OilSpills {
+function centroid(points: GlobePoint[]): { lat: number; lon: number } {
+  const { length } = points;
+  let lat = 0;
+  let lon = 0;
+
+  for (const p of points) {
+    lat += p.latitude;
+    lon += p.longitude;
+  }
+
+  return {
+    lat: lat / length,
+    lon: lon / length,
+  };
+}
+
+function sortByAngle(points: GlobePoint[]): GlobePoint[] {
+  if (points.length < 3) return points;
+  const { lat, lon } = centroid(points);
+
+  return [...points].sort((a, b) => {
+    const angleA = Math.atan2(a.latitude - lat, a.longitude - lon);
+    const angleB = Math.atan2(b.latitude - lat, b.longitude - lon);
+    return angleA - angleB;
+  });
+}
+
+function resampleRing(points: GlobePoint[], targetCount: number): GlobePoint[] {
+  if (points.length === 0) return [];
+
+  const closed =
+    points.length > 2 &&
+    points[0].latitude === points[points.length - 1].latitude &&
+    points[0].longitude === points[points.length - 1].longitude;
+
+  const ring = closed ? points.slice(0, -1) : points;
+  const sorted = sortByAngle(ring);
+  const resampled: GlobePoint[] = [];
+  const total = sorted.length;
+
+  for (let i = 0; i < targetCount; i++) {
+    const t = (i / targetCount) * total;
+    const idx = Math.floor(t) % total;
+    const nextIdx = (idx + 1) % total;
+    const factor = t - idx;
+
+    const p = interpolatePoints(sorted[idx], sorted[nextIdx], factor);
+    resampled.push(p);
+  }
+
+  if (closed) {
+    resampled.push({ ...resampled[0] });
+  }
+
+  return resampled;
+}
+
+export function interpolateOilspillData(dataset: OilSpills): OilSpills {
   const newData: OilSpills = { 
     ...dataset, 
     data: [] 
@@ -98,10 +164,10 @@ function interpolateOilspillData(dataset: OilSpills): OilSpills {
       const steps = Math.floor((tb.getTime() - ta.getTime()) / (15 * 60 * 1000));
       if (steps < 1) continue;
 
-      const pointsA = getFlatPoints(a);
-      const pointsB = getFlatPoints(b);
+      const ringsA = getStructuredRings(a);
+      const ringsB = getStructuredRings(b);
 
-      interpolated.push(a); // keep original
+      interpolated.push(a);
 
       for (let step = 1; step < steps; step++) {
         const factor = step / steps;
@@ -110,19 +176,40 @@ function interpolateOilspillData(dataset: OilSpills): OilSpills {
 
         if (existingTimestamps.has(tsString)) continue;
 
-        const interpolatedActors = pointsA.map((p, idx) => {
-          const q = pointsB[idx] || p;
-          const point = interpolatePoints(p, q, factor);
+        const interpolatedActors = ringsA.map((ringA, index) => {
+          const ringB = ringsB[index] ?? ringA;
+          const pointsA = ringA.points;
+          const pointsB = ringB.points;
+
+          if (pointsA.length < 2 || pointsB.length < 2) return null;
+
+          const maxPoints = Math.max(pointsA.length, pointsB.length);
+          const resampledA = resampleRing(pointsA, maxPoints);
+          const resampledB = resampleRing(pointsB, maxPoints);
+
+          const interpolatedPoints: GlobePoint[] = [];
+
+          for (let i = 0; i < maxPoints; i++) {
+            const pA = resampledA[i];
+            const pB = resampledB[i];
+
+            if (!pA || !pB || pA.latitude === undefined || pB.latitude === undefined) continue;
+
+            interpolatedPoints.push(interpolatePoints(pA, pB, factor));
+          }
+
+          if (interpolatedPoints.length < 3) return null;
+
           return {
-            type: point.type,
-            density: point.density,
-            color: point.color,
+            type: 'Oil',
+            density: interpolatedPoints.reduce((a, b) => a + (b.density ?? 1), 0) / interpolatedPoints.length,
+            color: interpolatedPoints[0]?.color ?? '#ff6600',
             geometry: {
-              type: 'Point',
-              coordinates: [point.longitude, point.latitude],
+              type: 'Polygon',
+              coordinates: [interpolatedPoints.map(p => [p.longitude, p.latitude])],
             },
           };
-        });
+        }).filter(Boolean);
 
         interpolated.push({
           timestamp: tsString,

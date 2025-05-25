@@ -105,6 +105,7 @@
     },
     "search": {
       "placeholder": "Search for a location",
+      "noStats": "Multiple oil spills are required to compare statistics",
       "noResults": "No results found",
       "filters": {
         "label": "Filters",

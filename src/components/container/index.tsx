@@ -518,7 +518,15 @@ const Container: FC<ContainerProps> = ({ data }) => {
             onPaginationChange={handlePageTransition}
             items={data.items || 0}
           />
-          <Stats data={data} type='multiple' />
+          { data.data.length > 1 ? (
+            <>
+              <Stats data={data} type='multiple' />
+            </>
+          ) : (
+            <div className='flex-1 flex justify-center items-center border-t'>
+              <span className='text-muted-foreground text-sm'>{t('noStats')}</span>
+            </div>
+          )}
         </>
       ) : (
         <div className='flex flex-col items-center justify-center h-0 flex-1'>

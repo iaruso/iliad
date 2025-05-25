@@ -105,6 +105,7 @@
     },
     "search": {
       "placeholder": "Procurar por uma localização",
+      "noStats": "São necessários vários derrames de óleo para comparar estatísticas",
       "noResults": "Nenhum resultado encontrado",
       "filters": {
         "label": "Filtros",
