@@ -45,13 +45,6 @@ export default async function RootLayout(
 
   return (
     <html lang={locale}>
-      <head>
-        <script
-          crossOrigin="anonymous"
-          src="//unpkg.com/react-scan/dist/auto.global.js"
-          async
-        />
-      </head>
       <body className={`${kumbhSans.variable} antialiased p-0 m-0`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
