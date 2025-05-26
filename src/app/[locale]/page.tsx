@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import dynamic from 'next/dynamic';
 import Navbar from '@/components/navbar';
 import { redirect } from '@/i18n/navigation';
 import { GlobeProvider } from '@/context/globe-context';
@@ -15,14 +14,8 @@ import type { OilSpills } from '@/@types/oilspills';
 import Controls from '@/components/controls';
 import Timeline from '@/components/timeline';
 import Globe from '@/components/globe';
-
-const Details = dynamic(() => import('@/components/details'), {
-  loading: () => <></>,
-});
-
-const Container = dynamic(() => import('@/components/container'), {
-  loading: () => <></>,
-});
+import Container from '@/components/container';
+import Details from '@/components/details';
 
 interface MainPageProps {
   params: Promise<{ locale: Locale }>;
