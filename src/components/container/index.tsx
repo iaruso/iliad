@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import { type FC, useCallback, useState, useContext, useMemo } from 'react'
 import { GlobeContext, type GlobeContextProps } from '@/context/globe-context'
 import { useTranslations } from 'next-intl'
@@ -9,7 +10,6 @@ import { Input } from '@/components/ui-custom/input'
 import { Button } from '@/components/ui-custom/button'
 import { Skeleton } from '@/components/ui-custom/skeleton'
 import { useSearchParams, useRouter } from 'next/navigation'
-import Stats from '@/components/stats'
 import type { AlignCellProps } from '@/@types/table'
 import TablePagination from '@/components/table-pagination'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui-custom/table'
@@ -36,6 +36,11 @@ import {
 } from '@/components/ui-custom/dropdown-menu'
 import PopoverTooltip from '@/components/ui-custom/popover-tooltip'
 import { useDebounceCallback } from 'usehooks-ts'
+
+const Stats = dynamic(() => import('@/components/stats'), {
+  loading: () => <></>,
+  ssr: false,
+})
 
 interface ContainerProps {
   data: OilSpills

@@ -12,9 +12,9 @@ import { validateAndSetParams } from '@/lib/pagination';
 import { fetchOilspillData } from '@/lib/helpers/oilspill';
 import type { Locale } from 'next-intl';
 import type { OilSpills } from '@/@types/oilspills';
-import Globe from '@/components/globe';
 import Controls from '@/components/controls';
 import Timeline from '@/components/timeline';
+import Globe from '@/components/globe';
 
 const Details = dynamic(() => import('@/components/details'), {
   loading: () => <></>,

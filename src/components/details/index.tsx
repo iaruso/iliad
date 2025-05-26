@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { FC, useMemo, ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
@@ -22,7 +23,11 @@ import { TooltipWrapper } from '@/components/ui-custom/tooltip-wrapper';
 import { Button } from '@/components/ui-custom/button';
 import ButtonTooltip from '@/components/ui-custom/button-tooltip';
 import { formatMinutes } from '@/lib/formatters';
-import Stats from '@/components/stats/index';
+
+const Stats = dynamic(() => import('@/components/stats'), {
+  loading: () => <></>,
+  ssr: false
+});
 
 //import dynamic from 'next/dynamic';
 //const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
@@ -168,6 +173,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
               alt={t('oceanViewer.wip')}
               width={366}
               height={247}
+              priority
               className='object-cover absolute inset-0 w-full blur opacity-40'
             />
             <span className='text-xs font-medium text-accent-foreground/80 dark:text-muted-foreground z-[1]'>
