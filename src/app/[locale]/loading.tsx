@@ -1,18 +1,14 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation'
-import DetailsLoading from '@/components/details/loading'
-import ContainerLoading from '@/components/container/loading'
 import { Skeleton } from '@/components/ui-custom/skeleton'
+import { getTranslations } from 'next-intl/server'
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle
 } from '@/components/ui-custom/resizable'
+import LoadingClient from './loading-client'
 
-export default function Loading() {
-  const searchParams = useSearchParams()
-  const hasOilspill = !!searchParams.get('oilspill')
+export default async function Loading() {
+  const t = await getTranslations('navbar')
 
   return (
     <div className='flex flex-col w-full h-full'>
@@ -41,10 +37,10 @@ export default function Loading() {
         <ResizableHandle className='pointer-events-none cursor-default' />
         <ResizablePanel maxSize={32} minSize={28} defaultSize={28} className='min-w-[420px]'>
           <div className='flex flex-col h-full'>
-            {hasOilspill ? <DetailsLoading /> : <ContainerLoading />}
+            <LoadingClient />
             <div className='border-t h-12 flex items-center py-2 px-2 justify-between gap-2'>
               <div className='flex items-start gap-2'>
-                <Skeleton className='h-6 w-32' />
+                <h1 className='font-[550] select-none line-clamp-1'>{t('app')}</h1>
                 <Skeleton className='h-4 w-7' />
               </div>
               <div className='flex items-center gap-1.5'>
