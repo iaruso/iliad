@@ -206,9 +206,34 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     [globeMaterial, viewType, data.single]
   )
 
+  const animateToLocation = useCallback((latitude: number, longitude: number, altitude: number, duration: number) => {
+    if (!globeRef.current) return;
+    const currentView = globeRef.current.pointOfView();
+    const startTime = performance.now();
+    let animationFrameId: number | null = null;
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const interpolatedView = {
+        lat: currentView.lat + (latitude - currentView.lat) * progress,
+        lng: currentView.lng + (longitude - currentView.lng) * progress,
+        altitude: currentView.altitude + (altitude - currentView.altitude) * progress,
+      };
+      globeRef.current?.pointOfView(interpolatedView);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+    animationFrameId = requestAnimationFrame(animate);
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [globeRef]);
+
+  // Memoize groupedGData, labelsData, htmlIndicators
   const groupedGData = useDeepCompareMemo(() => {
     const groups: { id: string; points: GlobePoint[] }[] = [];
-
     for (const spill of dataToDisplay) {
       for (const [densityKey, densityData] of Object.entries(spill.densities)) {
         if ((densityData as { points: GlobePoint[] }).points.length > 0) {
@@ -219,40 +244,35 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         }
       }
     }
-
     return groups;
   }, [dataToDisplay]);
 
-  function animateToLocation(latitude: number, longitude: number, altitude: number, duration: number) {
-    const currentView = globeRef.current!.pointOfView();
-    const startTime = performance.now();
+  const labelsData = useDeepCompareMemo(() => {
+    return actorToDisplay.flatMap(actor => {
+      if (!actor.coordinates || !Array.isArray(actor.coordinates)) return [];
+      return actor.coordinates.map(([lng, lat]: [number, number]) => ({
+        _id: actor.id,
+        latitude: lat,
+        longitude: lng,
+        color: '#CCCCCC'
+      }));
+    });
+  }, [actorToDisplay]);
+  
+  const htmlIndicators = useDeepCompareMemo(() => {
+    return dataToDisplay.map(spill => {
+      const original = data.data?.find(entry => entry._id === spill.id);
+      const [lng, lat] = original?.coordinates ?? [0, 0];
 
-    let animationFrameId: number | null = null;
-
-    const animate = (time: number) => {
-      const elapsed = time - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      const interpolatedView = {
-        lat: currentView.lat + (latitude - currentView.lat) * progress,
-        lng: currentView.lng + (longitude - currentView.lng) * progress,
-        altitude: currentView.altitude + (altitude - currentView.altitude) * progress,
+      return {
+        _id: spill.id,
+        latitude: lat,
+        longitude: lng,
+        area: original?.area ?? 0
       };
-
-      globeRef.current?.pointOfView(interpolatedView);
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    };
-  }
-
+    });
+  }, [dataToDisplay, data.data]);
+  
   useEffect(() => {
     if (!globeRef.current || !isGlobeReady) return;
 
@@ -296,32 +316,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     lastAnimatedPositionRef.current = { lat, lng };
     animateToLocation(lat, lng, 1, 400);
   }, [isGlobeReady, data.single, dataToDisplay, viewType]);
-  
-  const labelsData = useDeepCompareMemo(() => {
-    return actorToDisplay.flatMap(actor => {
-      if (!actor.coordinates || !Array.isArray(actor.coordinates)) return [];
-      return actor.coordinates.map(([lng, lat]: [number, number]) => ({
-        _id: actor.id,
-        latitude: lat,
-        longitude: lng,
-        color: '#CCCCCC'
-      }));
-    });
-  }, [actorToDisplay]);
-  
-  const htmlIndicators = useDeepCompareMemo(() => {
-    return dataToDisplay.map(spill => {
-      const original = data.data?.find(entry => entry._id === spill.id);
-      const [lng, lat] = original?.coordinates ?? [0, 0];
-
-      return {
-        _id: spill.id,
-        latitude: lat,
-        longitude: lng,
-        area: original?.area ?? 0
-      };
-    });
-  }, [dataToDisplay, data.data]);
   
   return (
     <>
