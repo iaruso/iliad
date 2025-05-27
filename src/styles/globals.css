@@ -273,3 +273,7 @@ html {
 .react-joyride__tooltip button[data-action='primary'] {
   @apply !text-foreground;
 }
+
+#react-joyride-portal {
+  max-height: 100%;
+}

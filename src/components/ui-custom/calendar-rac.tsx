@@ -55,7 +55,7 @@ function CalendarGridComponent({ isRange = false }: { isRange?: boolean }) {
           </CalendarHeaderCellRac>
         )}
       </CalendarGridHeaderRac>
-      <CalendarGridBodyRac className='[&_td]:px-0 [&_td]:py-px'>
+      <CalendarGridBodyRac className='[&_td]:px-0 [&_td]:py-px [&_td:not([aria-disabled=true])]:cursor-pointer'>
         {(date) => (
           <CalendarCellRac
             date={date}

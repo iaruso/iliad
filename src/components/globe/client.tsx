@@ -319,7 +319,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   
   return (
     <>
-      <div className='w-full flex-1 flex overflow-hidden relative' data-joyride='globe'>
+      <div className='w-full flex-1 flex overflow-hidden relative [&_div]:!h-full [&_canvas]:!h-full' data-joyride='globe'>
         <Globe
           key={viewType}
           ref={globeRef}

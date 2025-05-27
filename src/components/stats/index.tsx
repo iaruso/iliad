@@ -180,7 +180,10 @@ const Stats: FC<StatsProps> = ({ className, data, type }) => {
 
   if (isSingle) {
     return (
-      <div className={`p-2 border-t text-sm flex-1 h-0 gap-2 w-full min-h-96 overflow-auto flex flex-col ${className}`}>
+      <div
+        className={`p-2 border-t text-sm flex-1 h-0 gap-2 w-full min-h-96 overflow-auto flex flex-col ${className}`}
+        data-joyride='data-stats'
+      >
         <div className='flex gap-2 flex-1 h-0'>
           <div className='flex flex-col gap-2 w-2/5'>
             {areaCard}

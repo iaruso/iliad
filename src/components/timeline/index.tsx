@@ -1,6 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getLocalTimeZone, today } from '@internationalized/date';
 import { format } from 'date-fns';
 import { FC, useContext, useState, useMemo, useEffect } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
@@ -196,7 +197,7 @@ const Timeline: FC = () => {
             content={
               [0.5, 1, 2].map((speed) => (
                 <DropdownMenuItem
-                  className='text-right'
+                  className='justify-end'
                   key={speed}
                   onClick={() => setTimelineSpeed(speed)}
                 >
@@ -204,6 +205,7 @@ const Timeline: FC = () => {
                 </DropdownMenuItem>
               ))
             }
+            className='min-w-auto'
           />
           {
             hasOilspillParam ? (
@@ -235,6 +237,7 @@ const Timeline: FC = () => {
                     className='rounded-md border p-2 bg-background'
                     value={dateRange}
                     onChange={handleDateRangeChange}
+                    maxValue={today(getLocalTimeZone())}
                   />
                 }
                 className='border-none p-0 w-fit'

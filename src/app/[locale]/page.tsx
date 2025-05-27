@@ -92,7 +92,9 @@ const MainPage: FC<MainPageProps> = async ({ params, searchParams }) => {
           className='flex-1 flex flex-col overflow-hidden dark:bg-black relative'
           defaultSize={72}
         >
-          <Globe data={oilSpills} />
+          <div className='flex-1 w-full flex'>
+            <Globe data={oilSpills} />
+          </div>
           <Controls />
           <Timeline />
         </ResizablePanel>

@@ -11,35 +11,35 @@ const JoyrideContext = createContext<JoyrideContextType>({ startTour: () => {} }
 
 const TOURS: Record<string, Step[]> = {
   default: [
-    { target: '[data-joyride="default"]', content: 'default.steps.default' },
-    { target: '[data-joyride="globe"]', content: 'default.steps.globe' },
-    { target: '[data-joyride="timeline"]', content: 'default.steps.timeline' },
-    { target: '[data-joyride="data"]', content: 'default.steps.data' },
-    { target: '[data-joyride="helper"]', content: 'default.steps.more' },
+    { target: '[data-joyride="default"]', content: 'default.steps.default', placement: 'center' },
+    { target: '[data-joyride="globe"]', content: 'default.steps.globe', placement: 'right' },
+    { target: '[data-joyride="timeline"]', content: 'default.steps.timeline', placement: 'top' },
+    { target: '[data-joyride="data"]', content: 'default.steps.data', placement: 'left' },
+    { target: '[data-joyride="helper"]', content: 'default.steps.more', placement: 'top' },
   ],
   globe: [
-    { target: '[data-joyride="globe"]', content: 'globe.steps.default' },
-    { target: '[data-joyride="globe-controls"]', content: 'globe.steps.controls' },
-    { target: '[data-joyride="settings"]', content: 'globe.steps.settings' },
+    { target: '[data-joyride="globe"]', content: 'globe.steps.default', placement: 'right' },
+    { target: '[data-joyride="globe-controls"]', content: 'globe.steps.controls', placement: 'bottom' },
+    { target: '[data-joyride="settings"]', content: 'globe.steps.settings', placement: 'top' },
   ],
   timeline: [
-    { target: '[data-joyride="timeline"]', content: 'timeline.steps.default' },
-    { target: '[data-joyride="timeline-controls"]', content: 'timeline.steps.controls' },
-    { target: '[data-joyride="timeline-bar"]', content: 'timeline.steps.moment' }
+    { target: '[data-joyride="timeline"]', content: 'timeline.steps.default', placement: 'top' },
+    { target: '[data-joyride="timeline-controls"]', content: 'timeline.steps.controls', placement: 'top' },
+    { target: '[data-joyride="timeline-bar"]', content: 'timeline.steps.moment', placement: 'top' }
   ],
   dataAll: [
-    { target: '[data-joyride="data"]', content: 'data.steps.default' },
-    { target: '[data-joyride="data-table"]', content: 'data.steps.table' },
-    { target: '[data-joyride="data-filters"]', content: 'data.steps.filters' },
-    { target: '[data-joyride="data-add"]', content: 'data.steps.add' },
-    { target: '[data-joyride="data-stats"]', content: 'data.steps.stats' },
-    { target: '[data-joyride="data-row"]', content: 'data.steps.select' },
+    { target: '[data-joyride="data"]', content: 'data.steps.default', placement: 'left' },
+    { target: '[data-joyride="data-table"]', content: 'data.steps.table', placement: 'bottom' },
+    { target: '[data-joyride="data-filters"]', content: 'data.steps.filters', placement: 'bottom' },
+    { target: '[data-joyride="data-add"]', content: 'data.steps.add', placement: 'bottom' },
+    { target: '[data-joyride="data-stats"]', content: 'data.steps.stats', placement: 'top' },
+    { target: '[data-joyride="data-row"]', content: 'data.steps.select', placement: 'bottom' },
   ],
   dataOne: [
-    { target: '[data-joyride="data"]', content: 'data.steps.default' },
-    { target: '[data-joyride="data-metrics"]', content: 'data.steps.metrics' },
-    { target: '[data-joyride="data-stats"]', content: 'data.steps.stats' },
-    { target: '[data-joyride="data-raw"]', content: 'data.steps.raw' },
+    { target: '[data-joyride="data"]', content: 'data.steps.default', placement: 'left' },
+    { target: '[data-joyride="data-metrics"]', content: 'data.steps.metrics', placement: 'bottom' },
+    { target: '[data-joyride="data-stats"]', content: 'data.steps.stats', placement: 'top' },
+    { target: '[data-joyride="data-raw"]', content: 'data.steps.raw', placement: 'top' },
   ],
 };
 
@@ -54,6 +54,7 @@ export const JoyrideProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...step,
       content: t("options." + step.content as string),
       disableBeacon: true,
+      offset: 0,
       locale: {
         back: t('back'),
         close: t('close'),
@@ -79,6 +80,8 @@ export const JoyrideProvider: React.FC<{ children: React.ReactNode }> = ({ child
   return (
     <JoyrideContext.Provider value={{ startTour }}>
       <Joyride
+        disableScrolling
+        disableScrollParentFix
         steps={steps}
         run={run}
         showSkipButton

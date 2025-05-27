@@ -59,7 +59,7 @@
         "tooltip": "Help",
         "options": {
           "default": {
-            "title": "Guided tour",
+            "title": "General introduction",
             "steps": {
               "default": "Start the guided tour to learn how to use the oil spill monitor",
               "globe": "Explore the globe to see oil spills around the world",
@@ -69,7 +69,7 @@
             }
           },
           "globe": {
-            "title": "Globe guided tour",
+            "title": "Globe exploration",
             "steps": {
               "default": "Explore the globe to analyze oil spills",
               "controls": "Use the controls to zoom in, zoom out, maximize and minimize the screen, locate your current location, and take a screenshot",
@@ -77,7 +77,7 @@
             }
           },
           "timeline": {
-            "title": "Timeline guided tour",
+            "title": "Timeline exploration",
             "steps": {
               "default": "Use the timeline to control time and see how oil spills evolve",
               "controls": "Use the controls to go back, play, pause, and go forward in time, adjust playback speed, and select a time range",
@@ -85,7 +85,7 @@
             }
           },
           "data": {
-            "title": "Data guided tour",
+            "title": "Data visualization",
             "steps": {
               "default": "Explore the data to see oil spill statistics",
               "table": "View oil spill data in a table format, with the ability to sort and filter",
