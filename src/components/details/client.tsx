@@ -167,7 +167,10 @@ const Details: FC<DetailsProps> = ({ data }) => {
         />
         <div className='flex-1 h-0 grid p-2 pt-0 gap-2 grid-rows-2'>
           <DataViewer data={data} />
-          <div className='select-none pointer-events-none w-full rounded-md border bg-muted/50 flex items-center justify-center p-4 relative overflow-hidden'>
+          <div
+            data-joyride='data-ocean-viewer'
+            className='select-none pointer-events-none w-full rounded-md border bg-muted/50 flex items-center justify-center p-4 relative overflow-hidden'
+          >
             <Image
               src='/ocean-viewer-preview.webp'
               alt={t('oceanViewer.wip')}

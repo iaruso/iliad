@@ -94,13 +94,14 @@
               "metrics": "View oil spill metrics such as number of moments, duration, frequency, and location",
               "stats": "View oil spill statistics such as area, duration, frequency, points, and more",
               "select": "Select a specific oil spill to see its details and statistics",
-              "raw": "View the raw data provided for the oil spill"
+              "raw": "View the raw data provided for the oil spill",
+              "oceanViewer": "Ocean viewer is under development, but will allow you to visualize oil spills in a three-dimensional environment"
             }
           }
         },
         "back": "Back",
         "close": "Close",
-        "last": "Last",
+        "last": "Finish",
         "next": "Next",
         "nextProgress": "Next ({step} in {steps})",
         "skip": "Skip"
@@ -162,8 +163,8 @@
         "label": "Filters",
         "tooltip": "Filter locations",
         "options": {
-          "min": "Min duration",
-          "max": "Max duration",
+          "min": "Min",
+          "max": "Max",
           "areaRange": {
             "label": "Area range (km<sup>2</sup>)"
           },
@@ -336,7 +337,7 @@
       "tooltip": "Copy raw data"
     },
     "oceanViewer": {
-      "wip": "Ocean Viewer is under development"
+      "wip": "Ocean viewer is under development"
     }
   }
 }

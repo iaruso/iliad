@@ -94,13 +94,14 @@
               "metrics": "Veja as métricas dos derrames de óleo, como número de momentos, duração, frequência e localização",
               "stats": "Veja as estatísticas dos derrames de óleo, como área, duração, frequência, pontos, entre outros",
               "select": "Selecione um derrame de óleo específico para ver os detalhes e as estatísticas desse derrame",
-              "raw": "Veja os dados brutos do derrame de óleo fornecidos"
+              "raw": "Veja os dados brutos do derrame de óleo fornecidos",
+                "oceanViewer": "O visualizador de oceano está em desenvolvimento, mas permitirá visualizar os derrames de óleo num ambiente tridimensional"
             }
           }
         },
         "back": "Voltar",
         "close": "Fechar",
-        "last": "Último",
+        "last": "Terminar",
         "next": "Próximo",
         "nextProgress": "Próximo ({step} em {steps})",
         "skip": "Saltar"
@@ -162,8 +163,8 @@
         "label": "Filtros",
         "tooltip": "Filtrar localizações",
         "options": {
-          "min": "Mínima",
-          "max": "Máxima",
+          "min": "Mín",
+          "max": "Máx",
           "areaRange": {
             "label": "Intervalo de área (km<sup>2</sup>)"
           },

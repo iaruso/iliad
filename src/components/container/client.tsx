@@ -321,103 +321,111 @@ const Container: FC<ContainerProps> = ({ data }) => {
             }
             tooltip={t('filters.tooltip')}
             content={
-              <>
-                <Label className='text-sm font-medium'>
-                  {t.rich('filters.options.areaRange.label', {
-                    sup: (chunks) => <sup>{chunks}</sup>,
-                  })}
-                </Label>
-                <div className='flex items-center gap-2'>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.min')}
-                    value={minArea}
-                    onChange={(e) => handleMinAreaChange(e.target.value)}
-                    type='number'
-                  />
-                  <span className='text-sm font-medium text-muted-foreground'>-</span>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.max')}
-                    value={maxArea}
-                    onChange={(e) => handleMaxAreaChange(e.target.value)}
-                    type='number'
-                  />
+              <div className='flex flex-col gap-4'>
+                <div className='flex items-center gap-4 justify-between'>
+                  <Label className='text-sm font-medium'>
+                    {t.rich('filters.options.areaRange.label', {
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                    })}
+                  </Label>
+                  <div className='flex items-center gap-2'>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.min')}
+                      value={minArea}
+                      onChange={(e) => handleMinAreaChange(e.target.value)}
+                      type='number'
+                    />
+                    <span className='text-sm font-medium text-muted-foreground'>-</span>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.max')}
+                      value={maxArea}
+                      onChange={(e) => handleMaxAreaChange(e.target.value)}
+                      type='number'
+                    />
+                  </div>
                 </div>
-                <Label className='text-sm font-medium'>
-                  {t.rich('filters.options.durationRange.label', {
-                    sup: (chunks) => <sup>{chunks}</sup>,
-                  })}
-                </Label>
-                <div className='flex items-center gap-2'>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.min')}
-                    value={minDuration}
-                    onChange={(e) => handleMinDurationChange(e.target.value)}
-                    type='number'
-                  />
-                  <span className='text-sm font-medium text-muted-foreground'>-</span>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.max')}
-                    value={maxDuration}
-                    onChange={(e) => handleMaxDurationChange(e.target.value)}
-                    type='number'
-                  />
+                <div className='flex items-center gap-4 justify-between'>
+                  <Label className='text-sm font-medium'>
+                    {t.rich('filters.options.durationRange.label', {
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                    })}
+                  </Label>
+                  <div className='flex items-center gap-2'>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.min')}
+                      value={minDuration}
+                      onChange={(e) => handleMinDurationChange(e.target.value)}
+                      type='number'
+                    />
+                    <span className='text-sm font-medium text-muted-foreground'>-</span>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.max')}
+                      value={maxDuration}
+                      onChange={(e) => handleMaxDurationChange(e.target.value)}
+                      type='number'
+                    />
+                  </div>
                 </div>
-                <Label className='text-sm font-medium'>
-                  {t.rich('filters.options.frequencyRange.label', {
-                    sup: (chunks) => <sup>{chunks}</sup>,
-                  })}
-                </Label>
-                <div className='flex items-center gap-2'>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.min')}
-                    value={minFrequency}
-                    onChange={(e) => handleMinFrequencyChange(e.target.value)}
-                    type='number'
-                  />
-                  <span className='text-sm font-medium text-muted-foreground'>-</span>
-                  <Input
-                    className='input-number h-8 px-2'
-                    placeholder={t('filters.options.max')}
-                    value={maxFrequency}
-                    onChange={(e) => handleMaxFrequencyChange(e.target.value)}
-                    type='number'
-                  />
+                <div className='flex items-center gap-4 justify-between'>
+                  <Label className='text-sm font-medium'>
+                    {t.rich('filters.options.frequencyRange.label', {
+                      sup: (chunks) => <sup>{chunks}</sup>,
+                    })}
+                  </Label>
+                  <div className='flex items-center gap-2'>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.min')}
+                      value={minFrequency}
+                      onChange={(e) => handleMinFrequencyChange(e.target.value)}
+                      type='number'
+                    />
+                    <span className='text-sm font-medium text-muted-foreground'>-</span>
+                    <Input
+                      className='input-number h-8 px-2 w-12'
+                      placeholder={t('filters.options.max')}
+                      value={maxFrequency}
+                      onChange={(e) => handleMaxFrequencyChange(e.target.value)}
+                      type='number'
+                    />
+                  </div>
                 </div>
-                <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant='outline'
-                      className='w-full h-8'
-                      aria-label={t('filters.options.columns.placeholder')}
-                    >
-                      {t('filters.options.columns.placeholder')}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    {table
-                      .getAllColumns()
-                      .filter((column) => column.getCanHide())
-                      .map((column) => (
-                        <DropdownMenuItem
-                          key={column.id}
-                          className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
-                          onClick={() => column.toggleVisibility()}
-                          onSelect={(event) => event.preventDefault()}
-                        >
-                          {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
-                        </DropdownMenuItem>
-                      ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
+                <div className='flex items-center gap-4 justify-between'>
+                  <Label className='text-sm font-medium'>{t('filters.options.columns.label')}</Label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant='outline'
+                        className='h-8'
+                        aria-label={t('filters.options.columns.placeholder')}
+                      >
+                        {t('filters.options.columns.placeholder')}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => (
+                          <DropdownMenuItem
+                            key={column.id}
+                            className={`cursor-pointer capitalize ${!column.getIsVisible() && '!text-muted-foreground bg-muted'}`}
+                            onClick={() => column.toggleVisibility()}
+                            onSelect={(event) => event.preventDefault()}
+                          >
+                            {tTable(`header.${column.id === '_id' ? 'id' : column.id}`)}
+                          </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
             }
-            className='w-64 flex flex-col gap-2'
+            className='w-fit flex flex-col gap-2'
             
           />
         </div>
@@ -455,7 +463,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
         <>
           <Table
             className='border-b border-border/50'
-            divClassName='h-[calc(440px+1rem)] overflow-y-auto w-[calc(100%)]'
+            divClassName='h-[28.5rem] overflow-y-auto w-[calc(100%)]'
             data-joyride='data-table'
           >
             <TableHeader className='sticky h-10 top-0 z-20 bg-background'>

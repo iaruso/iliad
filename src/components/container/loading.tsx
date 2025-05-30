@@ -13,8 +13,8 @@ const ContainerLoading = ({ size = 10 }: { size?: number }) => (
       <Skeleton className='h-8 w-8' />
     </div>
 
-    <div className='h-[calc(440px+1rem)] w-full'>
-      <Table className='border-b border-border/50' divClassName='h-[calc(440px+1rem)] overflow-y-auto w-full'>
+    <div className='h-[28.5rem] w-full'>
+      <Table className='border-b border-border/50' divClassName='h-[28.5rem] overflow-y-auto w-full'>
         <TableHeader className='sticky h-10 top-0 z-20 bg-background'>
           <TableRow className='relative hover:bg-transparent !border-none border-border/50'>
             <TableHead className='p-0 h-10' aria-label='Search Engine Link' />

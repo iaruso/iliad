@@ -18,7 +18,7 @@ const kumbhSans = Kumbh_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Oil Spill Monitor - 0.8.3',
+  title: 'Oil Spill Monitor - 0.8.4',
   description: 'A web application to visualize oil spills on a globe',
 }
 

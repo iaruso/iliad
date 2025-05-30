@@ -40,6 +40,7 @@ const TOURS: Record<string, Step[]> = {
     { target: '[data-joyride="data-metrics"]', content: 'data.steps.metrics', placement: 'bottom' },
     { target: '[data-joyride="data-stats"]', content: 'data.steps.stats', placement: 'top' },
     { target: '[data-joyride="data-raw"]', content: 'data.steps.raw', placement: 'top' },
+    { target: '[data-joyride="data-ocean-viewer"]', content: 'data.steps.oceanViewer', placement: 'top' },
   ],
 };
 
