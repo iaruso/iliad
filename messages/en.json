@@ -182,7 +182,16 @@
         }
       },
       "add": {
-        "tooltip": "Add new location"
+        "tooltip": "Add oil spill",
+        "dialog": {
+          "title": "Add oil spill",
+          "description": "Add a new oil spill to the monitor",
+          "file": "Click to browse or drag and drop a JSON file with oil spill data",
+          "actions": {
+            "add": "Add",
+            "cancel": "Cancel"
+          }
+        }
       },
       "reset": {
         "tooltip": "Reset filters"
@@ -315,7 +324,7 @@
     "goToLast": "Go to the last page"
   },
   "details": {
-    "return": "All oilspills",
+    "return": "All oil spills",
     "title": "Oil spill details",
     "copy": {
       "tooltip": "Copy the oil spill URL"

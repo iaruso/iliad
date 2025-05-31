@@ -181,7 +181,16 @@
         }
       },
       "add": {
-        "tooltip": "Adicionar nova localização"
+        "tooltip": "Adicionar derrame de óleo",
+        "dialog": {
+          "title": "Adicionar derrame de óleo",
+          "description": "Adicione um novo derrame de óleo ao monitor",
+          "file": "Clique para procurar ou arraste e largue um ficheiro JSON com dados do derrame de óleo",
+          "actions": {
+            "add": "Adicionar",
+            "cancel": "Cancelar"
+          }
+        }
       },
       "reset": {
         "tooltip": "Repor filtros"

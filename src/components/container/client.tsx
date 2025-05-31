@@ -36,6 +36,7 @@ import {
 } from '@/components/ui-custom/dropdown-menu'
 import PopoverTooltip from '@/components/ui-custom/popover-tooltip'
 import { useDebounceCallback } from 'usehooks-ts'
+import AddDialogButton from '@/components/add'
 
 interface ContainerProps {
   data: OilSpills
@@ -443,21 +444,7 @@ const Container: FC<ContainerProps> = ({ data }) => {
           }
           tooltip={t('reset.tooltip')}
         />
-        <div className='flex' data-joyride='data-add'>
-          <ButtonTooltip
-            button={
-              <Button
-                disabled
-                variant='outline'
-                className='h-8 pr-2 pl-[calc(0.5rem-1px)] gap-1'
-                aria-label={t('add.tooltip')}
-              >
-                <Plus className='!size-4' />
-              </Button>
-            }
-            tooltip={t('add.tooltip')}
-          />
-        </div>
+        <AddDialogButton/>
       </div>
       {data.data.length > 0 && !data.single ? (
         <>
