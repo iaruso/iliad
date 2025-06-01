@@ -69,11 +69,16 @@ export function extractCoordinatesFromSingleOilSpill(data: any[]): [number, numb
       }
       if (geom?.type === 'Polygon' && Array.isArray(geom.coordinates)) {
         const ring = geom.coordinates[0];
-        if (Array.isArray(ring) && ring.length) {
+        // Corrige: só tenta desestruturar se ring[0] for array
+        if (Array.isArray(ring) && Array.isArray(ring[0]) && ring[0].length >= 2) {
           const [lng, lat] = ring[0];
           if (typeof lng === 'number' && typeof lat === 'number') {
             return [lng, lat];
           }
+        }
+        // Caso edge: se ring já for [lng, lat]
+        if (Array.isArray(ring) && ring.length >= 2 && typeof ring[0] === 'number' && typeof ring[1] === 'number') {
+          return [ring[0], ring[1]];
         }
       }
     }

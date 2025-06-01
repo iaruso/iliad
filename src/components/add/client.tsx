@@ -15,33 +15,26 @@ import { Plus } from 'lucide-react'
 import React, { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatToOilSpill } from '@/lib/add';
+import { createOilSpill } from '@/actions/oilspills';
 
 const AddDialogButtonClient = () => {
   const t = useTranslations('globe.search.add');
   const [dialogOpen, setDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Track drag depth to avoid flicker when moving inside the dropzone
   const dragDepth = useRef(0);
 
   const handleFile = (file: File) => {
     if (file && file.type === 'application/json') {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const json = JSON.parse(event.target?.result as string);
-          const formatted = formatToOilSpill(json);
-          console.log(formatted);
-        } catch (err) {
-          console.error('Invalid JSON file');
-        }
-      };
-      reader.readAsText(file);
+      setSelectedFile(file);
+      setAlert(null);
     } else {
-      console.error('Please drop a JSON file.');
+      setAlert({ type: 'error', message: t('dialog.errors.invalidFile') || 'Please drop a JSON file.' });
     }
-    // Reset file input so user can upload the same file again if needed
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -83,6 +76,37 @@ const AddDialogButtonClient = () => {
     }
   };
 
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    setAlert(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleAdd = async () => {
+    if (!selectedFile) return;
+    setIsSubmitting(true);
+    setAlert(null);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const json = JSON.parse(event.target?.result as string);
+          const formatted = formatToOilSpill(json);
+          await createOilSpill({ data: formatted });
+          setAlert({ type: 'success', message: t('dialog.success') || 'Added successfully!' });
+          setSelectedFile(null);
+        } catch {
+          setAlert({ type: 'error', message: t('dialog.errors.parse') || 'Invalid JSON file.' });
+        }
+        setIsSubmitting(false);
+      };
+      reader.readAsText(selectedFile);
+    } catch {
+      setAlert({ type: 'error', message: t('dialog.errors.unknown') || 'An error occurred.' });
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className='flex' data-joyride='data-add'>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen} modal>
@@ -110,6 +134,11 @@ const AddDialogButtonClient = () => {
             <DialogTitle>{t('dialog.title')}</DialogTitle>
             <DialogDescription>{t('dialog.description')}</DialogDescription>
           </DialogHeader>
+          {alert && (
+            <div className={`mb-2 text-sm rounded px-2 py-1 ${alert.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {alert.message}
+            </div>
+          )}
           <div
             className={`flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground/40 rounded-md w-full min-h-[120px] cursor-pointer bg-muted/10 hover:bg-muted/20 transition-colors
               ${dragActive ? 'border-primary/80 bg-muted/30' : ''}`}
@@ -117,26 +146,43 @@ const AddDialogButtonClient = () => {
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => !selectedFile && fileInputRef.current?.click()}
             tabIndex={0}
             role='button'
             aria-label='Drop or select JSON file'
           >
-            <span className='text-muted-foreground text-sm mb-2 user-select-none'>
-              {dragActive ? t('dialog.drop') : t('dialog.file')}
-            </span>
+            {selectedFile ? (
+              <div className='flex items-center gap-2'>
+                <span className='text-muted-foreground text-sm mb-2 user-select-none'>{selectedFile.name}</span>
+                <Button size='sm' variant='ghost' onClick={handleRemoveFile} aria-label={t('dialog.actions.remove') || 'Remove file'}>
+                  &times;
+                </Button>
+              </div>
+            ) : (
+              <span className='text-muted-foreground text-sm mb-2 user-select-none'>
+                {dragActive ? t('dialog.drop') : t('dialog.file')}
+              </span>
+            )}
             <input
               ref={fileInputRef}
               type='file'
               accept='application/json,.json'
               className='hidden'
               onChange={handleFileChange}
+              disabled={!!selectedFile}
             />
           </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant='outline'>{t('dialog.actions.cancel')}</Button>
             </DialogClose>
+            <Button
+              variant='default'
+              onClick={handleAdd}
+              disabled={!selectedFile || isSubmitting}
+            >
+              {isSubmitting ? t('dialog.actions.adding') || 'Adding...' : t('dialog.actions.add') || 'Add'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

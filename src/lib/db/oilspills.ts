@@ -143,3 +143,21 @@ export async function fetchOilSpillById(oilspill: string) {
 
   return serializeOilSpill(data);
 }
+
+export async function addOilSpill(data: any) {
+  if (!data || !data.data || !Array.isArray(data.data)) {
+    return { data: [] };
+  }
+
+  const client = await clientPromise;
+  const db = client.db('oilspills');
+  const collection = db.collection('oilspills');
+
+  const result = await collection.insertOne({
+    data: data.data,
+  });
+
+  return {
+    data: [serializeOilSpill({ _id: result.insertedId, ...data })],
+  };
+}

@@ -1,5 +1,5 @@
 'use server';
-import { fetchOilSpills, fetchOilSpillById } from '@/lib/db/oilspills';
+import { fetchOilSpills, fetchOilSpillById, addOilSpill } from '@/lib/db/oilspills';
 
 export const getOilSpills = async ({ 
   page = 1,
@@ -44,4 +44,16 @@ export const getOilSpillByID = async ({
   oilspill: string 
 }) => {
   return await fetchOilSpillById(oilspill);
+};
+
+export const createOilSpill = async ({
+  data
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+}) => {
+  if (!data) {
+    return { data: [] };
+  }
+  return await addOilSpill(data);
 };

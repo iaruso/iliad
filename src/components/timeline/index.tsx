@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getLocalTimeZone, today } from '@internationalized/date';
 import { format } from 'date-fns';
-import { FC, useContext, useState, useMemo, useEffect } from 'react';
+import { FC, useContext, useMemo, useEffect } from 'react';
 import { GlobeContext, GlobeContextProps } from '@/context/globe-context';
 import { useTranslations } from 'next-intl';
 import ButtonTooltip from '@/components/ui-custom/button-tooltip';
@@ -33,7 +33,6 @@ const Timeline: FC = () => {
   const hasOilspillParam = searchParams.has('oilspill');
   const currentLocale = useLocale();
   const t = useTranslations('globe.timeline');
-  const [rangeFilter] = useState<'1d' | '7d' | '30d' | '3m' | '6m' | '1y'>('1y');
   const timestamps = useMemo(() => {
     return Object.keys(groupedGlobeData).sort((a, b) =>
       new Date(a).getTime() - new Date(b).getTime()
@@ -69,42 +68,22 @@ const Timeline: FC = () => {
   }, [startDate, endDate])
 
   const [minDate, maxDate] = useMemo(() => {
-    const dates = timestamps.map(ts => new Date(ts.replace(' ', 'T')));
-    dates.sort((a, b) => a.getTime() - b.getTime());
-    return [dates[0], dates[dates.length - 1]];
+    // Always use the earliest and latest timestamp in groupedGlobeData
+    if (timestamps.length === 0) return [undefined, undefined];
+    const first = new Date(timestamps[0].replace(' ', 'T'));
+    const last = new Date(timestamps[timestamps.length - 1].replace(' ', 'T'));
+    return [first, last];
   }, [timestamps]);
 
   const filteredTimestamps = useMemo(() => {
     if (!minDate || !maxDate) return [];
-  
-    const cutoff = new Date(maxDate);
-  
-    switch (rangeFilter) {
-      case '1d':
-        cutoff.setDate(cutoff.getDate() - 1);
-        break;
-      case '7d':
-        cutoff.setDate(cutoff.getDate() - 7);
-        break;
-      case '30d':
-        cutoff.setDate(cutoff.getDate() - 30);
-        break;
-      case '3m':
-        cutoff.setMonth(cutoff.getMonth() - 3);
-        break;
-      case '6m':
-        cutoff.setMonth(cutoff.getMonth() - 6);
-        break;
-      case '1y':
-        cutoff.setFullYear(cutoff.getFullYear() - 1);
-        break;
-    }
-  
+
+    // Always use the full range from minDate to maxDate, regardless of current year
     return timestamps.filter(ts => {
       const date = new Date(ts.replace(' ', 'T'));
-      return date >= cutoff && date <= maxDate;
+      return date >= minDate && date <= maxDate;
     });
-  }, [timestamps, rangeFilter, minDate, maxDate]);
+  }, [timestamps, minDate, maxDate]);
 
    const handleDateRangeChange = (newRange: typeof dateRange) => {
     setDateRange(newRange);
