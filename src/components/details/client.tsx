@@ -29,9 +29,6 @@ const Stats = dynamic(() => import('@/components/stats'), {
   ssr: false
 });
 
-//import dynamic from 'next/dynamic';
-//const OceanCanvas = dynamic(() => import('@/components/ocean-canvas'), { ssr: false });
-
 interface DetailsProps {
   data: OilSpill;
 }
@@ -176,7 +173,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
               alt={t('oceanViewer.wip')}
               width={366}
               height={247}
-              priority
+              priority={true}
               className='object-cover absolute inset-0 w-full blur opacity-40'
             />
             <span className='text-xs font-medium text-accent-foreground/80 dark:text-muted-foreground z-[1]'>
