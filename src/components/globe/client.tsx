@@ -411,7 +411,6 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
               inner.classList.add('globe-point-button');
               inner.href = `?oilspill=${(d as GlobeLocation)._id}`;
               if (data.single) {
-                inner.removeAttribute('href');
                 inner.style.cursor = 'default';
                 inner.style.pointerEvents = 'none';
                 inner.innerHTML = `
