@@ -82,7 +82,7 @@
             }
           },
           "timeline": {
-            "title": "Timeline exploration",
+            "title": "Timeline navigation",
             "steps": {
               "default": "Use the timeline to control time and see how oil spills evolve",
               "controls": "Use the controls to go back, play, pause, and go forward in time, adjust playback speed, and select a time range",

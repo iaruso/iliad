@@ -266,6 +266,10 @@ html {
   @apply !p-2 !m-3;
 }
 
+.react-joyride__tooltip button {
+  @apply !text-sm !font-medium;
+}
+
 .react-joyride__tooltip button[data-action='back'] {
   @apply !text-accent-foreground;
 }

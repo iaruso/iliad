@@ -1,5 +1,5 @@
 'use client'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { Button } from '@/components/ui-custom/button'
 import { CircleHelp } from 'lucide-react'
 import { DropdownMenuItem } from '@/components/ui-custom/dropdown-menu'
@@ -18,6 +18,15 @@ const HelperDropdownClient: FC<HelperDropdownClientProps> = ({ tooltip, labels }
   const searchParams = useSearchParams()
   const oilspill = searchParams.get('oilspill')
   const { startTour } = useJoyride();
+
+  useEffect(() => {
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    const tutorialCookie = cookies.find(c => c.startsWith('tutorial='));
+    if (!tutorialCookie) {
+      startTour('default');
+    }
+  }, [startTour]);
+
   return (
     <div className='flex' data-joyride='helper'>
       <DropdownTooltip

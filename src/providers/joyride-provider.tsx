@@ -75,6 +75,11 @@ export const JoyrideProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const handleJoyrideCallback = (data: CallBackProps) => {
     if (data.status === 'finished' || data.status === 'skipped') {
       setRun(false);
+      if (!document.cookie.split('; ').find(row => row.startsWith('tutorial='))) {
+        const expires = new Date();
+        expires.setFullYear(expires.getFullYear() + 1);
+        document.cookie = `tutorial=true; expires=${expires.toUTCString()}; path=/`;
+      }
     }
   };
 
@@ -86,6 +91,7 @@ export const JoyrideProvider: React.FC<{ children: React.ReactNode }> = ({ child
         steps={steps}
         run={run}
         showSkipButton
+        hideCloseButton
         showProgress
         callback={handleJoyrideCallback}
         continuous

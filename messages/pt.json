@@ -82,7 +82,7 @@
             }
           },
           "timeline": {
-            "title": "Explorar a linha do tempo",
+            "title": "Navegação na linha do tempo",
             "steps": {
               "default": "Use a linha do tempo para controlar o tempo e ver como os derrames de óleo evoluem",
               "controls": "Use os controlos para voltar, reproduzir, pausar e avançar no tempo, ajustar a velocidade de reprodução e selecionar um intervalo de tempo",
