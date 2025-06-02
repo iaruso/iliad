@@ -57,6 +57,8 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
   const [dataDetail, setDataDetail] = useState<'single' | 'original'>('single')
   const lastAnimatedPositionRef = useRef<{ lat: number; lng: number } | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const isAnimatingRef = useRef(false);
 
   useEffect(() => {
     const panelElement = getPanelElement('content-panel')
@@ -208,26 +210,36 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
 
   const animateToLocation = useCallback((latitude: number, longitude: number, altitude: number, duration: number) => {
     if (!globeRef.current) return;
+    isAnimatingRef.current = true;
+    setIsAnimating(true);
     const currentView = globeRef.current.pointOfView();
     const startTime = performance.now();
     let animationFrameId: number | null = null;
+    let finished = false;
 
     const animate = (time: number) => {
+      if (finished) return;
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const interpolatedView = {
-        lat: currentView.lat + (latitude - currentView.lat) * progress,
+        lat: currentView.lat + (latitude - currentView.lat) * progress, 
         lng: currentView.lng + (longitude - currentView.lng) * progress,
         altitude: currentView.altitude + (altitude - currentView.altitude) * progress,
       };
       globeRef.current?.pointOfView(interpolatedView);
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate);
+      } else {
+        finished = true;
+        isAnimatingRef.current = false;
+        setIsAnimating(false);
       }
     };
     animationFrameId = requestAnimationFrame(animate);
     return () => {
+      finished = true;
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      isAnimatingRef.current = false;
     };
   }, [globeRef]);
 
@@ -283,7 +295,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
         lat: Array.isArray(latitude) ? latitude[0] : latitude, 
         lng: Array.isArray(longitude) ? longitude[0] : longitude 
       };
-      animateToLocation(latitude as number, longitude as number, 0.01, 1);
+      animateToLocation(latitude as number, longitude as number, 0.01, 300);
       return;
     }
 
@@ -314,12 +326,24 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
     if (distance < 0.01) return;
 
     lastAnimatedPositionRef.current = { lat, lng };
-    animateToLocation(lat, lng, 1, 400);
+    animateToLocation(lat, lng, 1, 300);
   }, [isGlobeReady, data.single, dataToDisplay, viewType]);
   
+  useEffect(() => {
+    return () => {
+      if (isAnimatingRef.current) {
+        setIsAnimating(false);
+        isAnimatingRef.current = false;
+      }
+    };
+  }, []);
+
   return (
     <>
-      <div className='w-full flex-1 flex overflow-hidden relative' data-joyride='globe'>
+      <div
+        className={`w-full flex-1 flex overflow-hidden relative${isAnimating ? ' pointer-events-none' : ''}`}
+        data-joyride='globe'
+      >
         <Globe
           key={viewType}
           ref={globeRef}
@@ -372,7 +396,7 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             labelAltitude: 0.000011,
             labelColor: (d) => (d as GlobePoint).color || '#AAAAAA',
           })}
-          {...(!data.single && labelsVisible ? {
+          {...(labelsVisible ? {
             htmlElementsData: htmlIndicators,
             htmlLat: (d) => (d as GlobeLocation).latitude,
             htmlLng: (d) => (d as GlobeLocation).longitude,
@@ -380,25 +404,31 @@ const GlobeComponent = ({ data }: { data: OilSpills }) => {
             htmlElement: (d) => {
               const wrapper = document.createElement('div');
               wrapper.style.position = 'relative';
-            
               const id = (d as GlobeLocation)._id?.slice(-9) ?? 'unknown';
               const area = (d as GlobeLocation).area?.toFixed(2) ?? '-';
             
               const inner = document.createElement('a');
               inner.classList.add('globe-point-button');
-              inner.href = `?oilspill=${(d as GlobeLocation)._id}`;
-              inner.style.textDecoration = 'none';
-              inner.style.pointerEvents = 'auto';
-              inner.style.cursor = 'pointer';
-            
-              inner.innerHTML = `
-                <span>${id}</span>
-                <div>
-                  <span>${area} km²</span>
-                  <span>[${(d as GlobeLocation).latitude.toFixed(2)}, ${(d as GlobeLocation).longitude.toFixed(2)}]</span>
-                </div>
-              `;
-            
+              if (data.single) {
+                inner.removeAttribute('href');
+                inner.style.cursor = 'default';
+                inner.style.pointerEvents = 'none';
+                inner.innerHTML = `
+                  <span>${id}</span>
+                `;
+              } else {
+                inner.href = `?oilspill=${(d as GlobeLocation)._id}`;
+                inner.style.cursor = 'pointer';
+                inner.style.pointerEvents = 'auto';
+                inner.innerHTML = `
+                  <span>${id}</span>
+                  <div>
+                    <span>${area} km²</span>
+                    <span>[${(d as GlobeLocation).latitude.toFixed(2)}, ${(d as GlobeLocation).longitude.toFixed(2)}]</span>
+                  </div>
+                `;
+              }
+              inner.style.textDecoration = 'none';            
               inner.onclick = (e) => {
                 e.preventDefault();
                 router.push(`?oilspill=${(d as GlobeLocation)._id}`);

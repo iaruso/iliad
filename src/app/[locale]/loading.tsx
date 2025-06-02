@@ -20,7 +20,7 @@ export default async function Loading() {
         >
           <div className='flex-1 w-full' />
           <div className='absolute top-2 right-2 flex flex-col gap-2 !w-8 z-10'>
-            {[...Array(5)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <Skeleton key={i} className='h-8 w-8' />
             ))}
           </div>

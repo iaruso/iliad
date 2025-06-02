@@ -1,4 +1,9 @@
 {
+  "not-found": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist",
+    "back": "Go back to the homepage"
+  },
   "navbar": {
     "app": "Oil Spill Monitor",
     "options": {
@@ -123,10 +128,7 @@
         "tooltip": "Minimize screen"
       },
       "location": {
-        "tooltip": "Current location"
-      },
-      "print": {
-        "tooltip": "Printscreen"
+        "tooltip": "Current oil spill location"
       },
       "manualExit": "Press ESC to exit fullscreen"
     },
@@ -189,7 +191,19 @@
           "file": "Click to browse or drag and drop a JSON file with oil spill data",
           "actions": {
             "add": "Add",
-            "cancel": "Cancel"
+            "adding": "Adding...",
+            "cancel": "Cancel",
+            "remove": "Remove",
+            "retry": "Retry"
+          },
+          "steps": {
+            "proceed": "Click add to proceed with the validation of this JSON file",
+            "timestamps": "Validating if timestamps exist",
+            "actors": "Validating if each timestamp has an actor",
+            "dates": "Validating if dates are all different",
+            "geometry": "Validating if geometry data is valid",
+            "success": "Oil spill added successfully",
+            "error": "Error adding oil spill"
           }
         }
       },

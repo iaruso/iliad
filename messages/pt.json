@@ -1,4 +1,9 @@
 {
+  "not-found": {
+    "title": "Página não encontrada",
+    "description": "A página que procura não existe",
+    "back": "Voltar à página inicial"
+  },
   "navbar": {
     "app": "Monitor de derrames de óleo",
     "options": {
@@ -123,10 +128,7 @@
         "tooltip": "Minimizar o ecrã"
       },
       "location": {
-        "tooltip": "Localização atual"
-      },
-      "print": {
-        "tooltip": "Imprimir o ecrã"
+        "tooltip": "Localização atual do derrame de óleo"
       },
       "manualExit": "Pressione ESC para sair do modo de ecrã cheio"
     },
@@ -188,7 +190,19 @@
           "file": "Clique para procurar ou arraste e largue um ficheiro JSON com dados do derrame de óleo",
           "actions": {
             "add": "Adicionar",
-            "cancel": "Cancelar"
+            "adding": "A adicionar...",
+            "cancel": "Cancelar",
+            "remove": "Remover",
+            "retry": "Tentar novamente"
+          },
+          "steps": {
+            "proceed": "Clique em adicionar para prosseguir com a validação deste ficheiro JSON",
+            "timestamps": "A validar se existem registos de tempo",
+            "actors": "A validar se cada registo de tempo tem um ator",
+            "dates": "A validar se todas as datas são diferentes",
+            "geometry": "A validar se os dados de geometria são válidos",
+            "success": "Derrame de óleo adicionado com sucesso",
+            "error": "Erro ao adicionar o derrame de óleo"
           }
         }
       },

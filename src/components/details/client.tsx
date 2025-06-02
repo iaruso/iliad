@@ -49,7 +49,7 @@ const DetailsCard = ({
     trigger={
       <div className='flex items-center gap-1 h-8 px-2 py-1 rounded-md text-xs font-medium border'>
         {icon}
-        <span>{value}</span>
+        {value == null ? '-' : value}
       </div>
     }
     triggerClassName={`p-0.5 px-1 text-xs flex items-center gap-1 justify-center`}
@@ -97,7 +97,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
               button={
                 <Button
                   variant='outline'
-                  className='h-8 w-8 p-0 rounded-md gap-0 bg-muted/20 hover:bg-muted/50'
+                  className='h-8 w-8 p-0 rounded-md gap-0'
                   asChild
                   aria-label={t('return')}
                 >
@@ -119,7 +119,7 @@ const Details: FC<DetailsProps> = ({ data }) => {
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.href);
                   }}
-                  className='h-8 px-2 py-1 rounded-md gap-1.5 bg-muted/20 hover:bg-muted/50 font-medium text-xs uppercase text-foreground'
+                  className='h-8 px-2 py-1 rounded-md gap-1.5 font-medium text-xs uppercase text-foreground'
                   aria-label={t('copy.tooltip')}
                 >
                   {data._id?.toString().slice(-9).padStart(9, '0')}

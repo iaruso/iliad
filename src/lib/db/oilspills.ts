@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { notFound } from 'next/navigation';
 
 export function serializeOilSpill(oilSpill: any) {
   return {
@@ -139,7 +140,7 @@ export async function fetchOilSpillById(oilspill: string) {
 
   const data = await collection.findOne({ _id: new ObjectId(oilspill) });
 
-  if (!data) throw new Error('Not found');
+  if (!data) throw notFound();
 
   return serializeOilSpill(data);
 }

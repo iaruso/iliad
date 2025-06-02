@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import FullscreenToggle from './fullscreen-toggle'
 import LocationButton from './location-button'
-import PrintScreenButton from './printscreen-button'
 import ZoomButtons from './zoom-buttons'
 
 const Controls: FC = () => {
@@ -10,7 +9,6 @@ const Controls: FC = () => {
       <ZoomButtons />
       <FullscreenToggle />
       <LocationButton />
-      <PrintScreenButton />
     </div>
   )
 }

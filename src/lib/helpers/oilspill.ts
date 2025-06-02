@@ -1,5 +1,6 @@
 import type { OilSpills } from '@/@types/oilspills';
 import { getOilSpills, getOilSpillByID } from '@/actions/oilspills';
+import { notFound } from 'next/navigation';
 
 export async function fetchOilspillData({
   oilspill,
@@ -27,19 +28,22 @@ export async function fetchOilspillData({
   endDate?: string;
 }): Promise<OilSpills> {
   if (oilspill) {
-    const single = await getOilSpillByID({ oilspill: oilspill.toLowerCase() });
-    if (!single) return { data: [] };
-
-    const coordinates = extractCoordinatesFromSingleOilSpill(single.data ?? []);
-    return {
-      single: true,
-      data: [
-        {
-          ...single,
-          coordinates,
-        },
-      ],
-    };
+    try {
+      const single = await getOilSpillByID({ oilspill: oilspill.toLowerCase() });
+      if (!single) throw notFound();
+      const coordinates = extractCoordinatesFromSingleOilSpill(single.data ?? []);
+      return {
+        single: true,
+        data: [
+          {
+            ...single,
+            coordinates,
+          },
+        ],
+      };
+    } catch {
+      throw notFound();
+    }
   }
 
   return await getOilSpills({

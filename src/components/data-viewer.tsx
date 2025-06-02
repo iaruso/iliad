@@ -33,7 +33,7 @@ export default function DataViewer({ data }: DataViewerProps) {
         button={
           <Button
             variant='outline'
-            className='sticky top-2 right-2 z-10 px-2 py-1 rounded-md gap-1 bg-muted/20 hover:bg-muted/50 font-medium text-[10px] h-7'
+            className='sticky top-2 right-2 z-10 px-2 py-1 rounded-md gap-1 font-medium text-[10px] h-7'
             onClick={() => {
               navigator.clipboard.writeText(JSON.stringify(data, null, 2))
             }}
