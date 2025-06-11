@@ -35,8 +35,6 @@ const Stats: FC<StatsProps> = ({ className, data, type }) => {
   const isSingle = type === 'single'
   const hasDurationFrequency = stats.duration && stats.frequency
 
-  console.log('Stats data:', stats)
-
   const cardConfigs: CardConfig[] = [
     {
       key: 'area',
