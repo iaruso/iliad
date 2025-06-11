@@ -83,7 +83,9 @@ const StatsCard: FC<StatsCardProps> = ({
               <div className='flex items-center gap-0.5'>
                 <Icon className='!size-2.5' strokeWidth={2} />
                 <span className='truncate pt-[1px]'>
-                  {chartValueType === 'time' ? formatMinutes(value ?? 0, false) : value}
+                    {chartValueType === 'time'
+                    ? formatMinutes(typeof value === 'number' ? value : 0, false)
+                    : (typeof value === 'number' ? value : 0)}
                 </span>
               </div>
             }
@@ -120,10 +122,9 @@ const StatsCard: FC<StatsCardProps> = ({
     </div>
   );
 
-  // Check for invalid stats
-  const hasValidStats = [min, max, avg].every(
-    (v) => typeof v === 'number' && isFinite(v) && !isNaN(v)
-  ) && !(min === 0 && max === 0 && avg === 0);
+  const hasValidStats =
+    [min, max, avg].some((v) => v !== 0) &&
+    [avg].every((v) => typeof v === 'number');
 
   return (
     <div className={cn('flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden', className)}>
