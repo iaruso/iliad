@@ -3,7 +3,7 @@ type ActorType = 'Object' | 'Oil';
 
 type ActorGeometry = {
   type: 'Point' | 'Polygon';
-  coordinates: (number[])[];
+  coordinates: (number[])[][];
 };
 
 type Actor = {
@@ -30,7 +30,7 @@ export async function formatToOilSpill(
   onStep?: (step: number, total: number, status: 'pending' | 'success' | 'error', message?: string) => void
 ): Promise<Output> {
   const totalSteps = 4;
-  
+
   const executeStep = async (
     stepNumber: number,
     stepName: string,
@@ -38,7 +38,7 @@ export async function formatToOilSpill(
   ) => {
     const startTime = Date.now();
     onStep?.(stepNumber, totalSteps, 'pending', stepName);
-    
+
     try {
       stepFunction();
       const elapsed = Date.now() - startTime;
@@ -57,25 +57,31 @@ export async function formatToOilSpill(
     }
   };
 
+  const spills = Array.isArray(json?.spill)
+    ? json.spill.map((s: any) => ({ timestamp: s.timestamp, actors: s.actor }))
+    : Array.isArray(json?.data)
+      ? json.data.map((d: any) => ({ timestamp: d.timestamp, actors: d.actors }))
+      : [];
+
   await executeStep(1, 'Checking timestamps', () => {
-    if (!json || !Array.isArray(json.spill)) {
-      throw new Error('Missing or invalid spill array');
+    if (!spills.length) {
+      throw new Error('Missing or invalid spill/data array');
     }
-    const timestamps = json.spill.map((s: any) => s.timestamp);
+    const timestamps = spills.map((s: any) => s.timestamp);
     if (!timestamps.length || timestamps.some((t: any) => !t)) {
       throw new Error('Missing timestamps');
     }
   });
 
   await executeStep(2, 'Checking actors', () => {
-    const allActors = json.spill.every((s: any) => Array.isArray(s.actor) && s.actor.length > 0);
+    const allActors = spills.every((s: any) => Array.isArray(s.actors) && s.actors.length > 0);
     if (!allActors) {
       throw new Error('Missing actors');
     }
   });
 
   await executeStep(3, 'Checking for duplicate dates', () => {
-    const timestamps = json.spill.map((s: any) => s.timestamp);
+    const timestamps = spills.map((s: any) => s.timestamp);
     const dateSet = new Set(timestamps.map((d: any) => new Date(d).getTime()));
     if (dateSet.size !== timestamps.length) {
       throw new Error('Duplicate timestamps found');
@@ -83,14 +89,30 @@ export async function formatToOilSpill(
   });
 
   await executeStep(4, 'Checking geometry', () => {
-    const allGeometry = json.spill.every((s: any) =>
-      Array.isArray(s.actor) &&
-      s.actor.every((a: any) => {
+    const allGeometry = spills.every((s: any) =>
+      Array.isArray(s.actors) &&
+      s.actors.every((a: any) => {
         const type = String(a.type).toLowerCase();
-        const hasGeometryCoordinates =
-          a.geometry &&
-          Array.isArray(a.geometry.coordinates) &&
-          a.geometry.coordinates.length >= 2;
+
+        let hasGeometryCoordinates = false;
+
+        if (a.geometry && a.geometry.type && a.geometry.coordinates !== undefined) {
+          if (a.geometry.type === 'Polygon') {
+            hasGeometryCoordinates =
+              Array.isArray(a.geometry.coordinates) &&
+              a.geometry.coordinates.length >= 1 &&
+              Array.isArray(a.geometry.coordinates[0]) &&
+              a.geometry.coordinates[0].length >= 2 &&
+              Array.isArray(a.geometry.coordinates[0][0]);
+          } else if (a.geometry.type === 'Point') {
+            hasGeometryCoordinates =
+              Array.isArray(a.geometry.coordinates) &&
+              a.geometry.coordinates.length === 2 &&
+              typeof a.geometry.coordinates[0] === 'number' &&
+              typeof a.geometry.coordinates[1] === 'number';
+          }
+        }
+
         let hasPolygon = false;
         if (Array.isArray(a.polygon)) {
           if (a.polygon.length >= 2) {
@@ -103,31 +125,66 @@ export async function formatToOilSpill(
             hasPolygon = true;
           }
         }
-        return hasGeometryCoordinates || hasPolygon;
+
+        const valid = hasGeometryCoordinates || hasPolygon;
+
+        if (!valid) {
+          console.warn('Invalid geometry or polygon in actor:', a);
+        }
+
+        return valid;
       })
     );
+
     if (!allGeometry) {
+      console.error('Invalid geometry found in actors');
       throw new Error('Invalid geometry values');
     }
   });
 
+
   return {
-    data: json.spill.map((spill: any) => {
+    data: spills.map((spill: any) => {
       const actorArr: Actor[] = [];
       const oilArr: Actor[] = [];
 
-      for (const a of spill.actor || []) {
+      for (const a of spill.actors || []) {
         const actorType: ActorType = String(a.type).toLowerCase() === 'object' ? 'Object' : 'Oil';
-        const isPoint = Array.isArray(a.polygon) && a.polygon.length === 1 && typeof a.polygon[0][0] === 'number';
-        const geomType: 'Polygon' | 'Point' = isPoint ? 'Point' : 'Polygon';
 
-        let coordinates: any = Array.isArray(a.polygon)
-          ? a.polygon.map((coord: any[]) => coord.map(Number))
-          : [];
+        let geomType: 'Polygon' | 'Point';
+        let coordinates: any[][];
 
-        // Correção de estrutura GeoJSON
-        if (geomType === 'Polygon' && Array.isArray(coordinates[0]) && typeof coordinates[0][0] === 'number') {
-          coordinates = [coordinates];
+        if (
+          a.geometry &&
+          (a.geometry.type === 'Polygon' || a.geometry.type === 'Point') &&
+          Array.isArray(a.geometry.coordinates)
+        ) {
+          geomType = a.geometry.type;
+          coordinates = a.geometry.coordinates;
+
+          if (
+            geomType === 'Polygon' &&
+            Array.isArray(coordinates[0]) &&
+            typeof coordinates[0][0] === 'number'
+          ) {
+            coordinates = [coordinates];
+          }
+        } else if (Array.isArray(a.polygon)) {
+          const isPoint = a.polygon.length === 1 && typeof a.polygon[0][0] === 'number';
+          geomType = isPoint ? 'Point' : 'Polygon';
+
+          coordinates = a.polygon.map((coord: any[]) => coord.map(Number));
+
+          if (
+            geomType === 'Polygon' &&
+            Array.isArray(coordinates[0]) &&
+            typeof coordinates[0][0] === 'number'
+          ) {
+            coordinates = [coordinates];
+          }
+        } else {
+          geomType = 'Polygon';
+          coordinates = [];
         }
 
         const actorData = {
@@ -142,7 +199,7 @@ export async function formatToOilSpill(
             name: a.name || 'Polygon',
             type: 'Object',
             url: a.url || undefined,
-            scale: a.scale !== undefined && a.scale !== '' ? Number(a.scale) : 1,
+            scale: a.scale !== undefined && a.scale !== '' ? Number(a.scale) : 1
           });
         } else {
           oilArr.push({ ...actorData, type: 'Oil' });

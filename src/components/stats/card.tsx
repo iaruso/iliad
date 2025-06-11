@@ -120,6 +120,11 @@ const StatsCard: FC<StatsCardProps> = ({
     </div>
   );
 
+  // Check for invalid stats
+  const hasValidStats = [min, max, avg].every(
+    (v) => typeof v === 'number' && isFinite(v) && !isNaN(v)
+  ) && !(min === 0 && max === 0 && avg === 0);
+
   return (
     <div className={cn('flex flex-col border border-border/80 rounded-md relative bg-accent/10 overflow-hidden', className)}>
       <div className='flex flex-col absolute top-0 p-2 w-full pointer-events-none select-none z-[1]'>
@@ -127,7 +132,7 @@ const StatsCard: FC<StatsCardProps> = ({
         <span className='text-[10px] text-muted-foreground -mt-0.5 truncate text-ellipsis w-full'>{detail}</span>
       </div>
       <div className='flex w-full flex-1 justify-center items-center h-full'>
-        {data || min || max || avg ? (
+        {hasValidStats && (data || min || max || avg) ? (
           <TooltipWrapper
             trigger={renderChart()}
             triggerClassName='flex w-full h-full rounded-md'
@@ -137,7 +142,7 @@ const StatsCard: FC<StatsCardProps> = ({
           <span className='text-[10px] mt-8 text-muted-foreground'>{t('noData')}</span>
         )}
       </div>
-      {showStatsRow ? renderStatsRow() : renderSingleStat()}
+      {hasValidStats ? (showStatsRow ? renderStatsRow() : renderSingleStat()) : null}
     </div>
   );
 };

@@ -155,7 +155,7 @@ const AddDialogButtonClient = () => {
 
   const getStepIcon = () => {
     if (stepStatus === 'error') {
-      return <XCircle className='text-destructive/80' size={20} />
+      return <XCircle className='text-destructive' size={20} />
     } else if (stepStatus === 'success' && processingComplete) {
       return <CheckCircle2 className='text-foreground/80' size={20} />
     } else {
@@ -235,7 +235,7 @@ const AddDialogButtonClient = () => {
                 )}
               </div>
             {(isSubmitting || stepStatus === 'error') ? (
-              <div className={`flex items-center gap-2 ${stepStatus === 'error' ? 'text-destructive/80' : stepStatus === 'success' ? 'text-foreground/80' : 'text-muted-foreground/80'}`}>
+              <div className={`flex items-center gap-2 ${stepStatus === 'error' ? 'text-destructive' : stepStatus === 'success' ? 'text-foreground/80' : 'text-muted-foreground/80'}`}>
                 {getStepIcon()}
                 <span className={`text-sm font-medium`}>
                   {stepMessage}
