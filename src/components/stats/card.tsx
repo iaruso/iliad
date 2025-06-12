@@ -112,7 +112,7 @@ const StatsCard: FC<StatsCardProps> = ({
               <CircleDot className='!size-2.5' strokeWidth={2} />
             )}
             <span className='truncate pt-[1px]'>
-              {avg}
+              {chartType === 'circularity' ? `${(avg ?? 0) * 100}%` : (avg ?? 0)}
             </span>
           </div>
         }
